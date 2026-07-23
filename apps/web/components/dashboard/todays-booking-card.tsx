@@ -32,7 +32,7 @@ const mockBookings: Booking[] = [
 
 export function TodaysBookingCard() {
   return (
-    <div className="relative overflow-hidden bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+    <div className="relative overflow-hidden bg-white/75 backdrop-blur-xl rounded-2xl shadow-sm border border-white/60 p-5">
       {/* Decorative blobs — indigo/violet palette */}
       <div className="absolute -top-6 -right-6 w-40 h-40 rounded-full bg-indigo-400/25 blur-2xl" />
       <div className="absolute -bottom-8 -left-4 w-32 h-32 rounded-full bg-violet-400/20 blur-2xl" />

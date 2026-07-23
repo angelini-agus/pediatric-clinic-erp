@@ -18,7 +18,7 @@ export function Sidebar() {
       </div>
 
       <div className="px-2 pt-6">
-        <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-slate-50">
+        <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/60 shadow-sm">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-300 to-brand-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
             DR
           </div>

@@ -14,7 +14,7 @@ export function Header() {
   const dateDisplay = today.charAt(0).toUpperCase() + today.slice(1);
 
   return (
-    <header className="h-20 flex items-center justify-between px-6 bg-white">
+    <header className="h-20 flex items-center justify-between px-6 bg-transparent">
       {/* LEFT: Avatar + greeting + date */}
       <div className="flex items-center gap-4">
         <div className="w-11 h-11 rounded-full bg-gradient-to-br from-brand-400 to-violet-600 flex items-center justify-center text-white font-bold text-sm shadow-md shrink-0 ring-2 ring-white">
@@ -33,7 +33,7 @@ export function Header() {
       {/* RIGHT: Search + action buttons */}
       <div className="flex items-center gap-2.5">
         {/* Pill search */}
-        <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-4 py-2 w-52">
+        <div className="flex items-center gap-2 bg-white/70 backdrop-blur-sm border border-white/80 rounded-full px-4 py-2 w-52 shadow-sm">
           <Search className="h-4 w-4 text-slate-400 shrink-0" />
           <input
             type="text"
@@ -55,7 +55,7 @@ export function Header() {
         <button
           type="button"
           aria-label="Notificaciones"
-          className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-all duration-150 shrink-0 relative"
+          className="w-9 h-9 rounded-xl bg-white/70 backdrop-blur-sm border border-white/80 flex items-center justify-center text-slate-500 hover:bg-white hover:text-slate-700 transition-all duration-150 shrink-0 relative shadow-sm"
         >
           <Bell className="h-4 w-4" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full ring-1 ring-white" />
@@ -65,7 +65,7 @@ export function Header() {
         <button
           type="button"
           aria-label="Configuración"
-          className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-all duration-150 shrink-0"
+          className="w-9 h-9 rounded-xl bg-white/70 backdrop-blur-sm border border-white/80 flex items-center justify-center text-slate-500 hover:bg-white hover:text-slate-700 transition-all duration-150 shrink-0 shadow-sm"
         >
           <Settings className="h-4 w-4" />
         </button>
