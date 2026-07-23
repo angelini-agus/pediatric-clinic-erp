@@ -25,7 +25,7 @@ export function SidebarNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="space-y-1 px-1">
+    <nav className="space-y-0.5">
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive =
@@ -38,12 +38,10 @@ export function SidebarNav() {
             key={item.href}
             href={item.href}
             className={cn(
-              // Pill shape — rounded-full en todos los estados
-              'flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200',
+              'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150',
               isActive
-                // Pill activo: bg-white con sombra sutil
-                ? 'bg-white text-brand font-semibold shadow-pill-active'
-                : 'text-slate-500 hover:bg-white/50 hover:text-slate-800'
+                ? 'bg-brand-50 text-brand font-semibold'
+                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
             )}
           >
             <Icon
