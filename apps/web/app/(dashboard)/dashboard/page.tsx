@@ -83,7 +83,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-5 animate-fade-in">
       {/* Internal navigation tabs with underline style */}
-      <div className="flex items-center gap-0 border-b border-slate-300/30">
+      <div className="flex items-center gap-0">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;

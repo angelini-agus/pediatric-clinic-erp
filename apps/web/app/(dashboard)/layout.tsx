@@ -8,7 +8,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     // p-6 en todos los lados: espacio uniforme con los bordes del viewport
     <div className="h-screen overflow-hidden bg-shell p-6">
       {/* Gran Tarjeta: fondo con patrón de sombras suaves diagonales estilo ola/humo en escala de grises-azulados */}
-      <div className="relative flex h-full rounded-[2.5rem] shadow-card-shell overflow-hidden border border-white/20 bg-[linear-gradient(125deg,#E8EDF5_0%,#CFD6E4_22%,#6B7A8F_48%,#526073_56%,#8E9CAE_78%,#CAD3E1_100%)]">
+      <div className="relative flex h-full rounded-[2.5rem] shadow-card-shell overflow-hidden bg-[linear-gradient(125deg,#E8EDF5_0%,#CFD6E4_22%,#6B7A8F_48%,#526073_56%,#8E9CAE_78%,#CAD3E1_100%)]">
         {/* Banda diagonal de sombra sutil ambiental */}
         <div className="absolute top-1/2 left-1/2 w-[150%] h-[450px] -translate-x-1/2 -translate-y-1/2 -rotate-[22deg] bg-slate-900/15 blur-3xl pointer-events-none z-0" />
         {/* Resplandor de luz suave en zona superior-izquierda */}
