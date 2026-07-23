@@ -30,8 +30,8 @@
   }
 
   body {
-    /* Fondo solido gris mas oscuro: sobre el que flota la Gran Tarjeta */
-    background-color: #5A6778;
+    /* Fondo solido gris super claro, casi blanco: sobre el que flota la Gran Tarjeta */
+    background-color: #F4F5F8;
     min-height: 100vh;
     color: theme('colors.slate.900');
     line-height: 1.6;
