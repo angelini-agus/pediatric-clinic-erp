@@ -7,17 +7,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     // h-screen + overflow-hidden: la página nunca hace scroll
     // p-6 en todos los lados: espacio uniforme con los bordes del viewport
     <div className="h-screen overflow-hidden bg-shell p-6">
-      {/* Gran Tarjeta: difuminado de gris claro a gris oscuro con efecto de luces difusas */}
-      {/* Halo radial: origen en esquina inferior-izquierda → se difumina hacia las otras tres esquinas */}
-      <div className="relative flex h-full rounded-[2.5rem] shadow-card-shell overflow-hidden border border-white/60 bg-[radial-gradient(ellipse_at_bottom_left,_#FFFFFF_0%,_#F0F3FA_35%,_#D8DCE9_65%,_#C8CEDF_100%)]">
-        {/* Blob principal: fuente del halo en esquina inferior-izquierda */}
-        <div className="absolute bottom-0 left-0 w-[700px] h-[700px] bg-white/60 rounded-full blur-3xl pointer-events-none translate-y-1/3 -translate-x-1/4 z-0" />
-        {/* Blob secundario: se proyecta hacia esquina superior-derecha */}
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-slate-400/15 rounded-full blur-3xl pointer-events-none -translate-y-1/4 translate-x-1/4 z-0" />
-        {/* Esquina superior-izquierda: fría y oscura */}
-        <div className="absolute top-0 left-0 w-[300px] h-[300px] bg-slate-300/20 rounded-full blur-3xl pointer-events-none -translate-y-1/3 -translate-x-1/4 z-0" />
+      {/* Gran Tarjeta: fondo con patrón de sombras suaves diagonales estilo ola/humo en escala de grises-azulados */}
+      <div className="relative flex h-full rounded-[2.5rem] shadow-card-shell overflow-hidden border border-white/20 bg-[linear-gradient(125deg,#E8EDF5_0%,#CFD6E4_22%,#6B7A8F_48%,#526073_56%,#8E9CAE_78%,#CAD3E1_100%)]">
+        {/* Banda diagonal de sombra sutil ambiental */}
+        <div className="absolute top-1/2 left-1/2 w-[150%] h-[450px] -translate-x-1/2 -translate-y-1/2 -rotate-[22deg] bg-slate-900/15 blur-3xl pointer-events-none z-0" />
+        {/* Resplandor de luz suave en zona superior-izquierda */}
+        <div className="absolute -top-20 left-1/4 w-[650px] h-[400px] bg-white/35 rounded-full blur-3xl pointer-events-none z-0" />
 
-        {/* Capa principal de UI (z-10) — por encima de todas las luces de fondo */}
+        {/* Capa principal de UI (z-10) — sin bordes blancos rígidos */}
         <div className="relative z-10 flex h-full w-full">
           <Sidebar />
           <div className="flex-1 flex flex-col h-full min-w-0">

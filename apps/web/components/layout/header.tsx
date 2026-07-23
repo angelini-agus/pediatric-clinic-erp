@@ -33,7 +33,7 @@ export function Header() {
       {/* RIGHT: Search + action buttons */}
       <div className="flex items-center gap-2.5">
         {/* Pill search */}
-        <div className="flex items-center gap-2 bg-white/70 backdrop-blur-sm border border-white/80 rounded-full px-4 py-2 w-52 shadow-sm">
+        <div className="flex items-center gap-2 bg-white/70 backdrop-blur-sm rounded-full px-4 py-2 w-52 shadow-sm">
           <Search className="h-4 w-4 text-slate-400 shrink-0" />
           <input
             type="text"
@@ -55,7 +55,7 @@ export function Header() {
         <button
           type="button"
           aria-label="Notificaciones"
-          className="w-9 h-9 rounded-xl bg-white/70 backdrop-blur-sm border border-white/80 flex items-center justify-center text-slate-500 hover:bg-white hover:text-slate-700 transition-all duration-150 shrink-0 relative shadow-sm"
+          className="w-9 h-9 rounded-xl bg-white/70 backdrop-blur-sm flex items-center justify-center text-slate-500 hover:bg-white hover:text-slate-700 transition-all duration-150 shrink-0 relative shadow-sm"
         >
           <Bell className="h-4 w-4" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full ring-1 ring-white" />
@@ -65,7 +65,7 @@ export function Header() {
         <button
           type="button"
           aria-label="Configuración"
-          className="w-9 h-9 rounded-xl bg-white/70 backdrop-blur-sm border border-white/80 flex items-center justify-center text-slate-500 hover:bg-white hover:text-slate-700 transition-all duration-150 shrink-0 shadow-sm"
+          className="w-9 h-9 rounded-xl bg-white/70 backdrop-blur-sm flex items-center justify-center text-slate-500 hover:bg-white hover:text-slate-700 transition-all duration-150 shrink-0 shadow-sm"
         >
           <Settings className="h-4 w-4" />
         </button>

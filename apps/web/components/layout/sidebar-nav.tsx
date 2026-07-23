@@ -40,7 +40,7 @@ export function SidebarNav() {
             className={cn(
               'flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150',
               isActive
-                ? 'bg-white/90 text-brand font-semibold shadow-sm border border-white/70'
+                ? 'bg-white/90 text-brand font-semibold shadow-sm'
                 : 'text-slate-700 hover:bg-white/50 hover:text-slate-950'
             )}
           >

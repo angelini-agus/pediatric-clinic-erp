@@ -3,7 +3,7 @@ import { Activity } from 'lucide-react';
 
 export function Sidebar() {
   return (
-    <aside className="w-60 shrink-0 flex flex-col px-4 py-6 border-r border-slate-200/60">
+    <aside className="w-60 shrink-0 flex flex-col px-4 py-6 border-r border-slate-400/20">
       <div className="flex items-center gap-3 px-2 mb-10">
         <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brand to-brand-700 flex items-center justify-center text-white shadow-sm shrink-0">
           <Activity className="h-4 w-4 stroke-[2.5]" />
@@ -18,7 +18,7 @@ export function Sidebar() {
       </div>
 
       <div className="px-2 pt-6">
-        <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-white/80 backdrop-blur-md border border-white/80 shadow-sm">
+        <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-white/80 backdrop-blur-md shadow-sm">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-violet-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm">
             DR
           </div>

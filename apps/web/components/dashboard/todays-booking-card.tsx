@@ -32,7 +32,7 @@ const mockBookings: Booking[] = [
 
 export function TodaysBookingCard() {
   return (
-    <div className="relative overflow-hidden bg-white/75 backdrop-blur-xl rounded-2xl shadow-sm border border-white/60 p-5">
+    <div className="relative overflow-hidden bg-white/75 backdrop-blur-xl rounded-2xl shadow-sm p-5">
       {/* Decorative blobs — indigo/violet palette */}
       <div className="absolute -top-6 -right-6 w-40 h-40 rounded-full bg-indigo-400/25 blur-2xl" />
       <div className="absolute -bottom-8 -left-4 w-32 h-32 rounded-full bg-violet-400/20 blur-2xl" />
@@ -48,8 +48,8 @@ export function TodaysBookingCard() {
               Pacientes citados para la fecha actual
             </p>
           </div>
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-full">
-            <Clock className="h-3.5 w-3.5" />
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 bg-white/60 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm">
+            <Clock className="h-3.5 w-3.5 text-slate-500" />
             <span>6 Turnos</span>
           </div>
         </div>

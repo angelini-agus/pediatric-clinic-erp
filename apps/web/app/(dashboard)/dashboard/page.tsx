@@ -83,7 +83,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-5 animate-fade-in">
       {/* Internal navigation tabs with underline style */}
-      <div className="flex items-center gap-0 border-b border-slate-100">
+      <div className="flex items-center gap-0 border-b border-slate-300/30">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -113,7 +113,7 @@ export default function DashboardPage() {
           return (
             <div
               key={card.id}
-              className="relative overflow-hidden bg-white/70 backdrop-blur-xl rounded-2xl shadow-sm border border-white/60 p-5"
+              className="relative overflow-hidden bg-white/70 backdrop-blur-xl rounded-2xl shadow-sm p-5"
             >
               {/* Decorative blobs — saturated violet/pink visible in corners */}
               <div className={cn('absolute -top-4 -right-4 w-28 h-28 rounded-full blur-2xl', card.blobA)} />
