@@ -72,7 +72,8 @@ const config: Config = {
         '5xl': '2.5rem',
       },
       fontFamily: {
-        sans: ['var(--font-satoshi)', 'Satoshi', 'var(--font-inter)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-gambarino)', 'Gambarino', 'var(--font-inter)', 'serif'],
+        serif: ['var(--font-gambarino)', 'Gambarino', 'serif'],
         mono: ['var(--font-mono)', 'monospace'],
       },
       animation: {
