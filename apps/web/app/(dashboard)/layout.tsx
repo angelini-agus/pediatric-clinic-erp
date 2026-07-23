@@ -7,12 +7,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     // h-screen + overflow-hidden: la página nunca hace scroll
     // p-6 en todos los lados: espacio uniforme con los bordes del viewport
     <div className="h-screen overflow-hidden bg-shell p-6">
-      {/* Gran Tarjeta: fondo con patrón de sombras suaves diagonales estilo ola/humo en escala de grises-azulados */}
-      <div className="relative flex h-full rounded-[2.5rem] shadow-card-shell overflow-hidden bg-[linear-gradient(125deg,#E8EDF5_0%,#CFD6E4_22%,#6B7A8F_48%,#526073_56%,#8E9CAE_78%,#CAD3E1_100%)]">
-        {/* Banda diagonal de sombra sutil ambiental */}
-        <div className="absolute top-1/2 left-1/2 w-[150%] h-[450px] -translate-x-1/2 -translate-y-1/2 -rotate-[22deg] bg-slate-900/15 blur-3xl pointer-events-none z-0" />
-        {/* Resplandor de luz suave en zona superior-izquierda */}
-        <div className="absolute -top-20 left-1/4 w-[650px] h-[400px] bg-white/35 rounded-full blur-3xl pointer-events-none z-0" />
+      {/* Gran Tarjeta: halo radial en esquina inferior-izquierda con grises un 30% más claros */}
+      <div className="relative flex h-full rounded-[2.5rem] shadow-card-shell overflow-hidden bg-[radial-gradient(ellipse_at_bottom_left,_#FFFFFF_0%,_#F8FAFC_35%,_#EAEFF5_65%,_#DFE4EE_100%)]">
+        {/* Blobs de luz suave ambiental (z-0) */}
+        <div className="absolute bottom-0 left-0 w-[700px] h-[700px] bg-white/70 rounded-full blur-3xl pointer-events-none translate-y-1/3 -translate-x-1/4 z-0" />
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-100/30 rounded-full blur-3xl pointer-events-none -translate-y-1/4 translate-x-1/4 z-0" />
+        <div className="absolute top-0 left-0 w-[300px] h-[300px] bg-white/50 rounded-full blur-3xl pointer-events-none -translate-y-1/3 -translate-x-1/4 z-0" />
 
         {/* Capa principal de UI (z-10) — sin bordes blancos rígidos */}
         <div className="relative z-10 flex h-full w-full">
