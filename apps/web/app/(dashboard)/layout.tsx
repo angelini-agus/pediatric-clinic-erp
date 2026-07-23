@@ -5,8 +5,8 @@ import { Header } from '@/components/layout/header';
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     // h-screen + overflow-hidden: la página nunca hace scroll
-    // p-6 en todos los lados: espacio uniforme con los bordes del viewport
-    <div className="h-screen overflow-hidden bg-shell p-6">
+    // p-12: el doble de distancia con los bordes de la pantalla (48px)
+    <div className="h-screen overflow-hidden bg-shell p-12">
       {/* Gran Tarjeta: halo radial en esquina inferior-izquierda con grises un 30% más claros */}
       <div className="relative flex h-full rounded-[2.5rem] shadow-card-shell overflow-hidden bg-[radial-gradient(ellipse_at_bottom_left,_#FFFFFF_0%,_#F8FAFC_35%,_#EAEFF5_65%,_#DFE4EE_100%)]">
         {/* Blobs de luz suave ambiental (z-0) */}
