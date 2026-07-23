@@ -28,7 +28,7 @@ const config: Config = {
           canceled: '#ef4444',
           inProgress: '#f59e0b',
         },
-        shell: '#DFE2EE',
+        shell: '#5A6778',
         primary: {
           50: 'hsl(238, 100%, 97%)',
           100: 'hsl(238, 100%, 93%)',
