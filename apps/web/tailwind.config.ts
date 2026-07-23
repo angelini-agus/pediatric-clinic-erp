@@ -72,7 +72,7 @@ const config: Config = {
         '5xl': '2.5rem',
       },
       fontFamily: {
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-satoshi)', 'Satoshi', 'var(--font-inter)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-mono)', 'monospace'],
       },
       animation: {
