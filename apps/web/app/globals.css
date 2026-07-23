@@ -1,0 +1,90 @@
+/* Orden correcto: @import debe ir ANTES de @tailwind */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── CSS Variables (Design Tokens) ───────────────────────── */
+:root {
+  --font-inter: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Spacing system */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Shadow system */
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 350ms ease;
+}
+
+/* ── Base styles ──────────────────────────────────────────── */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: var(--font-inter);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    /* Fondo global: gradiente radial ultraclaro — NUNCA blanco puro */
+    background: radial-gradient(
+      ellipse at 20% 50%,
+      hsl(217 100% 97%) 0%,
+      hsl(220 20% 95%) 50%,
+      hsl(230 15% 93%) 100%
+    );
+    min-height: 100vh;
+    color: theme('colors.slate.900');
+    line-height: 1.6;
+  }
+
+  /* Focus visible styles accesibles */
+  :focus-visible {
+    outline: 2px solid theme('colors.brand.DEFAULT');
+    outline-offset: 2px;
+  }
+}
+
+/* ── Component utilities ──────────────────────────────────── */
+@layer components {
+  /* Botón primario base */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2.5
+      text-sm font-semibold text-white shadow-sm transition-all duration-150
+      hover:bg-brand-700 active:scale-[0.98] disabled:cursor-not-allowed
+      disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-brand
+      focus-visible:ring-offset-2;
+  }
+
+  /* Card legacy (usado en páginas secundarias) */
+  .card {
+    @apply rounded-xl border border-slate-200 bg-white p-6 shadow-soft;
+  }
+
+  /* Card glassmorphism — spec exacto del proyecto */
+  .card-glass {
+    @apply relative overflow-hidden bg-white/60 backdrop-blur-xl rounded-[2rem] shadow-sm border border-white/40 p-6;
+  }
+
+  /* Badge de estado */
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+}
