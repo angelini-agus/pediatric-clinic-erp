@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <Sidebar />
           <div className="flex-1 flex flex-col h-full min-w-0">
             <Header />
-            <main className="flex-1 overflow-y-auto p-6 pt-0 bg-transparent">
+            <main className="flex-1 overflow-y-auto no-scrollbar p-6 pt-0 bg-transparent">
               {children}
             </main>
           </div>
