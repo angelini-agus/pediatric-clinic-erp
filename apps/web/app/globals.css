@@ -1,4 +1,4 @@
-@import url('https://api.fontshare.com/v2/css?f[]=gambarino@400&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=roundo@700,600,500,400,300&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap');
 
 @tailwind base;
@@ -6,7 +6,7 @@
 @tailwind utilities;
 
 :root {
-  --font-gambarino: 'Gambarino', serif;
+  --font-roundo: 'Roundo', system-ui, -apple-system, sans-serif;
   --font-inter: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   --radius-sm: 0.375rem;
@@ -25,7 +25,7 @@
   *, *::before, *::after { box-sizing: border-box; }
 
   html {
-    font-family: var(--font-gambarino);
+    font-family: var(--font-roundo);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;

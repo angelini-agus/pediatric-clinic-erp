@@ -72,8 +72,7 @@ const config: Config = {
         '5xl': '2.5rem',
       },
       fontFamily: {
-        sans: ['var(--font-gambarino)', 'Gambarino', 'var(--font-inter)', 'serif'],
-        serif: ['var(--font-gambarino)', 'Gambarino', 'serif'],
+        sans: ['var(--font-roundo)', 'Roundo', 'var(--font-inter)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-mono)', 'monospace'],
       },
       animation: {
