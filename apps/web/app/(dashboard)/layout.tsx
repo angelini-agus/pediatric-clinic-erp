@@ -8,11 +8,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     // p-6 en todos los lados: espacio uniforme con los bordes del viewport
     <div className="h-screen overflow-hidden bg-shell p-6">
       {/* Gran Tarjeta: difuminado de gris claro a gris oscuro con efecto de luces difusas */}
-      <div className="relative flex h-full rounded-[2.5rem] shadow-card-shell overflow-hidden border border-white/80 bg-gradient-to-br from-[#FAFBFD] via-[#EFF2F8] to-[#D5DAE6]">
-        {/* Efectos de luces y resplandores ambient de fondo (z-0) — detrás de toda la UI */}
-        <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-white/50 rounded-full blur-3xl pointer-events-none -translate-y-1/3 z-0" />
-        <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-indigo-200/20 rounded-full blur-3xl pointer-events-none translate-x-1/4 z-0" />
-        <div className="absolute bottom-0 right-1/4 w-[600px] h-[400px] bg-slate-300/25 rounded-full blur-3xl pointer-events-none translate-y-1/3 z-0" />
+      {/* Halo radial: origen en esquina inferior-izquierda → se difumina hacia las otras tres esquinas */}
+      <div className="relative flex h-full rounded-[2.5rem] shadow-card-shell overflow-hidden border border-white/60 bg-[radial-gradient(ellipse_at_bottom_left,_#FFFFFF_0%,_#F0F3FA_35%,_#D8DCE9_65%,_#C8CEDF_100%)]">
+        {/* Blob principal: fuente del halo en esquina inferior-izquierda */}
+        <div className="absolute bottom-0 left-0 w-[700px] h-[700px] bg-white/60 rounded-full blur-3xl pointer-events-none translate-y-1/3 -translate-x-1/4 z-0" />
+        {/* Blob secundario: se proyecta hacia esquina superior-derecha */}
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-slate-400/15 rounded-full blur-3xl pointer-events-none -translate-y-1/4 translate-x-1/4 z-0" />
+        {/* Esquina superior-izquierda: fría y oscura */}
+        <div className="absolute top-0 left-0 w-[300px] h-[300px] bg-slate-300/20 rounded-full blur-3xl pointer-events-none -translate-y-1/3 -translate-x-1/4 z-0" />
 
         {/* Capa principal de UI (z-10) — por encima de todas las luces de fondo */}
         <div className="relative z-10 flex h-full w-full">
