@@ -17,8 +17,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import type { Prisma } from '@pediatric-erp/db';
+
 import { CreatePatientDto } from './dto/create-patient.dto.js';
 import { PatientsService } from './patients.service.js';
+
+type Patient = Prisma.PatientGetPayload<Record<string, never>>;
 
 /**
  * PatientsController — REST endpoints for pediatric patient management.
@@ -71,6 +75,26 @@ export class PatientsController {
   })
   findAll() {
     return this.patientsService.findAll();
+  }
+
+  /**
+   * GET /api/v1/patients/:id
+   */
+  @Get(':id')
+  @ApiOperation({
+    summary: 'Get patient by ID',
+    description: 'Returns a single active patient record by CUID ID.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Patient CUID ID',
+    example: 'clxxxxxxxxxxxxxxxxxxxxxxxx',
+  })
+  @ApiOkResponse({
+    description: 'Patient record found.',
+  })
+  findOne(@Param('id') id: string): Promise<Patient> {
+    return this.patientsService.findOne(id);
   }
 
   /**

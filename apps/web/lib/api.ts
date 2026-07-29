@@ -1,23 +1,25 @@
 import { z } from 'zod';
-import { appointmentStatusSchema } from '@pediatric-erp/schemas';
+import { appointmentStatusSchema, medicalRecordCreateSchema } from '@pediatric-erp/schemas';
 
-// ── Response shape schemas (matches Prisma AppointmentWithDetails) ──────────
-// DRY: Derived from @pediatric-erp/schemas — no duplicate type declarations.
+// ── Response shape schemas ────────────────────────────────────────────────────
+// DRY: built with Zod, no manual interfaces.
 
-const patientResponseSchema = z.object({
+export const patientResponseSchema = z.object({
   id: z.string(),
   firstName: z.string(),
   lastName: z.string(),
   dateOfBirth: z.coerce.date(),
   biologicalSex: z.string(),
+  documentType: z.string(),
+  documentNumber: z.string(),
+  bloodGroup: z.string().nullish(),
+  healthInsurance: z.string().nullish(),
+  healthInsurancePlan: z.string().nullish(),
+  healthInsuranceNumber: z.string().nullish(),
   guardianFullName: z.string(),
   guardianPhone: z.string(),
   guardianEmail: z.string().nullish(),
   guardianRelationship: z.string(),
-  healthInsurance: z.string().nullish(),
-  bloodGroup: z.string().nullish(),
-  documentType: z.string(),
-  documentNumber: z.string(),
   birthWeightGrams: z.number().nullish(),
   gestationalWeeks: z.number().nullish(),
   apgarScore: z.string().nullish(),
@@ -25,6 +27,8 @@ const patientResponseSchema = z.object({
   updatedAt: z.coerce.date(),
   deletedAt: z.coerce.date().nullish(),
 });
+
+export type PatientResponse = z.infer<typeof patientResponseSchema>;
 
 const doctorResponseSchema = z.object({
   id: z.string(),
@@ -48,24 +52,39 @@ export const appointmentResponseSchema = z.object({
   deletedAt: z.coerce.date().nullish(),
 });
 
-/** Fully typed appointment row (with patient + doctor) — from Zod, no manual interfaces. */
 export type AppointmentResponse = z.infer<typeof appointmentResponseSchema>;
 
-// ── Data Fetching ────────────────────────────────────────────────────────────
+// Medical Record response includes doctor details
+export const medicalRecordResponseSchema = z.object({
+  id: z.string(),
+  diagnosis: z.string(),
+  notes: z.string(),
+  treatment: z.string().nullish(),
+  prescription: z.string().nullish(),
+  patientId: z.string(),
+  doctorId: z.string(),
+  doctor: doctorResponseSchema,
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  deletedAt: z.coerce.date().nullish(),
+});
+
+export type MedicalRecordResponse = z.infer<typeof medicalRecordResponseSchema>;
+
+// Re-export Zod schema for use in form validation (client components)
+export { medicalRecordCreateSchema };
+
+// ── Data Fetching ─────────────────────────────────────────────────────────────
 
 const API_URL = process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001/api/v1';
 
 /**
  * Fetches today's active appointments from the NestJS API.
- * Runs server-side in Next.js App Router (no 'use client' needed).
- * Validates and parses the response with Zod for full type-safety.
- *
- * @returns Array of today's appointments with patient and doctor details.
+ * Server-side only (App Router).
  */
 export async function getTodaysAppointments(): Promise<AppointmentResponse[]> {
   try {
     const res = await fetch(`${API_URL}/appointments/today`, {
-      // No caching — always fetch fresh data for the dashboard
       cache: 'no-store',
     });
 
@@ -85,6 +104,69 @@ export async function getTodaysAppointments(): Promise<AppointmentResponse[]> {
     return parsed.data;
   } catch (error) {
     console.error('[api] Network error fetching appointments:', error);
+    return [];
+  }
+}
+
+/**
+ * Fetches a single patient by ID.
+ * Returns null if not found or on network error.
+ */
+export async function getPatient(id: string): Promise<PatientResponse | null> {
+  try {
+    const res = await fetch(`${API_URL}/patients/${id}`, {
+      cache: 'no-store',
+    });
+
+    if (!res.ok) {
+      console.error(`[api] GET /patients/${id} failed: ${res.status}`);
+      return null;
+    }
+
+    const json: unknown = await res.json();
+    const parsed = patientResponseSchema.safeParse(json);
+
+    if (!parsed.success) {
+      console.error('[api] Patient validation failed:', parsed.error.flatten());
+      return null;
+    }
+
+    return parsed.data;
+  } catch (error) {
+    console.error('[api] Network error fetching patient:', error);
+    return null;
+  }
+}
+
+/**
+ * Fetches the full clinical history for a patient.
+ * Returns empty array on error.
+ */
+export async function getMedicalRecords(
+  patientId: string,
+): Promise<MedicalRecordResponse[]> {
+  try {
+    const res = await fetch(
+      `${API_URL}/patients/${patientId}/medical-records`,
+      { cache: 'no-store' },
+    );
+
+    if (!res.ok) {
+      console.error(`[api] GET /patients/${patientId}/medical-records failed: ${res.status}`);
+      return [];
+    }
+
+    const json: unknown = await res.json();
+    const parsed = z.array(medicalRecordResponseSchema).safeParse(json);
+
+    if (!parsed.success) {
+      console.error('[api] Medical records validation failed:', parsed.error.flatten());
+      return [];
+    }
+
+    return parsed.data;
+  } catch (error) {
+    console.error('[api] Network error fetching medical records:', error);
     return [];
   }
 }

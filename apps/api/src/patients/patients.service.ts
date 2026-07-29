@@ -61,6 +61,25 @@ export class PatientsService {
   }
 
   /**
+   * Returns a single active patient by ID.
+   *
+   * @param id - Patient CUID ID
+   * @returns Patient record
+   * @throws NotFoundException if patient does not exist or is soft-deleted
+   */
+  async findOne(id: string): Promise<Patient> {
+    const patient = await this.prisma.client.patient.findFirst({
+      where: { id, deletedAt: null },
+    });
+
+    if (!patient) {
+      throw new NotFoundException(`Patient with id '${id}' not found`);
+    }
+
+    return patient;
+  }
+
+  /**
    * Marks a patient as deleted (soft-delete).
    *
    * STRICT RULE: NEVER use prisma.patient.delete().
