@@ -60,6 +60,23 @@ export class AppointmentsController {
   }
 
   /**
+   * GET /api/v1/appointments/upcoming
+   * Returns all future (dateTime >= now) active appointments with patient + doctor data.
+   */
+  @Get('upcoming')
+  @ApiOperation({
+    summary: 'List upcoming appointments',
+    description:
+      'Returns all non-deleted appointments scheduled from now onwards, ordered by dateTime ascending.',
+  })
+  @ApiOkResponse({
+    description: 'Upcoming appointments with patient and doctor details.',
+  })
+  findUpcoming(): Promise<AppointmentWithDetails[]> {
+    return this.appointmentsService.findUpcoming();
+  }
+
+  /**
    * POST /api/v1/appointments
    * Schedules a new appointment.
    */

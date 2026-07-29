@@ -75,6 +75,34 @@ export class AppointmentsService {
   }
 
   /**
+   * Returns all upcoming active appointments (dateTime >= now),
+   * including patient details and doctor metadata, ordered chronologically.
+   *
+   * STRICT PRISMA RULE: Filters by `dateTime >= now` AND `deletedAt: null`.
+   */
+  async findUpcoming(): Promise<AppointmentWithDetails[]> {
+    const now = new Date();
+    return this.prisma.client.appointment.findMany({
+      where: {
+        dateTime: { gte: now },
+        deletedAt: null,
+      },
+      include: {
+        patient: true,
+        doctor: {
+          select: {
+            id: true,
+            fullName: true,
+            specialty: true,
+            medicalLicense: true,
+          },
+        },
+      },
+      orderBy: { dateTime: 'asc' },
+    });
+  }
+
+  /**
    * Schedules a new appointment.
    * @param dto - Validated input data (via Zod + nestjs-zod)
    * @returns Newly created appointment record

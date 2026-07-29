@@ -204,3 +204,33 @@ export async function getMedicalRecords(
     return [];
   }
 }
+
+/**
+ * Fetches all upcoming appointments (dateTime >= now) from the NestJS API.
+ * Server-side only (App Router).
+ */
+export async function getUpcomingAppointments(): Promise<AppointmentResponse[]> {
+  try {
+    const res = await fetch(`${API_URL}/appointments/upcoming`, {
+      cache: 'no-store',
+    });
+
+    if (!res.ok) {
+      console.error(`[api] GET /appointments/upcoming failed: ${res.status} ${res.statusText}`);
+      return [];
+    }
+
+    const json: unknown = await res.json();
+    const parsed = z.array(appointmentResponseSchema).safeParse(json);
+
+    if (!parsed.success) {
+      console.error('[api] Upcoming appointments validation failed:', parsed.error.flatten());
+      return [];
+    }
+
+    return parsed.data;
+  } catch (error) {
+    console.error('[api] Network error fetching upcoming appointments:', error);
+    return [];
+  }
+}
