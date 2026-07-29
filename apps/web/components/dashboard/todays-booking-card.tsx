@@ -12,6 +12,8 @@ import { getTodaysAppointments, type AppointmentResponse } from '@/lib/api';
 import type { VariantProps } from 'class-variance-authority';
 import type { badgeVariants } from '@/components/ui/badge';
 
+import Link from 'next/link';
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 type BadgeVariant = VariantProps<typeof badgeVariants>['variant'];
@@ -140,12 +142,17 @@ export async function TodaysBookingCard() {
                     {formatTime(appt.dateTime)}
                   </TableCell>
                   <TableCell>
-                    <div className="font-medium text-slate-900">
-                      {appt.patient.firstName} {appt.patient.lastName}
-                    </div>
-                    <div className="text-xs text-slate-400">
-                      {formatAge(appt.patient.dateOfBirth)}
-                    </div>
+                    <Link
+                      href={`/patients/${appt.patient.id}`}
+                      className="group block"
+                    >
+                      <div className="font-medium text-slate-900 group-hover:underline group-hover:text-brand transition-colors cursor-pointer">
+                        {appt.patient.firstName} {appt.patient.lastName}
+                      </div>
+                      <div className="text-xs text-slate-400">
+                        {formatAge(appt.patient.dateOfBirth)}
+                      </div>
+                    </Link>
                   </TableCell>
                   <TableCell className="text-slate-500 text-xs">
                     {formatGuardian(appt)}

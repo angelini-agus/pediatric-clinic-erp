@@ -1,4 +1,4 @@
-import { getPatient, getMedicalRecords } from '@/lib/api';
+import { getPatient, getMedicalRecords, getTodaysAppointments } from '@/lib/api';
 import { PatientProfileCard } from '@/components/patients/patient-profile-card';
 import { NewMedicalRecordForm } from '@/components/patients/new-medical-record-form';
 import { MedicalRecordsTimeline } from '@/components/patients/medical-records-timeline';
@@ -30,9 +30,10 @@ export default async function PatientPage({ params }: PatientPageProps) {
   const { id } = params;
 
   // Concurrent server-side fetches
-  const [patient, medicalRecords] = await Promise.all([
+  const [patient, medicalRecords, appointments] = await Promise.all([
     getPatient(id),
     getMedicalRecords(id),
+    getTodaysAppointments(),
   ]);
 
   // ── Patient Not Found State ────────────────────────────────────────────────
@@ -59,9 +60,8 @@ export default async function PatientPage({ params }: PatientPageProps) {
     );
   }
 
-  // Doctor placeholder ID (in auth-enabled app this comes from session/headers)
-  // Dr. Ricardo Silva seed doctor ID or fallback
-  const doctorIdPlaceholder = 'clxxxxxxxxxxxxxxxxxxxxxxxx';
+  // Doctor ID from real DB doctor user (Dr. Ricardo Silva)
+  const doctorId = appointments[0]?.doctor.id ?? 'clxxxxxxxxxxxxxxxxxxxxxxxx';
 
   return (
     <div className="space-y-6 animate-fade-in pb-8">
@@ -91,7 +91,7 @@ export default async function PatientPage({ params }: PatientPageProps) {
           {/* New Evolution Form (Collapsible Client Component) */}
           <NewMedicalRecordForm
             patientId={patient.id}
-            doctorId={doctorIdPlaceholder}
+            doctorId={doctorId}
           />
 
           {/* Clinical History Timeline */}
