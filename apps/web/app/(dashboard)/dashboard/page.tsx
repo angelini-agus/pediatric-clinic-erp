@@ -1,9 +1,6 @@
-'use client';
-
-import { useState } from 'react';
 import { TodaysBookingCard } from '@/components/dashboard/todays-booking-card';
+import { DashboardTabsClient } from '@/components/dashboard/dashboard-tabs-client';
 import {
-  LayoutGrid,
   Calendar,
   DollarSign,
   Package,
@@ -13,14 +10,6 @@ import {
   Clock,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-const tabs = [
-  { id: 'general', label: 'General', icon: LayoutGrid },
-  { id: 'appointments', label: 'Turnos', icon: Calendar },
-  { id: 'revenue', label: 'Ingresos', icon: DollarSign },
-  { id: 'inventory', label: 'Inventario', icon: Package },
-  { id: 'patients', label: 'Pacientes', icon: Users },
-];
 
 const kpiCards = [
   {
@@ -77,35 +66,19 @@ const kpiCards = [
   },
 ];
 
+/**
+ * DashboardPage — Server Component.
+ *
+ * Composes:
+ * - DashboardTabsClient (Client Component — interactive tabs)
+ * - KPI cards (static server-rendered)
+ * - TodaysBookingCard (async Server Component — fetches real appointments)
+ */
 export default function DashboardPage() {
-  const [activeTab, setActiveTab] = useState('appointments');
-
-
   return (
     <div className="space-y-5 animate-fade-in">
-      {/* Internal navigation tabs with underline style */}
-      <div className="flex items-center gap-0">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              className={cn(
-                'flex items-center gap-2 px-4 py-3 text-sm font-medium transition-all duration-150 border-b-2 -mb-px',
-                isActive
-                  ? 'border-brand text-brand font-semibold'
-                  : 'border-transparent text-slate-400 hover:text-slate-600 hover:border-slate-200'
-              )}
-            >
-              <Icon className={cn('h-4 w-4', isActive ? 'text-brand' : 'text-slate-400')} />
-              {tab.label}
-            </button>
-          );
-        })}
-      </div>
+      {/* Internal navigation tabs — isolated client component */}
+      <DashboardTabsClient />
 
       {/* KPI Cards grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -155,7 +128,7 @@ export default function DashboardPage() {
         })}
       </div>
 
-      {/* Bookings table */}
+      {/* Today's bookings table — async Server Component with real API data */}
       <TodaysBookingCard />
     </div>
   );
