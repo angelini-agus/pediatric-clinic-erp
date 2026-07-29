@@ -46,45 +46,110 @@ datasource db {
 //    - FORBIDDEN: Prisma.PromiseReturnType (does not exist in Prisma 5+)
 //
 // ============================================================
+// DOMAIN ENUMS
+// ============================================================
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  DOCTOR
+  SECRETARY
+  PATIENT
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELED
+}
+
+// ============================================================
 // DOMAIN MODELS
 // ============================================================
 
+model User {
+  id             String        @id @default(cuid())
+  email          String        @unique @db.VarChar(200)
+  password       String        @db.VarChar(200)
+  fullName       String        @db.VarChar(200)
+  role           UserRole      @default(DOCTOR)
+  specialty      String?       @db.VarChar(100)
+  medicalLicense String?       @db.VarChar(50)
+  phone          String?       @db.VarChar(30)
+
+  // Relations
+  appointments   Appointment[]
+
+  // Standard timestamps (Global Architecture)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  deletedAt      DateTime?
+
+  @@map("users")
+}
+
 model Patient {
-  id                    String    @id @default(cuid())
+  id                    String        @id @default(cuid())
 
   // Personal data
-  firstName             String    @db.VarChar(100)
-  lastName              String    @db.VarChar(100)
-  documentType          String    @db.VarChar(10)   @default("DNI")
-  documentNumber        String    @db.VarChar(20)
+  firstName             String        @db.VarChar(100)
+  lastName              String        @db.VarChar(100)
+  documentType          String        @db.VarChar(10)   @default("DNI")
+  documentNumber        String        @db.VarChar(20)
   dateOfBirth           DateTime
-  biologicalSex         String    @db.VarChar(10)
+  biologicalSex         String        @db.VarChar(10)
 
   // Optional clinical data
-  bloodGroup            String?   @db.VarChar(5)
+  bloodGroup            String?       @db.VarChar(5)
 
   // Health Insurance / Obra Social
-  healthInsurance       String?   @db.VarChar(100)
-  healthInsurancePlan   String?   @db.VarChar(50)
-  healthInsuranceNumber String?   @db.VarChar(50)
+  healthInsurance       String?       @db.VarChar(100)
+  healthInsurancePlan   String?       @db.VarChar(50)
+  healthInsuranceNumber String?       @db.VarChar(50)
 
   // Primary guardian
-  guardianFullName      String    @db.VarChar(200)
-  guardianPhone         String    @db.VarChar(30)
-  guardianEmail         String?   @db.VarChar(200)
-  guardianRelationship  String    @db.VarChar(20)
+  guardianFullName      String        @db.VarChar(200)
+  guardianPhone         String        @db.VarChar(30)
+  guardianEmail         String?       @db.VarChar(200)
+  guardianRelationship  String        @db.VarChar(20)
 
   // Perinatal background
   birthWeightGrams      Int?
   gestationalWeeks      Int?
-  apgarScore            String?   @db.VarChar(10)
+  apgarScore            String?       @db.VarChar(10)
+
+  // Relations
+  appointments          Appointment[]
 
   // Standard timestamps (Global Architecture)
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
   deletedAt             DateTime?
 
   @@map("patients")
 }
+
+model Appointment {
+  id        String            @id @default(cuid())
+  dateTime  DateTime
+  type      String            @db.VarChar(100)
+  notes     String?           @db.Text
+  status    AppointmentStatus @default(SCHEDULED)
+
+  // Relations
+  patientId String
+  patient   Patient           @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctorId  String
+  doctor    User              @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  // Standard timestamps (Global Architecture)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  deletedAt DateTime?
+
+  @@map("appointments")
+}
+
 
 
