@@ -23,27 +23,13 @@ datasource db {
 //    - NEVER use hard DELETE in production for clinical data.
 //
 // 2. AUDITING (Immutability - Law 26.529)
-//    - Prepare AuditLog table: { id, entityName, entityId,
-//      action (CREATE/UPDATE/DELETE), payload Json,
-//      userId, createdAt }
+//    - AuditLog table: { id, entityName, entityId, action, payload Json, userId, patientId, createdAt }
 //    - AuditLog is APPEND-ONLY: no updates, no soft-delete.
-//    - Implement via Prisma middleware in src/index.ts
 //
 // 3. STANDARD TIMESTAMPS
 //    - Every model includes: createdAt DateTime @default(now())
 //    - Every model includes: updatedAt DateTime @updatedAt
 //    - Every model includes: deletedAt DateTime?
-//
-// 4. DISCRIMINATED UNIONS
-//    - For complex states (e.g. medical appointment) use `status` field
-//      with Prisma enum. Business states are modeled as Discriminated Unions in TypeScript
-//      derived from the Prisma enum.
-//
-// 5. PRISMA TYPES
-//    - To infer query payload types use:
-//        Prisma.<Model>GetPayload<{ include: { ... } }>
-//        Awaited<ReturnType<typeof prismaClient.<model>.findUnique>>
-//    - FORBIDDEN: Prisma.PromiseReturnType (does not exist in Prisma 5+)
 //
 // ============================================================
 // DOMAIN ENUMS
@@ -69,62 +55,64 @@ enum AppointmentStatus {
 // ============================================================
 
 model User {
-  id             String        @id @default(cuid())
-  email          String        @unique @db.VarChar(200)
-  password       String        @db.VarChar(200)
-  fullName       String        @db.VarChar(200)
-  role           UserRole      @default(DOCTOR)
-  specialty      String?       @db.VarChar(100)
-  medicalLicense String?       @db.VarChar(50)
-  phone          String?       @db.VarChar(30)
+  id             String          @id @default(cuid())
+  email          String          @unique @db.VarChar(200)
+  password       String          @db.VarChar(200)
+  fullName       String          @db.VarChar(200)
+  role           UserRole        @default(DOCTOR)
+  specialty      String?         @db.VarChar(100)
+  medicalLicense String?         @db.VarChar(50)
+  phone          String?         @db.VarChar(30)
 
   // Relations
   appointments   Appointment[]
+  medicalRecords MedicalRecord[]
 
   // Standard timestamps (Global Architecture)
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   deletedAt      DateTime?
 
   @@map("users")
 }
 
 model Patient {
-  id                    String        @id @default(cuid())
+  id                    String          @id @default(cuid())
 
   // Personal data
-  firstName             String        @db.VarChar(100)
-  lastName              String        @db.VarChar(100)
-  documentType          String        @db.VarChar(10)   @default("DNI")
-  documentNumber        String        @db.VarChar(20)
+  firstName             String          @db.VarChar(100)
+  lastName              String          @db.VarChar(100)
+  documentType          String          @db.VarChar(10)   @default("DNI")
+  documentNumber        String          @db.VarChar(20)
   dateOfBirth           DateTime
-  biologicalSex         String        @db.VarChar(10)
+  biologicalSex         String          @db.VarChar(10)
 
   // Optional clinical data
-  bloodGroup            String?       @db.VarChar(5)
+  bloodGroup            String?         @db.VarChar(5)
 
   // Health Insurance / Obra Social
-  healthInsurance       String?       @db.VarChar(100)
-  healthInsurancePlan   String?       @db.VarChar(50)
-  healthInsuranceNumber String?       @db.VarChar(50)
+  healthInsurance       String?         @db.VarChar(100)
+  healthInsurancePlan   String?         @db.VarChar(50)
+  healthInsuranceNumber String?         @db.VarChar(50)
 
   // Primary guardian
-  guardianFullName      String        @db.VarChar(200)
-  guardianPhone         String        @db.VarChar(30)
-  guardianEmail         String?       @db.VarChar(200)
-  guardianRelationship  String        @db.VarChar(20)
+  guardianFullName      String          @db.VarChar(200)
+  guardianPhone         String          @db.VarChar(30)
+  guardianEmail         String?         @db.VarChar(200)
+  guardianRelationship  String          @db.VarChar(20)
 
   // Perinatal background
   birthWeightGrams      Int?
   gestationalWeeks      Int?
-  apgarScore            String?       @db.VarChar(10)
+  apgarScore            String?         @db.VarChar(10)
 
   // Relations
   appointments          Appointment[]
+  medicalRecords        MedicalRecord[]
 
   // Standard timestamps (Global Architecture)
-  createdAt             DateTime      @default(now())
-  updatedAt             DateTime      @updatedAt
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
   deletedAt             DateTime?
 
   @@map("patients")
@@ -151,5 +139,36 @@ model Appointment {
   @@map("appointments")
 }
 
+model MedicalRecord {
+  id           String    @id @default(cuid())
+  diagnosis    String    @db.VarChar(500)
+  notes        String    @db.Text
+  treatment    String?   @db.Text
+  prescription String?   @db.Text
 
+  // Relations
+  patientId    String
+  patient      Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctorId     String
+  doctor       User      @relation(fields: [doctorId], references: [id], onDelete: Cascade)
 
+  // Standard timestamps (Law 26.529: Medical records are immutable)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  @@map("medical_records")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  action     String   @db.VarChar(100)
+  entityName String   @db.VarChar(100)
+  entityId   String   @db.VarChar(100)
+  userId     String   @db.VarChar(100)
+  patientId  String?  @db.VarChar(100)
+  payload    Json?
+  createdAt  DateTime @default(now())
+
+  @@map("audit_logs")
+}

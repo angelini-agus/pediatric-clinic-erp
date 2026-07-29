@@ -46,4 +46,11 @@ export {
   type AppointmentUpdate,
 } from './appointment.schema.js';
 
+// Medical Record
+export {
+  medicalRecordCreateSchema,
+  type MedicalRecordCreate,
+} from './medical-record.schema.js';
+
+
 
