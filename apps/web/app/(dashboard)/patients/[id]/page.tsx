@@ -1,6 +1,7 @@
 import { getPatient, getMedicalRecords, getTodaysAppointments } from '@/lib/api';
 import { PatientProfileCard } from '@/components/patients/patient-profile-card';
 import { NewMedicalRecordForm } from '@/components/patients/new-medical-record-form';
+import { PrescriptionForm } from '@/components/patients/prescription-form';
 import { MedicalRecordsTimeline } from '@/components/patients/medical-records-timeline';
 import { UserX, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -86,13 +87,22 @@ export default async function PatientPage({ params }: PatientPageProps) {
           <PatientProfileCard patient={patient} />
         </div>
 
-        {/* Right Column: New Evolution Form + Timeline (col-span-8) */}
-        <div className="lg:col-span-8 flex flex-col gap-6">
-          {/* New Evolution Form (Collapsible Client Component) */}
-          <NewMedicalRecordForm
-            patientId={patient.id}
-            doctorId={doctorId}
-          />
+        {/* Right Column: Prescription Form + New Evolution Form + Timeline (col-span-8) */}
+        <div className="lg:col-span-8 flex flex-col gap-5">
+          {/* Action Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* New Evolution Form (Collapsible Client Component) */}
+            <NewMedicalRecordForm
+              patientId={patient.id}
+              doctorId={doctorId}
+            />
+
+            {/* Prescription Form (PDF Generation Client Component) */}
+            <PrescriptionForm
+              patientId={patient.id}
+              doctorId={doctorId}
+            />
+          </div>
 
           {/* Clinical History Timeline */}
           <div>

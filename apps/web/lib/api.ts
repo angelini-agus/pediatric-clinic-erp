@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { appointmentStatusSchema, medicalRecordCreateSchema } from '@pediatric-erp/schemas';
+import {
+  appointmentStatusSchema,
+  medicalRecordCreateSchema,
+  prescriptionCreateSchema,
+} from '@pediatric-erp/schemas';
 
 // ── Response shape schemas ────────────────────────────────────────────────────
 // DRY: built with Zod, no manual interfaces.
@@ -72,7 +76,7 @@ export const medicalRecordResponseSchema = z.object({
 export type MedicalRecordResponse = z.infer<typeof medicalRecordResponseSchema>;
 
 // Re-export Zod schema for use in form validation (client components)
-export { medicalRecordCreateSchema };
+export { medicalRecordCreateSchema, prescriptionCreateSchema };
 
 // ── Data Fetching ─────────────────────────────────────────────────────────────
 
