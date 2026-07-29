@@ -139,6 +139,36 @@ export async function getPatient(id: string): Promise<PatientResponse | null> {
 }
 
 /**
+ * Fetches all active patients from the NestJS API.
+ * Server-side only (App Router).
+ */
+export async function getPatients(): Promise<PatientResponse[]> {
+  try {
+    const res = await fetch(`${API_URL}/patients`, {
+      cache: 'no-store',
+    });
+
+    if (!res.ok) {
+      console.error(`[api] GET /patients failed: ${res.status}`);
+      return [];
+    }
+
+    const json: unknown = await res.json();
+    const parsed = z.array(patientResponseSchema).safeParse(json);
+
+    if (!parsed.success) {
+      console.error('[api] Patients list validation failed:', parsed.error.flatten());
+      return [];
+    }
+
+    return parsed.data;
+  } catch (error) {
+    console.error('[api] Network error fetching patients:', error);
+    return [];
+  }
+}
+
+/**
  * Fetches the full clinical history for a patient.
  * Returns empty array on error.
  */
