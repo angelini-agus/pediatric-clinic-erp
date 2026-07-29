@@ -16,6 +16,7 @@ import { AppointmentsModule } from './appointments/appointments.module.js';
 import { MedicalRecordsModule } from './medical-records/medical-records.module.js';
 import { PrescriptionsModule } from './prescriptions/prescriptions.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
+import { DoctorsModule } from './doctors/doctors.module.js';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { PrismaModule } from './prisma/prisma.module.js';
     AppointmentsModule,
     MedicalRecordsModule,
     PrescriptionsModule,
+    DoctorsModule,
   ],
 
   controllers: [AppController],

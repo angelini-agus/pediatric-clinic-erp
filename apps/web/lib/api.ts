@@ -34,6 +34,14 @@ export const patientResponseSchema = z.object({
 
 export type PatientResponse = z.infer<typeof patientResponseSchema>;
 
+export const doctorOptionSchema = z.object({
+  id: z.string(),
+  fullName: z.string(),
+  specialty: z.string().nullish(),
+  medicalLicense: z.string().nullish(),
+});
+export type DoctorOption = z.infer<typeof doctorOptionSchema>;
+
 const doctorResponseSchema = z.object({
   id: z.string(),
   fullName: z.string(),
@@ -231,6 +239,35 @@ export async function getUpcomingAppointments(): Promise<AppointmentResponse[]> 
     return parsed.data;
   } catch (error) {
     console.error('[api] Network error fetching upcoming appointments:', error);
+    return [];
+  }
+}
+
+/**
+ * Fetches all active doctors from the NestJS API.
+ * Used by NewAppointmentForm to populate the doctor select.
+ * Client-side safe (called from useEffect).
+ */
+export async function getDoctors(): Promise<DoctorOption[]> {
+  try {
+    const res = await fetch(`${API_URL}/doctors`, { cache: 'no-store' });
+
+    if (!res.ok) {
+      console.error(`[api] GET /doctors failed: ${res.status}`);
+      return [];
+    }
+
+    const json: unknown = await res.json();
+    const parsed = z.array(doctorOptionSchema).safeParse(json);
+
+    if (!parsed.success) {
+      console.error('[api] Doctors validation failed:', parsed.error.flatten());
+      return [];
+    }
+
+    return parsed.data;
+  } catch (error) {
+    console.error('[api] Network error fetching doctors:', error);
     return [];
   }
 }
