@@ -13,6 +13,7 @@ import type { VariantProps } from 'class-variance-authority';
 import type { badgeVariants } from '@/components/ui/badge';
 
 import Link from 'next/link';
+import { AppointmentStatusSelector } from './appointment-status-selector';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -164,9 +165,10 @@ export async function TodaysBookingCard() {
                     Dr. {appt.doctor.fullName}
                   </TableCell>
                   <TableCell className="text-right">
-                    <Badge variant={STATUS_TO_VARIANT[appt.status]}>
-                      {STATUS_LABEL[appt.status]}
-                    </Badge>
+                    <AppointmentStatusSelector
+                      appointmentId={appt.id}
+                      currentStatus={appt.status}
+                    />
                   </TableCell>
                 </TableRow>
               ))}
