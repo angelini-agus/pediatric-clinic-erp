@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  // Output to node_modules/@prisma/client (default)
+  // For monorepo, ensure postinstall generates the client
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// REGLAS GLOBALES DE ARQUITECTURA (Ley 26.529 + RBAC)
+// ============================================================
+//
+// 1. SOFT DELETE OBLIGATORIO
+//    - Todo modelo DEBE incluir `deletedAt DateTime?`
+//    - Usar Prisma middleware o extension para filtrar automáticamente
+//      los registros eliminados.
+//    - NUNCA usar DELETE en producción para datos clínicos.
+//
+// 2. AUDITORÍA (Inmutabilidad - Ley 26.529)
+//    - Preparar tabla AuditLog: { id, entityName, entityId,
+//      action (CREATE/UPDATE/DELETE), payload Json,
+//      userId, createdAt }
+//    - AuditLog es APPEND-ONLY: sin updates, sin soft-delete.
+//    - Implementar via Prisma middleware en src/index.ts
+//
+// 3. TIMESTAMPS ESTÁNDAR
+//    - Todo modelo incluye: createdAt DateTime @default(now())
+//    - Todo modelo incluye: updatedAt DateTime @updatedAt
+//    - Todo modelo incluye: deletedAt DateTime?
+//
+// 4. TIPOS DE UNIÓN DISCRIMINADA
+//    - Para estados complejos (ej. turno médico) usar campo
+//      `status` con enum de Prisma. Los estados de negocio
+//      se modelan como Discriminated Unions en TypeScript
+//      derivadas del enum de Prisma.
+//
+// 5. TIPOS DE PRISMA
+//    - Para inferir tipos de queries usar:
+//        Prisma.<Model>GetPayload<{ include: { ... } }>
+//        Awaited<ReturnType<typeof prismaClient.<model>.findUnique>>
+//    - PROHIBIDO: Prisma.PromiseReturnType (no existe en Prisma 5+)
+//
+// ============================================================
+// DOMAIN MODELS
+// ============================================================
+
+model Patient {
+  id                    String    @id @default(cuid())
+
+  // Datos personales
+  firstName             String    @db.VarChar(100)
+  lastName              String    @db.VarChar(100)
+  documentType          String    @db.VarChar(10)   @default("DNI")
+  documentNumber        String    @db.VarChar(20)
+  dateOfBirth           DateTime
+  biologicalSex         String    @db.VarChar(10)
+
+  // Datos clínicos opcionales
+  bloodGroup            String?   @db.VarChar(5)
+
+  // Obra Social
+  healthInsurance       String?   @db.VarChar(100)
+  healthInsurancePlan   String?   @db.VarChar(50)
+  healthInsuranceNumber String?   @db.VarChar(50)
+
+  // Tutor principal
+  guardianFullName      String    @db.VarChar(200)
+  guardianPhone         String    @db.VarChar(30)
+  guardianEmail         String?   @db.VarChar(200)
+  guardianRelationship  String    @db.VarChar(20)
+
+  // Antecedentes perinatales
+  birthWeightGrams      Int?
+  gestationalWeeks      Int?
+  apgarScore            String?   @db.VarChar(10)
+
+  // Timestamps estándar (Arquitectura Global)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  deletedAt             DateTime?
+
+  @@map("patients")
+}
+
