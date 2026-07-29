@@ -4,12 +4,13 @@ import { PatientsController } from './patients.controller.js';
 import { PatientsService } from './patients.service.js';
 
 /**
- * PatientsModule — módulo de dominio para la gestión de pacientes.
+ * PatientsModule — domain module for patient management.
  *
- * PrismaService se inyecta automáticamente desde PrismaModule (@Global).
+ * PrismaService is automatically injected from PrismaModule (@Global).
  */
 @Module({
   controllers: [PatientsController],
   providers: [PatientsService],
 })
 export class PatientsModule {}
+

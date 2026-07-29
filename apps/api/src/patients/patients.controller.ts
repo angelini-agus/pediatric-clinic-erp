@@ -21,16 +21,16 @@ import { CreatePatientDto } from './dto/create-patient.dto.js';
 import { PatientsService } from './patients.service.js';
 
 /**
- * PatientsController — endpoints REST para gestión de pacientes pediátricos.
+ * PatientsController — REST endpoints for pediatric patient management.
  *
  * Base path: /api/v1/patients
  *
  * Endpoints:
- *  POST   /api/v1/patients        - Crear paciente (201)
- *  GET    /api/v1/patients        - Listar pacientes activos (200)
- *  DELETE /api/v1/patients/:id    - Soft-delete de paciente (204)
+ *  POST   /api/v1/patients        - Create patient (201)
+ *  GET    /api/v1/patients        - List active patients (200)
+ *  DELETE /api/v1/patients/:id    - Soft-delete patient (204)
  */
-@ApiTags('pacientes')
+@ApiTags('patients')
 @Controller({ path: 'patients', version: '1' })
 export class PatientsController {
   constructor(private readonly patientsService: PatientsService) {}
@@ -41,12 +41,12 @@ export class PatientsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
-    summary: 'Crear paciente pediátrico',
+    summary: 'Create pediatric patient',
     description:
-      'Registra un nuevo paciente en el sistema. Valida datos clínicos (fecha de nacimiento, peso, semanas de gestación) vía Zod.',
+      'Registers a new patient in the system. Validates clinical data (date of birth, weight, gestational weeks) via Zod.',
   })
   @ApiCreatedResponse({
-    description: 'Paciente creado exitosamente.',
+    description: 'Patient created successfully.',
     schema: { $ref: '#/components/schemas/CreatePatientDto' },
   })
   create(@Body() dto: CreatePatientDto) {
@@ -58,12 +58,12 @@ export class PatientsController {
    */
   @Get()
   @ApiOperation({
-    summary: 'Listar pacientes activos',
+    summary: 'List active patients',
     description:
-      'Retorna todos los pacientes no eliminados (deletedAt: null), ordenados por createdAt descendente.',
+      'Returns all active non-deleted patients (deletedAt: null), ordered by createdAt descending.',
   })
   @ApiOkResponse({
-    description: 'Lista de pacientes activos.',
+    description: 'List of active patients.',
     schema: {
       type: 'array',
       items: { $ref: '#/components/schemas/CreatePatientDto' },
@@ -75,24 +75,25 @@ export class PatientsController {
 
   /**
    * DELETE /api/v1/patients/:id
-   * Soft-delete: setea deletedAt, NO elimina el registro físico.
+   * Soft-delete: sets deletedAt, does NOT perform a physical delete.
    */
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
-    summary: 'Eliminar paciente (soft-delete)',
+    summary: 'Delete patient (soft-delete)',
     description:
-      'Marca el paciente como eliminado seteando deletedAt. El registro persiste en la base de datos (Ley 26.529).',
+      'Marks the patient as deleted by setting deletedAt. The record persists in the database (Law 26.529).',
   })
   @ApiParam({
     name: 'id',
-    description: 'ID CUID del paciente',
+    description: 'Patient CUID ID',
     example: 'clxxxxxxxxxxxxxxxxxxxxxxxx',
   })
   @ApiNoContentResponse({
-    description: 'Paciente eliminado lógicamente (soft-delete).',
+    description: 'Patient logically deleted (soft-delete).',
   })
   async softDelete(@Param('id') id: string): Promise<void> {
     await this.patientsService.softDelete(id);
   }
 }
+

@@ -4,19 +4,19 @@ import { prisma } from '@pediatric-erp/db';
 import type { PrismaClient } from '@pediatric-erp/db';
 
 /**
- * PrismaService — wrapper NestJS del cliente Prisma singleton.
+ * PrismaService — NestJS wrapper for the singleton Prisma client.
  *
- * Usa el singleton exportado por @pediatric-erp/db para no crear
- * múltiples instancias de PrismaClient durante el hot-reload de NestJS.
+ * Uses the singleton exported by @pediatric-erp/db to avoid creating
+ * multiple PrismaClient instances during NestJS hot-reloading.
  *
- * Al ser registrado en PrismaModule como @Global(), cualquier módulo
- * puede inyectarlo sin necesidad de importar PrismaModule explícitamente.
+ * Registered in PrismaModule as @Global(), allowing any module
+ * to inject it without explicitly importing PrismaModule.
  */
 @Injectable()
 export class PrismaService implements OnModuleInit {
   /**
-   * Referencia directa al singleton de PrismaClient.
-   * Los servicios usan: `this.prisma.client.patient.findMany(...)`
+   * Direct reference to the PrismaClient singleton.
+   * Services use: `this.prisma.client.patient.findMany(...)`
    */
   readonly client: PrismaClient = prisma;
 
@@ -24,3 +24,4 @@ export class PrismaService implements OnModuleInit {
     await this.client.$connect();
   }
 }
+

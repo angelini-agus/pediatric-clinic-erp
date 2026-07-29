@@ -17,8 +17,8 @@ import { PrismaModule } from './prisma/prisma.module.js';
 @Module({
   imports: [
     // ── Config (Zod-validated) ───────────────────────────────────
-    // validate() usa el schema Zod de @pediatric-erp/schemas
-    // Esto garantiza que la app NO arranca con variables de entorno incorrectas
+    // validate() uses Zod schema from @pediatric-erp/schemas
+    // Ensures application will NOT start with invalid env vars
     ConfigModule.forRoot({
       isGlobal: true,
       validate: validateEnv,
@@ -59,7 +59,6 @@ import { PrismaModule } from './prisma/prisma.module.js';
       },
     }),
 
-
     // ── Feature Modules ──────────────────────────────────────────
     PrismaModule,
     HealthModule,
@@ -70,9 +69,10 @@ import { PrismaModule } from './prisma/prisma.module.js';
     AppService,
     // ── Zod Validation Pipe (nestjs-zod) ─────────────────────────
     { provide: APP_PIPE, useClass: ZodValidationPipe },
-    // ── Exception Filter Global (DI-aware) ───────────────────────
-    // Registrado como APP_FILTER para que NestJS inyecte PinoLogger
+    // ── Global Exception Filter (DI-aware) ───────────────────────
+    // Registered as APP_FILTER so NestJS injects PinoLogger
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
   ],
 })
 export class AppModule {}
+

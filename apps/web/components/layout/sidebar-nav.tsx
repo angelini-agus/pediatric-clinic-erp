@@ -14,12 +14,13 @@ import { cn } from '@/lib/utils';
 
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Pacientes', href: '/pacientes', icon: Users },
-  { name: 'Turnos', href: '/turnos', icon: Calendar },
-  { name: 'Historia Clínica', href: '/historia-clinica', icon: FileText },
-  { name: 'Consultas', href: '/consultas', icon: Stethoscope },
-  { name: 'Configuración', href: '/configuracion', icon: Settings },
+  { name: 'Pacientes', href: '/patients', icon: Users },
+  { name: 'Turnos', href: '/appointments', icon: Calendar },
+  { name: 'Historia Clínica', href: '/medical-records', icon: FileText },
+  { name: 'Consultas', href: '/consultations', icon: Stethoscope },
+  { name: 'Configuración', href: '/settings', icon: Settings },
 ];
+
 
 export function SidebarNav() {
   const pathname = usePathname();

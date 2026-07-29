@@ -16,10 +16,10 @@ import { cn } from '@/lib/utils';
 
 const tabs = [
   { id: 'general', label: 'General', icon: LayoutGrid },
-  { id: 'turnos', label: 'Turnos', icon: Calendar },
-  { id: 'ingresos', label: 'Ingresos', icon: DollarSign },
-  { id: 'inventario', label: 'Inventario', icon: Package },
-  { id: 'pacientes', label: 'Pacientes', icon: Users },
+  { id: 'appointments', label: 'Turnos', icon: Calendar },
+  { id: 'revenue', label: 'Ingresos', icon: DollarSign },
+  { id: 'inventory', label: 'Inventario', icon: Package },
+  { id: 'patients', label: 'Pacientes', icon: Users },
 ];
 
 const kpiCards = [
@@ -78,7 +78,8 @@ const kpiCards = [
 ];
 
 export default function DashboardPage() {
-  const [activeTab, setActiveTab] = useState('turnos');
+  const [activeTab, setActiveTab] = useState('appointments');
+
 
   return (
     <div className="space-y-5 animate-fade-in">

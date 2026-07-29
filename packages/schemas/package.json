@@ -1,0 +1,32 @@
+{
+  "name": "@pediatric-erp/schemas",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Shared Zod schemas — single source of truth for validation across the monorepo",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "dev": "tsc --project tsconfig.json --watch",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@pediatric-erp/eslint-config": "workspace:*",
+    "typescript": "^5.7.3"
+  }
+}

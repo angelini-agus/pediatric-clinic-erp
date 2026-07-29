@@ -4,25 +4,25 @@ import type { Prisma } from '@pediatric-erp/db';
 import { PrismaService } from '../prisma/prisma.service.js';
 import type { CreatePatientDto } from './dto/create-patient.dto.js';
 
-/** Tipo de un registro Patient completo (sin includes). */
+/** Full Patient record type (without includes). */
 type Patient = Prisma.PatientGetPayload<Record<string, never>>;
 
 /**
- * PatientsService — lógica de negocio para la gestión de pacientes.
+ * PatientsService — business logic for patient management.
  *
- * REGLA ARQUITECTÓNICA (Ley 26.529):
- * - Soft-delete OBLIGATORIO: nunca usar prisma.patient.delete()
- * - El campo `deletedAt` marca el registro como eliminado
- * - Todas las queries de lectura DEBEN filtrar `deletedAt: null`
+ * ARCHITECTURAL RULE (Law 26.529):
+ * - MANDATORY Soft-delete: never use prisma.patient.delete()
+ * - The `deletedAt` field marks the record as deleted
+ * - All read queries MUST filter by `deletedAt: null`
  */
 @Injectable()
 export class PatientsService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Crea un nuevo paciente en la base de datos.
-   * @param dto - Datos validados (vía Zod + nestjs-zod)
-   * @returns El registro de paciente recién creado
+   * Creates a new patient in the database.
+   * @param dto - Validated input data (via Zod + nestjs-zod)
+   * @returns Newly created patient record
    */
   async create(dto: CreatePatientDto): Promise<Patient> {
     return this.prisma.client.patient.create({
@@ -49,9 +49,9 @@ export class PatientsService {
   }
 
   /**
-   * Retorna todos los pacientes activos (no eliminados).
+   * Returns all active (non-deleted) patients.
    *
-   * REGLA ESTRICTA: La query DEBE incluir `where: { deletedAt: null }`.
+   * STRICT RULE: Query MUST include `where: { deletedAt: null }`.
    */
   async findAll(): Promise<Patient[]> {
     return this.prisma.client.patient.findMany({
@@ -61,14 +61,14 @@ export class PatientsService {
   }
 
   /**
-   * Marca un paciente como eliminado (soft-delete).
+   * Marks a patient as deleted (soft-delete).
    *
-   * REGLA ESTRICTA: NUNCA usar prisma.patient.delete().
-   * Se setea `deletedAt` con la fecha y hora actual.
+   * STRICT RULE: NEVER use prisma.patient.delete().
+   * `deletedAt` is set to current date and time.
    *
-   * @param id - ID CUID del paciente
-   * @returns El registro actualizado con `deletedAt` seteado
-   * @throws NotFoundException si el paciente no existe (Prisma P2025)
+   * @param id - Patient CUID ID
+   * @returns Updated record with `deletedAt` set
+   * @throws NotFoundException if patient does not exist (Prisma P2025)
    */
   async softDelete(id: string): Promise<Patient> {
     try {
@@ -84,9 +84,10 @@ export class PatientsService {
         'code' in error &&
         (error as { code: string }).code === 'P2025'
       ) {
-        throw new NotFoundException(`Paciente con id '${id}' no encontrado`);
+        throw new NotFoundException(`Patient with id '${id}' not found`);
       }
       throw error;
     }
   }
 }
+

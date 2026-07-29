@@ -13,38 +13,37 @@ datasource db {
 }
 
 // ============================================================
-// REGLAS GLOBALES DE ARQUITECTURA (Ley 26.529 + RBAC)
+// GLOBAL ARCHITECTURE RULES (Law 26.529 + RBAC)
 // ============================================================
 //
-// 1. SOFT DELETE OBLIGATORIO
-//    - Todo modelo DEBE incluir `deletedAt DateTime?`
-//    - Usar Prisma middleware o extension para filtrar automáticamente
-//      los registros eliminados.
-//    - NUNCA usar DELETE en producción para datos clínicos.
+// 1. MANDATORY SOFT DELETE
+//    - Every model MUST include `deletedAt DateTime?`
+//    - Use Prisma middleware or extension to automatically filter
+//      deleted records.
+//    - NEVER use hard DELETE in production for clinical data.
 //
-// 2. AUDITORÍA (Inmutabilidad - Ley 26.529)
-//    - Preparar tabla AuditLog: { id, entityName, entityId,
+// 2. AUDITING (Immutability - Law 26.529)
+//    - Prepare AuditLog table: { id, entityName, entityId,
 //      action (CREATE/UPDATE/DELETE), payload Json,
 //      userId, createdAt }
-//    - AuditLog es APPEND-ONLY: sin updates, sin soft-delete.
-//    - Implementar via Prisma middleware en src/index.ts
+//    - AuditLog is APPEND-ONLY: no updates, no soft-delete.
+//    - Implement via Prisma middleware in src/index.ts
 //
-// 3. TIMESTAMPS ESTÁNDAR
-//    - Todo modelo incluye: createdAt DateTime @default(now())
-//    - Todo modelo incluye: updatedAt DateTime @updatedAt
-//    - Todo modelo incluye: deletedAt DateTime?
+// 3. STANDARD TIMESTAMPS
+//    - Every model includes: createdAt DateTime @default(now())
+//    - Every model includes: updatedAt DateTime @updatedAt
+//    - Every model includes: deletedAt DateTime?
 //
-// 4. TIPOS DE UNIÓN DISCRIMINADA
-//    - Para estados complejos (ej. turno médico) usar campo
-//      `status` con enum de Prisma. Los estados de negocio
-//      se modelan como Discriminated Unions en TypeScript
-//      derivadas del enum de Prisma.
+// 4. DISCRIMINATED UNIONS
+//    - For complex states (e.g. medical appointment) use `status` field
+//      with Prisma enum. Business states are modeled as Discriminated Unions in TypeScript
+//      derived from the Prisma enum.
 //
-// 5. TIPOS DE PRISMA
-//    - Para inferir tipos de queries usar:
+// 5. PRISMA TYPES
+//    - To infer query payload types use:
 //        Prisma.<Model>GetPayload<{ include: { ... } }>
 //        Awaited<ReturnType<typeof prismaClient.<model>.findUnique>>
-//    - PROHIBIDO: Prisma.PromiseReturnType (no existe en Prisma 5+)
+//    - FORBIDDEN: Prisma.PromiseReturnType (does not exist in Prisma 5+)
 //
 // ============================================================
 // DOMAIN MODELS
@@ -53,7 +52,7 @@ datasource db {
 model Patient {
   id                    String    @id @default(cuid())
 
-  // Datos personales
+  // Personal data
   firstName             String    @db.VarChar(100)
   lastName              String    @db.VarChar(100)
   documentType          String    @db.VarChar(10)   @default("DNI")
@@ -61,30 +60,31 @@ model Patient {
   dateOfBirth           DateTime
   biologicalSex         String    @db.VarChar(10)
 
-  // Datos clínicos opcionales
+  // Optional clinical data
   bloodGroup            String?   @db.VarChar(5)
 
-  // Obra Social
+  // Health Insurance / Obra Social
   healthInsurance       String?   @db.VarChar(100)
   healthInsurancePlan   String?   @db.VarChar(50)
   healthInsuranceNumber String?   @db.VarChar(50)
 
-  // Tutor principal
+  // Primary guardian
   guardianFullName      String    @db.VarChar(200)
   guardianPhone         String    @db.VarChar(30)
   guardianEmail         String?   @db.VarChar(200)
   guardianRelationship  String    @db.VarChar(20)
 
-  // Antecedentes perinatales
+  // Perinatal background
   birthWeightGrams      Int?
   gestationalWeeks      Int?
   apgarScore            String?   @db.VarChar(10)
 
-  // Timestamps estándar (Arquitectura Global)
+  // Standard timestamps (Global Architecture)
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
   deletedAt             DateTime?
 
   @@map("patients")
 }
+
 
