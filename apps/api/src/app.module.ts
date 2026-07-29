@@ -11,6 +11,7 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { validateEnv } from './config/env.validation.js';
 import { HealthModule } from './health/health.module.js';
+import { PatientsModule } from './patients/patients.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 
 @Module({
@@ -62,6 +63,7 @@ import { PrismaModule } from './prisma/prisma.module.js';
     // ── Feature Modules ──────────────────────────────────────────
     PrismaModule,
     HealthModule,
+    PatientsModule,
   ],
   controllers: [AppController],
   providers: [
