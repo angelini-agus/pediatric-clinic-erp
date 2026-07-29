@@ -33,3 +33,17 @@ export {
   type PatientUpdate,
 } from './patient.schema.js';
 
+// Appointment
+export {
+  APPOINTMENT_STATUSES,
+  appointmentStatusSchema,
+  type AppointmentStatus,
+  appointmentCreateSchema,
+  type AppointmentCreate,
+  appointmentUpdateStatusSchema,
+  type AppointmentUpdateStatus,
+  appointmentUpdateSchema,
+  type AppointmentUpdate,
+} from './appointment.schema.js';
+
+
