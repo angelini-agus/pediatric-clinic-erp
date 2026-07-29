@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import type { Prisma } from '@pediatric-erp/db';
 
 import { PrismaService } from '../prisma/prisma.service.js';
@@ -68,11 +68,25 @@ export class PatientsService {
    *
    * @param id - ID CUID del paciente
    * @returns El registro actualizado con `deletedAt` seteado
+   * @throws NotFoundException si el paciente no existe (Prisma P2025)
    */
   async softDelete(id: string): Promise<Patient> {
-    return this.prisma.client.patient.update({
-      where: { id },
-      data: { deletedAt: new Date() },
-    });
+    try {
+      return await this.prisma.client.patient.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+      });
+    } catch (error: unknown) {
+      // Prisma P2025: "Record to update not found"
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        (error as { code: string }).code === 'P2025'
+      ) {
+        throw new NotFoundException(`Paciente con id '${id}' no encontrado`);
+      }
+      throw error;
+    }
   }
 }
