@@ -52,5 +52,11 @@ export {
   type MedicalRecordCreate,
 } from './medical-record.schema.js';
 
+// Prescription
+export {
+  prescriptionCreateSchema,
+  type PrescriptionCreate,
+} from './prescription.schema.js';
+
 
 

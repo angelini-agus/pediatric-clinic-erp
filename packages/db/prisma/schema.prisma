@@ -67,6 +67,7 @@ model User {
   // Relations
   appointments   Appointment[]
   medicalRecords MedicalRecord[]
+  prescriptions  Prescription[]
 
   // Standard timestamps (Global Architecture)
   createdAt      DateTime        @default(now())
@@ -109,6 +110,7 @@ model Patient {
   // Relations
   appointments          Appointment[]
   medicalRecords        MedicalRecord[]
+  prescriptions         Prescription[]
 
   // Standard timestamps (Global Architecture)
   createdAt             DateTime        @default(now())
@@ -158,6 +160,26 @@ model MedicalRecord {
   deletedAt    DateTime?
 
   @@map("medical_records")
+}
+
+model Prescription {
+  id           String    @id @default(cuid())
+  medication   String    @db.VarChar(500)
+  dosage       String    @db.VarChar(200)
+  instructions String    @db.Text
+
+  // Relations
+  patientId    String
+  patient      Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctorId     String
+  doctor       User      @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  // Standard timestamps (Immutable legal prescriptions)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  @@map("prescriptions")
 }
 
 model AuditLog {
