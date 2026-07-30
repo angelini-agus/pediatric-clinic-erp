@@ -83,12 +83,76 @@ export const medicalRecordResponseSchema = z.object({
 
 export type MedicalRecordResponse = z.infer<typeof medicalRecordResponseSchema>;
 
+// Analytics response schemas
+export const nextAppointmentPatientSchema = z.object({
+  id: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  fullName: z.string(),
+  age: z.string(),
+});
+
+export const nextAppointmentSchema = z
+  .object({
+    id: z.string(),
+    dateTime: z.coerce.date(),
+    time: z.string(),
+    type: z.string(),
+    patient: nextAppointmentPatientSchema,
+  })
+  .nullable();
+
+export const appointmentFunnelSchema = z.object({
+  total: z.number().int().nonnegative(),
+  completed: z.number().int().nonnegative(),
+  waiting: z.number().int().nonnegative(),
+});
+
+export const dashboardAnalyticsSchema = z.object({
+  nextAppointment: nextAppointmentSchema,
+  appointmentFunnel: appointmentFunnelSchema,
+  unsignedRecords: z.number().int().nonnegative(),
+  canceledToday: z.number().int().nonnegative(),
+});
+
+export type DashboardAnalytics = z.infer<typeof dashboardAnalyticsSchema>;
+
 // Re-export Zod schema for use in form validation (client components)
 export { medicalRecordCreateSchema, prescriptionCreateSchema };
 
 // ── Data Fetching ─────────────────────────────────────────────────────────────
 
 const API_URL = process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001/api/v1';
+
+/**
+ * Fetches dashboard operational analytics metrics from NestJS API.
+ * Server-side safe (cache: 'no-store').
+ */
+export async function getDashboardAnalytics(): Promise<DashboardAnalytics | null> {
+  try {
+    const res = await fetch(`${API_URL}/analytics/dashboard`, {
+      cache: 'no-store',
+    });
+
+    if (!res.ok) {
+      console.error(`[api] GET /analytics/dashboard failed: ${res.status}`);
+      return null;
+    }
+
+    const json: unknown = await res.json();
+    const parsed = dashboardAnalyticsSchema.safeParse(json);
+
+    if (!parsed.success) {
+      console.error('[api] Analytics response validation failed:', parsed.error.flatten());
+      return null;
+    }
+
+    return parsed.data;
+  } catch (error) {
+    console.error('[api] Network error fetching analytics:', error);
+    return null;
+  }
+}
 
 /**
  * Fetches today's active appointments from the NestJS API.

@@ -4,7 +4,7 @@ import { AnalyticsService } from './analytics.service.js';
 import { DashboardAnalyticsDto } from './dto/dashboard-analytics.dto.js';
 
 /**
- * AnalyticsController — Real-time metrics and statistics for dashboard cards.
+ * AnalyticsController — Real-time operational metrics for dashboard cards.
  *
  * Base path: /api/v1/analytics
  *
@@ -18,16 +18,16 @@ export class AnalyticsController {
 
   /**
    * GET /api/v1/analytics/dashboard
-   * Returns real-time metrics for dashboard cards: total active patients, today's appointments, and monthly completed appointments.
+   * Returns real-time metrics for the 4 operational dashboard cards: next patient, appointment funnel, unsigned records, and canceled appointments.
    */
   @Get('dashboard')
   @ApiOperation({
-    summary: 'Get dashboard analytics',
+    summary: 'Get dashboard operational analytics',
     description:
-      'Returns real-time metrics for dashboard cards: total active patients, today\'s appointments count, and monthly completed appointments count.',
+      'Returns real-time metrics for dashboard cards: next patient today, appointment funnel (total/completed/waiting), unsigned medical records today, and canceled appointments today.',
   })
   @ApiOkResponse({
-    description: 'Dashboard analytics retrieved successfully.',
+    description: 'Dashboard operational analytics retrieved successfully.',
     type: DashboardAnalyticsDto,
   })
   getDashboardMetrics(): Promise<DashboardAnalyticsDto> {

@@ -3,6 +3,36 @@ import { PrismaService } from '../prisma/prisma.service.js';
 import type { DashboardAnalyticsDto } from './dto/dashboard-analytics.dto.js';
 
 /**
+ * Formats patient date of birth to a human-readable age string in Spanish (e.g. "3 años", "8 m").
+ */
+function formatAge(dateOfBirth: Date): string {
+  const now = new Date();
+  const dob = new Date(dateOfBirth);
+  let months = (now.getFullYear() - dob.getFullYear()) * 12 + (now.getMonth() - dob.getMonth());
+  if (now.getDate() < dob.getDate()) {
+    months--;
+  }
+  if (months < 0) months = 0;
+
+  if (months < 24) {
+    return `${months} m`;
+  }
+  const years = Math.floor(months / 12);
+  return `${years} años`;
+}
+
+/**
+ * Formats a Date object to a 12-hour formatted time string in Spanish (e.g. "10:30 AM").
+ */
+function formatTime(date: Date): string {
+  return new Date(date).toLocaleTimeString('es-AR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+}
+
+/**
  * AnalyticsService — Business logic for dashboard metrics and reporting.
  */
 @Injectable()
@@ -10,16 +40,15 @@ export class AnalyticsService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Calculates dashboard analytics metrics in real time.
+   * Calculates real-time metrics for the 4 operational dashboard cards:
+   * 1. nextAppointment: Next SCHEDULED appointment today (dateTime > now)
+   * 2. appointmentFunnel: Today's total, completed, and waiting appointments count
+   * 3. unsignedRecords: Today's COMPLETED appointments without a signed MedicalRecord
+   * 4. canceledToday: Today's CANCELED appointments count
    *
-   * PERFORMANCE REQUIREMENTS:
-   * - Uses Prisma `count()` queries directly in SQL (no findMany / JS length).
-   * - Executes queries concurrently via `Promise.all()`.
-   *
-   * METRICS:
-   * a) Active Patients: Patients with deletedAt = null
-   * b) Today's Appointments: Appointments with dateTime on current date & deletedAt = null
-   * c) Monthly Completed: Appointments with status = COMPLETED, dateTime in current month & deletedAt = null
+   * PERFORMANCE GUARANTEE:
+   * - Uses Prisma SQL count and findFirst queries (no findMany with JS .length counting).
+   * - Executes all queries concurrently via Promise.all().
    */
   async getDashboardMetrics(): Promise<DashboardAnalyticsDto> {
     const now = new Date();
@@ -43,55 +72,137 @@ export class AnalyticsService {
       999,
     );
 
-    const startOfMonth = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      1,
-      0,
-      0,
-      0,
-      0,
-    );
-    const endOfMonth = new Date(
-      now.getFullYear(),
-      now.getMonth() + 1,
-      0,
-      23,
-      59,
-      59,
-      999,
-    );
+    const [
+      nextAppt,
+      funnelTotal,
+      funnelCompleted,
+      funnelWaiting,
+      unsignedRecords,
+      canceledToday,
+    ] = await Promise.all([
+      // 1. Next SCHEDULED appointment today where dateTime > now
+      this.prisma.client.appointment.findFirst({
+        where: {
+          dateTime: {
+            gte: now,
+            lte: endOfToday,
+          },
+          status: 'SCHEDULED',
+          deletedAt: null,
+        },
+        include: {
+          patient: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              dateOfBirth: true,
+            },
+          },
+        },
+        orderBy: {
+          dateTime: 'asc',
+        },
+      }),
 
-    const [totalPatients, todayAppointments, monthlyCompletedAppointments] =
-      await Promise.all([
-        this.prisma.client.patient.count({
-          where: { deletedAt: null },
-        }),
-        this.prisma.client.appointment.count({
-          where: {
-            dateTime: {
-              gte: startOfToday,
-              lte: endOfToday,
-            },
-            deletedAt: null,
+      // 2a. Today's total appointments count
+      this.prisma.client.appointment.count({
+        where: {
+          dateTime: {
+            gte: startOfToday,
+            lte: endOfToday,
           },
-        }),
-        this.prisma.client.appointment.count({
-          where: {
-            status: 'COMPLETED',
-            dateTime: {
-              gte: startOfMonth,
-              lte: endOfMonth,
-            },
-            deletedAt: null,
+          deletedAt: null,
+        },
+      }),
+
+      // 2b. Today's completed appointments count
+      this.prisma.client.appointment.count({
+        where: {
+          dateTime: {
+            gte: startOfToday,
+            lte: endOfToday,
           },
-        }),
-      ]);
+          status: 'COMPLETED',
+          deletedAt: null,
+        },
+      }),
+
+      // 2c. Today's waiting appointments count (SCHEDULED or IN_PROGRESS)
+      this.prisma.client.appointment.count({
+        where: {
+          dateTime: {
+            gte: startOfToday,
+            lte: endOfToday,
+          },
+          status: {
+            in: ['SCHEDULED', 'IN_PROGRESS'],
+          },
+          deletedAt: null,
+        },
+      }),
+
+      // 3. Today's COMPLETED appointments without a MedicalRecord created today
+      this.prisma.client.appointment.count({
+        where: {
+          dateTime: {
+            gte: startOfToday,
+            lte: endOfToday,
+          },
+          status: 'COMPLETED',
+          deletedAt: null,
+          patient: {
+            medicalRecords: {
+              none: {
+                createdAt: {
+                  gte: startOfToday,
+                  lte: endOfToday,
+                },
+                deletedAt: null,
+              },
+            },
+          },
+        },
+      }),
+
+      // 4. Today's CANCELED appointments count
+      this.prisma.client.appointment.count({
+        where: {
+          dateTime: {
+            gte: startOfToday,
+            lte: endOfToday,
+          },
+          status: 'CANCELED',
+          deletedAt: null,
+        },
+      }),
+    ]);
+
+    const formattedNextAppt = nextAppt
+      ? {
+          id: nextAppt.id,
+          dateTime: nextAppt.dateTime,
+          time: formatTime(nextAppt.dateTime),
+          type: nextAppt.type,
+          patient: {
+            id: nextAppt.patient.id,
+            firstName: nextAppt.patient.firstName,
+            lastName: nextAppt.patient.lastName,
+            fullName: `${nextAppt.patient.firstName} ${nextAppt.patient.lastName}`,
+            age: formatAge(nextAppt.patient.dateOfBirth),
+          },
+        }
+      : null;
 
     return {
-      totalPatients,
-      todayAppointments,
-      monthlyCompletedAppointments,
+      nextAppointment: formattedNextAppt,
+      appointmentFunnel: {
+        total: funnelTotal,
+        completed: funnelCompleted,
+        waiting: funnelWaiting,
+      },
+      unsignedRecords,
+      canceledToday,
     };
   }
 }
