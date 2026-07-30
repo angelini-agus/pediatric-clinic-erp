@@ -2,25 +2,65 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { CalendarIcon, Clock, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { PatientResponse, DoctorOption } from '@/lib/api';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
+// ── Time slot generator ───────────────────────────────────────────────────────
+
+/**
+ * Generates time slots for clinic hours in 30-minute intervals.
+ * Range: 08:00 → 20:00.
+ */
+function generateTimeSlots(): { value: string; label: string }[] {
+  const slots: { value: string; label: string }[] = [];
+  for (let h = 8; h < 20; h++) {
+    for (const m of [0, 30]) {
+      const hh = String(h).padStart(2, '0');
+      const mm = String(m).padStart(2, '0');
+      const value = `${hh}:${mm}`;
+      // 12h display label — e.g. "08:00 AM", "01:30 PM"
+      const date = new Date(2000, 0, 1, h, m);
+      const label = date.toLocaleTimeString('es-AR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      });
+      slots.push({ value, label });
+    }
+  }
+  return slots;
+}
+
+const TIME_SLOTS = generateTimeSlots();
 
 // ── Form schema ───────────────────────────────────────────────────────────────
+// Separamos date y time como campos independientes para que cada selector
+// tenga su propio estado. Los recombinamos en onSubmit.
 
 const newAppointmentFormSchema = z.object({
   patientId: z.string().min(1, 'Seleccioná un paciente'),
   doctorId: z.string().min(1, 'Seleccioná un médico'),
-  dateTime: z
-    .string()
-    .min(1, 'La fecha y hora son obligatorias')
-    .refine((v) => !isNaN(Date.parse(v)), { message: 'Fecha y hora inválidas' })
-    .refine((v) => new Date(v) > new Date(), {
-      message: 'La fecha y hora deben ser futuras',
+  date: z
+    .date({ required_error: 'Seleccioná una fecha' })
+    .refine((d) => d >= new Date(new Date().setHours(0, 0, 0, 0)), {
+      message: 'La fecha debe ser hoy o posterior',
     }),
+  time: z.string().min(1, 'Seleccioná un horario'),
   type: z
     .string()
     .trim()
@@ -41,6 +81,17 @@ interface NewAppointmentFormProps {
 
 type ToastState = { type: 'success' | 'error'; message: string } | null;
 
+// ── Shared style helpers ──────────────────────────────────────────────────────
+
+const triggerClass = (hasError: boolean) =>
+  cn(
+    'w-full rounded-xl border px-3.5 py-2.5 text-sm text-slate-800 bg-white/80',
+    'focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all',
+    hasError ? 'border-rose-300 focus:ring-rose-200' : 'border-slate-200',
+  );
+
+const labelClass = 'text-xs font-semibold text-slate-600 uppercase tracking-wider';
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
@@ -49,9 +100,11 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
   const [patients, setPatients] = useState<PatientResponse[]>([]);
   const [doctors, setDoctors] = useState<DoctorOption[]>([]);
   const [isLoadingOptions, setIsLoadingOptions] = useState(true);
+  const [isDateOpen, setIsDateOpen] = useState(false);
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
@@ -60,7 +113,8 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
     defaultValues: {
       patientId: '',
       doctorId: '',
-      dateTime: '',
+      date: undefined as unknown as Date,
+      time: '',
       type: '',
       notes: '',
     },
@@ -100,6 +154,20 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
 
   const onSubmit = async (data: NewAppointmentFormValues) => {
     setToast(null);
+
+    // Combine date + time into a single ISO DateTime string
+    const parts = data.time.split(':');
+    const hours = parseInt(parts[0] ?? '0', 10);
+    const minutes = parseInt(parts[1] ?? '0', 10);
+    const dateTime = new Date(data.date);
+    dateTime.setHours(hours, minutes, 0, 0);
+
+    // Validate combined dateTime is in the future
+    if (dateTime <= new Date()) {
+      setToast({ type: 'error', message: 'La fecha y hora deben ser futuras.' });
+      return;
+    }
+
     try {
       const res = await fetch(`${API_URL}/appointments`, {
         method: 'POST',
@@ -107,7 +175,7 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
         body: JSON.stringify({
           patientId: data.patientId,
           doctorId: data.doctorId,
-          dateTime: new Date(data.dateTime).toISOString(),
+          dateTime: dateTime.toISOString(),
           type: data.type,
           notes: data.notes || undefined,
           status: 'SCHEDULED',
@@ -134,19 +202,10 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
     }
   };
 
-  const inputClass = (hasError: boolean) =>
-    cn(
-      'w-full rounded-xl border px-3.5 py-2.5 text-sm text-slate-800 bg-white/80',
-      'focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all',
-      hasError ? 'border-rose-300 focus:ring-rose-200' : 'border-slate-200',
-    );
-
-  const labelClass =
-    'text-xs font-semibold text-slate-600 uppercase tracking-wider';
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
-      {/* Paciente */}
+    <form onSubmit={handleSubmit(onSubmit as Parameters<typeof handleSubmit>[0])} className="flex flex-col gap-4" noValidate>
+
+      {/* ── Paciente ───────────────────────────────────────────────── */}
       <div className="flex flex-col gap-1">
         <label htmlFor="na-patientId" className={labelClass}>
           Paciente <span className="text-rose-500">*</span>
@@ -155,7 +214,10 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
           id="na-patientId"
           {...register('patientId')}
           disabled={isLoadingOptions}
-          className={cn(inputClass(!!errors.patientId), 'disabled:opacity-50 disabled:cursor-wait')}
+          className={cn(
+            triggerClass(!!errors.patientId),
+            'disabled:opacity-50 disabled:cursor-wait',
+          )}
         >
           <option value="">
             {isLoadingOptions ? 'Cargando pacientes...' : 'Seleccioná un paciente'}
@@ -171,7 +233,7 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
         )}
       </div>
 
-      {/* Médico */}
+      {/* ── Médico ─────────────────────────────────────────────────── */}
       <div className="flex flex-col gap-1">
         <label htmlFor="na-doctorId" className={labelClass}>
           Médico <span className="text-rose-500">*</span>
@@ -180,7 +242,10 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
           id="na-doctorId"
           {...register('doctorId')}
           disabled={isLoadingOptions}
-          className={cn(inputClass(!!errors.doctorId), 'disabled:opacity-50 disabled:cursor-wait')}
+          className={cn(
+            triggerClass(!!errors.doctorId),
+            'disabled:opacity-50 disabled:cursor-wait',
+          )}
         >
           <option value="">
             {isLoadingOptions ? 'Cargando médicos...' : 'Seleccioná un médico'}
@@ -196,23 +261,96 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
         )}
       </div>
 
-      {/* Fecha y Hora */}
-      <div className="flex flex-col gap-1">
-        <label htmlFor="na-dateTime" className={labelClass}>
-          Fecha y Hora <span className="text-rose-500">*</span>
-        </label>
-        <input
-          id="na-dateTime"
-          type="datetime-local"
-          {...register('dateTime')}
-          className={inputClass(!!errors.dateTime)}
-        />
-        {errors.dateTime && (
-          <p className="text-xs text-rose-500">{errors.dateTime.message}</p>
-        )}
+      {/* ── Fecha & Hora — grid 2 cols ──────────────────────────────── */}
+      <div className="grid grid-cols-2 gap-4">
+
+        {/* Date Picker */}
+        <div className="flex flex-col gap-1">
+          <span className={labelClass}>
+            Fecha <span className="text-rose-500">*</span>
+          </span>
+          <Controller
+            control={control}
+            name="date"
+            render={({ field }) => (
+              <Popover open={isDateOpen} onOpenChange={setIsDateOpen}>
+                <PopoverTrigger asChild>
+                  <button
+                    id="na-date"
+                    type="button"
+                    className={cn(
+                      triggerClass(!!errors.date),
+                      'flex items-center justify-between gap-2 text-left',
+                      !field.value && 'text-slate-400',
+                    )}
+                  >
+                    <span className="truncate">
+                      {field.value
+                        ? format(field.value, "dd 'de' MMMM", { locale: es })
+                        : 'Seleccioná una fecha'}
+                    </span>
+                    <CalendarIcon className="h-4 w-4 shrink-0 text-slate-400" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="p-0">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={(day) => {
+                      field.onChange(day);
+                      setIsDateOpen(false);
+                    }}
+                    disabled={(date) =>
+                      date < new Date(new Date().setHours(0, 0, 0, 0))
+                    }
+                  />
+                </PopoverContent>
+              </Popover>
+            )}
+          />
+          {errors.date && (
+            <p className="text-xs text-rose-500">{errors.date.message}</p>
+          )}
+        </div>
+
+        {/* Time Select */}
+        <div className="flex flex-col gap-1">
+          <span className={labelClass}>
+            Hora <span className="text-rose-500">*</span>
+          </span>
+          <Controller
+            control={control}
+            name="time"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger
+                  id="na-time"
+                  hasError={!!errors.time}
+                  className={!field.value ? '[&>span]:text-slate-400' : ''}
+                >
+                  <span className="flex items-center gap-2 min-w-0">
+                    <Clock className="h-4 w-4 shrink-0 text-slate-400" />
+                    <SelectValue placeholder="Seleccioná" />
+                  </span>
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  {TIME_SLOTS.map(({ value, label }) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+          {errors.time && (
+            <p className="text-xs text-rose-500">{errors.time.message}</p>
+          )}
+        </div>
+
       </div>
 
-      {/* Motivo del Turno */}
+      {/* ── Motivo del Turno ───────────────────────────────────────── */}
       <div className="flex flex-col gap-1">
         <label htmlFor="na-type" className={labelClass}>
           Motivo del Turno <span className="text-rose-500">*</span>
@@ -222,14 +360,14 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
           type="text"
           placeholder="Ej: Control de Rutina, Vacunación, Cuadro Febril..."
           {...register('type')}
-          className={cn(inputClass(!!errors.type), 'placeholder:text-slate-300')}
+          className={cn(triggerClass(!!errors.type), 'placeholder:text-slate-300')}
         />
         {errors.type && (
           <p className="text-xs text-rose-500">{errors.type.message}</p>
         )}
       </div>
 
-      {/* Notas (opcional) */}
+      {/* ── Notas (opcional) ───────────────────────────────────────── */}
       <div className="flex flex-col gap-1">
         <label htmlFor="na-notes" className={labelClass}>
           Notas{' '}
@@ -244,7 +382,7 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
         />
       </div>
 
-      {/* Inline toast */}
+      {/* ── Inline toast ───────────────────────────────────────────── */}
       {toast && (
         <div
           className={cn(
@@ -263,7 +401,7 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
         </div>
       )}
 
-      {/* Actions */}
+      {/* ── Actions ────────────────────────────────────────────────── */}
       <div className="flex items-center justify-end gap-2 pt-1">
         <button
           type="button"
