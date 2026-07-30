@@ -102,6 +102,20 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
   const [isLoadingOptions, setIsLoadingOptions] = useState(true);
   const [isDateOpen, setIsDateOpen] = useState(false);
 
+  // If fewer than 7 days remain in the current month, open on next month
+  // so the user sees mostly selectable dates instead of a grayed-out grid.
+  const today = new Date();
+  const daysInCurrentMonth = new Date(
+    today.getFullYear(),
+    today.getMonth() + 1,
+    0,
+  ).getDate();
+  const daysRemaining = daysInCurrentMonth - today.getDate();
+  const calendarDefaultMonth =
+    daysRemaining < 7
+      ? new Date(today.getFullYear(), today.getMonth() + 1, 1)
+      : today;
+
   const {
     register,
     control,
@@ -296,6 +310,7 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
                   <Calendar
                     mode="single"
                     selected={field.value}
+                    defaultMonth={calendarDefaultMonth}
                     onSelect={(day) => {
                       field.onChange(day);
                       setIsDateOpen(false);
