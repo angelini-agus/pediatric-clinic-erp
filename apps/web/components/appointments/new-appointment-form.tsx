@@ -137,7 +137,11 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
 
   // Watch doctor + date to check slot availability reactively
   const watchedDoctorId = watch('doctorId');
+  const watchedPatientId = watch('patientId');
   const watchedDate = watch('date');
+
+  // Both patient AND doctor must be selected before date/time are accessible.
+  const isDateTimeEnabled = !!watchedPatientId && !!watchedDoctorId;
 
   const API_URL =
     process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001/api/v1';
@@ -348,21 +352,28 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
             control={control}
             name="date"
             render={({ field }) => (
-              <Popover open={isDateOpen} onOpenChange={setIsDateOpen}>
+              <Popover
+                open={isDateTimeEnabled ? isDateOpen : false}
+                onOpenChange={(v) => { if (isDateTimeEnabled) setIsDateOpen(v); }}
+              >
                 <PopoverTrigger asChild>
                   <button
                     id="na-date"
                     type="button"
+                    disabled={!isDateTimeEnabled}
                     className={cn(
                       triggerClass(!!errors.date),
                       'flex items-center justify-between gap-2 text-left',
                       !field.value && 'text-slate-400',
+                      !isDateTimeEnabled && 'cursor-not-allowed opacity-50',
                     )}
                   >
                     <span className="truncate">
                       {field.value
                         ? format(field.value, "dd 'de' MMMM", { locale: es })
-                        : 'Seleccioná una fecha'}
+                        : isDateTimeEnabled
+                          ? 'Seleccioná una fecha'
+                          : 'Elegí paciente y médico primero'}
                     </span>
                     <CalendarIcon className="h-4 w-4 shrink-0 text-slate-400" />
                   </button>
@@ -403,15 +414,17 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
                   id="na-time"
                   hasError={!!errors.time}
                   className={!field.value ? '[&>span]:text-slate-400' : ''}
-                  disabled={isCheckingAvailability}
+                  disabled={!isDateTimeEnabled || isCheckingAvailability}
                 >
                   <span className="flex items-center gap-2 min-w-0">
                     <Clock className="h-4 w-4 shrink-0 text-slate-400" />
                     <SelectValue
                       placeholder={
-                        isCheckingAvailability
-                          ? 'Verificando disponibilidad...'
-                          : 'Seleccioná'
+                        !isDateTimeEnabled
+                          ? 'Elegí paciente y médico primero'
+                          : isCheckingAvailability
+                            ? 'Verificando disponibilidad...'
+                            : 'Seleccioná'
                       }
                     />
                   </span>
