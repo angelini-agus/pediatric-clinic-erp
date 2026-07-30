@@ -128,8 +128,11 @@ SelectLabel.displayName = SelectPrimitive.Label.displayName;
 
 const SelectItem = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
->(({ className, children, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item> & {
+    /** Optional node rendered to the right of the label (e.g. an "Ocupado" badge). */
+    suffix?: React.ReactNode;
+  }
+>(({ className, children, suffix, ...props }, ref) => (
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
@@ -137,7 +140,8 @@ const SelectItem = React.forwardRef<
       'text-slate-700 outline-none',
       'focus:bg-brand/8 focus:text-brand',
       'data-[state=checked]:font-semibold data-[state=checked]:text-brand',
-      'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      // Keep disabled items visible so the suffix badge is readable
+      'data-[disabled]:pointer-events-none data-[disabled]:opacity-100',
       className,
     )}
     {...props}
@@ -148,9 +152,11 @@ const SelectItem = React.forwardRef<
       </SelectPrimitive.ItemIndicator>
     </span>
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+    {suffix}
   </SelectPrimitive.Item>
 ));
 SelectItem.displayName = SelectPrimitive.Item.displayName;
+
 
 // ── Separator ─────────────────────────────────────────────────────────────────
 

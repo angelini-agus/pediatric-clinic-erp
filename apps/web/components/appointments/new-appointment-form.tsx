@@ -121,6 +121,7 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<NewAppointmentFormValues>({
     resolver: zodResolver(newAppointmentFormSchema),
@@ -134,8 +135,68 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
     },
   });
 
+  // Watch doctor + date to check slot availability reactively
+  const watchedDoctorId = watch('doctorId');
+  const watchedDate = watch('date');
+
   const API_URL =
     process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001/api/v1';
+
+  // ── Doctor availability check ──────────────────────────────────────────────
+  // Fetches upcoming appointments and extracts booked HH:MM slots
+  // for the selected doctor on the selected date.
+  // CANCELED appointments are excluded (they free up the slot).
+  const [bookedTimes, setBookedTimes] = useState<Set<string>>(new Set());
+  const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
+
+  useEffect(() => {
+    if (!watchedDoctorId || !watchedDate) {
+      setBookedTimes(new Set());
+      return;
+    }
+
+    let cancelled = false;
+    const checkAvailability = async () => {
+      setIsCheckingAvailability(true);
+      try {
+        const res = await fetch(`${API_URL}/appointments/upcoming`);
+        if (!res.ok) return;
+
+        const json: unknown = await res.json();
+        if (!Array.isArray(json)) return;
+
+        const selectedDateStr = format(watchedDate, 'yyyy-MM-dd');
+        const taken = new Set<string>();
+
+        for (const appt of json as {
+          doctorId: string;
+          dateTime: string;
+          status: string;
+        }[]) {
+          if (appt.doctorId !== watchedDoctorId) continue;
+          if (appt.status === 'CANCELED') continue;
+
+          const apptDate = new Date(appt.dateTime);
+          if (format(apptDate, 'yyyy-MM-dd') !== selectedDateStr) continue;
+
+          const hh = String(apptDate.getHours()).padStart(2, '0');
+          const mm = String(apptDate.getMinutes()).padStart(2, '0');
+          taken.add(`${hh}:${mm}`);
+        }
+
+        if (!cancelled) setBookedTimes(taken);
+      } catch {
+        // Silently fail — all slots remain selectable
+      } finally {
+        if (!cancelled) setIsCheckingAvailability(false);
+      }
+    };
+
+    void checkAvailability();
+    return () => {
+      cancelled = true;
+    };
+  }, [watchedDoctorId, watchedDate, API_URL]);
 
   // Load patients and doctors in parallel on mount
   useEffect(() => {
@@ -342,18 +403,40 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
                   id="na-time"
                   hasError={!!errors.time}
                   className={!field.value ? '[&>span]:text-slate-400' : ''}
+                  disabled={isCheckingAvailability}
                 >
                   <span className="flex items-center gap-2 min-w-0">
                     <Clock className="h-4 w-4 shrink-0 text-slate-400" />
-                    <SelectValue placeholder="Seleccioná" />
+                    <SelectValue
+                      placeholder={
+                        isCheckingAvailability
+                          ? 'Verificando disponibilidad...'
+                          : 'Seleccioná'
+                      }
+                    />
                   </span>
                 </SelectTrigger>
                 <SelectContent position="popper">
-                  {TIME_SLOTS.map(({ value, label }) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  ))}
+                  {TIME_SLOTS.map(({ value, label }) => {
+                    const isBooked = bookedTimes.has(value);
+                    return (
+                      <SelectItem
+                        key={value}
+                        value={value}
+                        disabled={isBooked}
+                        className={isBooked ? 'text-slate-400' : ''}
+                        suffix={
+                          isBooked ? (
+                            <span className="ml-auto shrink-0 rounded-full bg-rose-50 px-1.5 py-0.5 text-[10px] font-semibold text-rose-400">
+                              Ocupado
+                            </span>
+                          ) : undefined
+                        }
+                      >
+                        {label}
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             )}
