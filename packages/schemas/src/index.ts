@@ -58,5 +58,14 @@ export {
   type PrescriptionCreate,
 } from './prescription.schema.js';
 
+// ClinicSettings
+export {
+  clinicSettingsUpdateSchema,
+  type ClinicSettingsUpdate,
+  clinicSettingsResponseSchema,
+  type ClinicSettingsResponse,
+} from './settings.schema.js';
+
+
 
 
