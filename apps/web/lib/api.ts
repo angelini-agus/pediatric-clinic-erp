@@ -3,6 +3,8 @@ import {
   appointmentStatusSchema,
   medicalRecordCreateSchema,
   prescriptionCreateSchema,
+  clinicSettingsResponseSchema,
+  type ClinicSettingsResponse,
 } from '@pediatric-erp/schemas';
 
 // ── Response shape schemas ────────────────────────────────────────────────────
@@ -334,4 +336,71 @@ export async function getDoctors(): Promise<DoctorOption[]> {
     console.error('[api] Network error fetching doctors:', error);
     return [];
   }
+}
+
+// Re-export for use in client components
+export { clinicSettingsResponseSchema };
+export type { ClinicSettingsResponse };
+
+/**
+ * Fetches the current clinic settings singleton from the NestJS API.
+ * Returns null if not yet configured or on error.
+ * Server-side safe (cache: 'no-store').
+ */
+export async function getClinicSettings(): Promise<ClinicSettingsResponse | null> {
+  try {
+    const res = await fetch(`${API_URL}/settings`, { cache: 'no-store' });
+
+    if (!res.ok) {
+      return null;
+    }
+
+    const json: unknown = await res.json();
+    if (json === null) return null;
+
+    const parsed = clinicSettingsResponseSchema.safeParse(json);
+
+    if (!parsed.success) {
+      console.error('[api] ClinicSettings validation failed:', parsed.error.flatten());
+      return null;
+    }
+
+    return parsed.data;
+  } catch (error) {
+    console.error('[api] Network error fetching clinic settings:', error);
+    return null;
+  }
+}
+
+/**
+ * Patches (upserts) clinic settings. Called from Client Component via browser fetch.
+ * Returns the updated settings or throws on error.
+ */
+export async function updateClinicSettings(
+  data: Partial<{
+    fullName: string;
+    licenseNumber: string;
+    specialty: string;
+    clinicName: string;
+  }>,
+): Promise<ClinicSettingsResponse> {
+  const res = await fetch(`${API_URL}/settings`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Failed to update settings: ${res.status} ${errorText}`);
+  }
+
+  const json: unknown = await res.json();
+  const parsed = clinicSettingsResponseSchema.safeParse(json);
+
+  if (!parsed.success) {
+    throw new Error('Invalid response from settings API');
+  }
+
+  return parsed.data;
 }
