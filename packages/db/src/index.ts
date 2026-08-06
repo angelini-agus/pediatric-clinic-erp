@@ -51,7 +51,7 @@ const prisma: PrismaClient =
     : (globalThis.__prisma ?? (globalThis.__prisma = createPrismaClient()));
 
 export { prisma };
-export type { PrismaClient } from '@prisma/client';
+export type { PrismaClient, ClinicSettings } from '@prisma/client';
 
 // Re-export Prisma namespace for type utilities
 // Usage: Prisma.<Model>GetPayload<{ include: { ... } }>
