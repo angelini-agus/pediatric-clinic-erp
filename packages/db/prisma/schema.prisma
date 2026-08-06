@@ -194,3 +194,19 @@ model AuditLog {
 
   @@map("audit_logs")
 }
+
+model ClinicSettings {
+  id            String    @id @default("singleton")
+  fullName      String    @db.VarChar(200)
+  licenseNumber String    @db.VarChar(50)
+  specialty     String    @db.VarChar(100)
+  clinicName    String    @db.VarChar(200)
+
+  // Standard timestamps (Global Architecture)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  @@map("clinic_settings")
+}
+
