@@ -10,25 +10,21 @@ export const clinicSettingsUpdateSchema = z.object({
   fullName: z
     .string()
     .trim()
-    .min(1, { message: 'Full name is required' })
     .max(200, { message: 'Full name cannot exceed 200 characters' })
     .optional(),
   licenseNumber: z
     .string()
     .trim()
-    .min(1, { message: 'License number is required' })
     .max(50, { message: 'License number cannot exceed 50 characters' })
     .optional(),
   specialty: z
     .string()
     .trim()
-    .min(1, { message: 'Specialty is required' })
     .max(100, { message: 'Specialty cannot exceed 100 characters' })
     .optional(),
   clinicName: z
     .string()
     .trim()
-    .min(1, { message: 'Clinic name is required' })
     .max(200, { message: 'Clinic name cannot exceed 200 characters' })
     .optional(),
 });
