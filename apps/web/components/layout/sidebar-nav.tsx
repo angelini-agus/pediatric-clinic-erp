@@ -16,7 +16,7 @@ const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Pacientes', href: '/patients', icon: Users },
   { name: 'Turnos', href: '/appointments', icon: Calendar },
-  { name: 'Historia Clínica', href: '/medical-records', icon: FileText },
+  { name: 'Historia Clínica', href: '/patients', icon: FileText },
   { name: 'Consultas', href: '/consultations', icon: Stethoscope },
   { name: 'Configuración', href: '/settings', icon: Settings },
 ];
@@ -36,7 +36,7 @@ export function SidebarNav() {
 
         return (
           <Link
-            key={item.href}
+            key={item.name}
             href={item.href}
             className={cn(
               'flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150',

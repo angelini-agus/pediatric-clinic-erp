@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
-import { getClinicSettings } from '@/lib/api';
+
 import { SettingsForm } from '@/components/settings/settings-form';
+import { getClinicSettings } from '@/lib/api';
+import { getAuthToken } from '@/lib/auth';
 
 export const metadata: Metadata = {
   title: 'Configuración | iPediERP',
@@ -9,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function SettingsPage() {
-  const settings = await getClinicSettings();
+  const settings = await getClinicSettings(getAuthToken());
 
   return (
     <div className="space-y-8">

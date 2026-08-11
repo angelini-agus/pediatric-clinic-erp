@@ -66,6 +66,19 @@ export {
   type ClinicSettingsResponse,
 } from './settings.schema.js';
 
+// Auth (JWT)
+export {
+  AUTH_ROLES,
+  authRoleSchema,
+  type AuthRole,
+  loginSchema,
+  type Login,
+  authUserSchema,
+  type AuthUser,
+  loginResponseSchema,
+  type LoginResponse,
+} from './auth.schema.js';
+
 
 
 

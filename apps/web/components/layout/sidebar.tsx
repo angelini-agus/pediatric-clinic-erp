@@ -1,4 +1,5 @@
 import { SidebarNav } from './sidebar-nav';
+import { UserDropdownMenu } from './user-dropdown-menu';
 import { Activity } from 'lucide-react';
 
 export function Sidebar() {
@@ -18,16 +19,9 @@ export function Sidebar() {
       </div>
 
       <div className="px-2 pt-6">
-        <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-white/80 backdrop-blur-md shadow-sm">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-violet-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm">
-            DR
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-xs font-semibold text-slate-900 truncate">Dr. Ricardo Silva</div>
-            <div className="text-[10px] text-slate-500 truncate">Pediatra · Mat. 48102</div>
-          </div>
-        </div>
+        <UserDropdownMenu variant="sidebar" />
       </div>
     </aside>
   );
 }
+

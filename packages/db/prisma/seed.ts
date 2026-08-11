@@ -1,6 +1,13 @@
 import { PrismaClient, UserRole, AppointmentStatus } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
+
+// Default credentials (documented in README):
+//   Email:    admin@admin.com
+//   Password: admin123
+const DEFAULT_PASSWORD = 'admin123';
+const BCRYPT_ROUNDS = 10;
 
 async function main() {
   console.log('🌱 Seeding database...');
@@ -10,11 +17,28 @@ async function main() {
   await prisma.patient.deleteMany({});
   await prisma.user.deleteMany({});
 
-  // 1. Test Doctor
+  // Password is hashed ONCE and reused for every seed user (DRY).
+  const hashedPassword = await bcrypt.hash(DEFAULT_PASSWORD, BCRYPT_ROUNDS);
+
+  // 1. Default Admin (owner) — credentials: admin@admin.com / admin123
+  const admin = await prisma.user.create({
+    data: {
+      email: 'admin@admin.com',
+      password: hashedPassword,
+      fullName: 'Administrador',
+      role: UserRole.SUPER_ADMIN,
+      specialty: null,
+      medicalLicense: null,
+      phone: null,
+    },
+  });
+  console.log(`✅ Created admin: ${admin.email} (${admin.role})`);
+
+  // 2. Test Doctor
   const doctor = await prisma.user.create({
     data: {
       email: 'ricardo.silva@pediatric-erp.com',
-      password: '$2b$10$EpRvmqqWtZe.7e/g694eM.W8D4m64g0p/vT6r062f7k5.7c94m00C', // hashed placeholder
+      password: hashedPassword,
       fullName: 'Dr. Ricardo Silva',
       role: UserRole.DOCTOR,
       specialty: 'Pediatra',

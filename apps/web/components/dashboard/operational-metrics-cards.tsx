@@ -1,8 +1,4 @@
 import {
-  getDashboardAnalytics,
-  type DashboardAnalytics,
-} from '@/lib/api';
-import {
   UserCheck,
   Filter,
   FileWarning,
@@ -11,6 +7,12 @@ import {
   Clock,
   Sparkles,
 } from 'lucide-react';
+
+import {
+  getDashboardAnalytics,
+  type DashboardAnalytics,
+} from '@/lib/api';
+import { getAuthToken } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
 /**
@@ -25,7 +27,9 @@ import { cn } from '@/lib/utils';
  * 4. Ausentismos / Cancelados (Today's canceled appointments count)
  */
 export async function OperationalMetricsCards() {
-  const analytics: DashboardAnalytics | null = await getDashboardAnalytics();
+  const analytics: DashboardAnalytics | null = await getDashboardAnalytics(
+    getAuthToken(),
+  );
 
   const nextAppt = analytics?.nextAppointment ?? null;
   const funnel = analytics?.appointmentFunnel ?? { total: 0, completed: 0, waiting: 0 };

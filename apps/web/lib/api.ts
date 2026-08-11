@@ -1,14 +1,22 @@
-import { z } from 'zod';
 import {
   appointmentStatusSchema,
   medicalRecordCreateSchema,
   prescriptionCreateSchema,
   clinicSettingsResponseSchema,
+  loginResponseSchema,
   type ClinicSettingsResponse,
+  type LoginResponse,
 } from '@pediatric-erp/schemas';
+import { z } from 'zod';
 
 // ── Response shape schemas ────────────────────────────────────────────────────
 // DRY: built with Zod, no manual interfaces.
+
+export const loginInputSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+});
+export type LoginInput = z.infer<typeof loginInputSchema>;
 
 export const patientResponseSchema = z.object({
   id: z.string(),
@@ -85,6 +93,20 @@ export const medicalRecordResponseSchema = z.object({
 
 export type MedicalRecordResponse = z.infer<typeof medicalRecordResponseSchema>;
 
+const patientSummarySchema = z.object({
+  id: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  documentType: z.string().optional(),
+  documentNumber: z.string().optional(),
+});
+
+export const globalMedicalRecordResponseSchema = medicalRecordResponseSchema.extend({
+  patient: patientSummarySchema,
+});
+
+export type GlobalMedicalRecordResponse = z.infer<typeof globalMedicalRecordResponseSchema>;
+
 // Analytics response schemas
 export const nextAppointmentPatientSchema = z.object({
   id: z.string(),
@@ -124,16 +146,83 @@ export { medicalRecordCreateSchema, prescriptionCreateSchema };
 
 // ── Data Fetching ─────────────────────────────────────────────────────────────
 
-const API_URL = process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001/api/v1';
+const rawBaseUrl = process.env['NEXT_PUBLIC_API_URL'] || 'http://localhost:3001';
+const baseUrl = rawBaseUrl.replace(/\/api\/v1\/?$/, '').replace(/\/+$/, '');
+const API_URL = `${baseUrl}/api/v1`;
+
+/**
+ * Name of the browser cookie that stores the JWT access token.
+ * Must match TOKEN_COOKIE_NAME in lib/auth.ts and middleware.ts.
+ */
+export const TOKEN_COOKIE_NAME = 'token';
+
+/**
+ * Builds fetch headers with the optional JWT Bearer token.
+ * Used by server-side fetchers that receive the token from next/headers cookies.
+ */
+function authHeaders(accessToken?: string): Record<string, string> {
+  return accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
+}
+
+/**
+ * Reads the JWT token from browser cookies (client-side only).
+ * Used by client components calling the API directly.
+ */
+function getClientToken(): string | undefined {
+  if (typeof document === 'undefined') return undefined;
+  const match = /(?:^|;\s*)token=([^;]*)/.exec(document.cookie);
+  if (!match?.[1]) return undefined;
+  return decodeURIComponent(match[1]);
+}
+
+/**
+ * Builds the Authorization header from the browser JWT cookie (client-side).
+ * Safe to call in Client Components.
+ */
+export function getClientAuthHeaders(): Record<string, string> {
+  const token = getClientToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+/**
+ * POST /api/v1/auth/login — authenticates and returns the JWT access token.
+ * Client-side safe. The caller stores the token in a cookie (e.g. via cookies-next).
+ */
+export async function login(
+  input: LoginInput,
+): Promise<LoginResponse> {
+  const res = await fetch(`${API_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Login failed: ${res.status} ${errorText}`);
+  }
+
+  const json: unknown = await res.json();
+  const parsed = loginResponseSchema.safeParse(json);
+
+  if (!parsed.success) {
+    throw new Error('Invalid response from auth API');
+  }
+
+  return parsed.data;
+}
 
 /**
  * Fetches dashboard operational analytics metrics from NestJS API.
  * Server-side safe (cache: 'no-store').
  */
-export async function getDashboardAnalytics(): Promise<DashboardAnalytics | null> {
+export async function getDashboardAnalytics(
+  accessToken?: string,
+): Promise<DashboardAnalytics | null> {
   try {
     const res = await fetch(`${API_URL}/analytics/dashboard`, {
       cache: 'no-store',
+      headers: authHeaders(accessToken),
     });
 
     if (!res.ok) {
@@ -160,10 +249,13 @@ export async function getDashboardAnalytics(): Promise<DashboardAnalytics | null
  * Fetches today's active appointments from the NestJS API.
  * Server-side only (App Router).
  */
-export async function getTodaysAppointments(): Promise<AppointmentResponse[]> {
+export async function getTodaysAppointments(
+  accessToken?: string,
+): Promise<AppointmentResponse[]> {
   try {
     const res = await fetch(`${API_URL}/appointments/today`, {
       cache: 'no-store',
+      headers: authHeaders(accessToken),
     });
 
     if (!res.ok) {
@@ -190,10 +282,14 @@ export async function getTodaysAppointments(): Promise<AppointmentResponse[]> {
  * Fetches a single patient by ID.
  * Returns null if not found or on network error.
  */
-export async function getPatient(id: string): Promise<PatientResponse | null> {
+export async function getPatient(
+  id: string,
+  accessToken?: string,
+): Promise<PatientResponse | null> {
   try {
     const res = await fetch(`${API_URL}/patients/${id}`, {
       cache: 'no-store',
+      headers: authHeaders(accessToken),
     });
 
     if (!res.ok) {
@@ -220,10 +316,11 @@ export async function getPatient(id: string): Promise<PatientResponse | null> {
  * Fetches all active patients from the NestJS API.
  * Server-side only (App Router).
  */
-export async function getPatients(): Promise<PatientResponse[]> {
+export async function getPatients(accessToken?: string): Promise<PatientResponse[]> {
   try {
     const res = await fetch(`${API_URL}/patients`, {
       cache: 'no-store',
+      headers: authHeaders(accessToken),
     });
 
     if (!res.ok) {
@@ -252,15 +349,17 @@ export async function getPatients(): Promise<PatientResponse[]> {
  */
 export async function getMedicalRecords(
   patientId: string,
+  accessToken?: string,
 ): Promise<MedicalRecordResponse[]> {
   try {
+    const baseUrl = process.env['NEXT_PUBLIC_API_URL'] || 'http://localhost:3001';
     const res = await fetch(
-      `${API_URL}/patients/${patientId}/medical-records`,
-      { cache: 'no-store' },
+      `${baseUrl}/api/v1/patients/${patientId}/records`,
+      { cache: 'no-store', headers: authHeaders(accessToken) },
     );
 
     if (!res.ok) {
-      console.error(`[api] GET /patients/${patientId}/medical-records failed: ${res.status}`);
+      console.error(`[api] GET /patients/${patientId}/records failed: ${res.status}`);
       return [];
     }
 
@@ -280,13 +379,91 @@ export async function getMedicalRecords(
 }
 
 /**
+ * Fetches all clinical histories globally across all patients.
+ * GET /api/v1/medical-records
+ * Returns empty array on error.
+ */
+export async function getAllMedicalRecords(
+  accessToken?: string,
+): Promise<GlobalMedicalRecordResponse[]> {
+  try {
+    const baseUrl = process.env['NEXT_PUBLIC_API_URL'] || 'http://localhost:3001';
+    const res = await fetch(`${baseUrl}/api/v1/medical-records`, {
+      cache: 'no-store',
+      headers: authHeaders(accessToken),
+    });
+
+    if (!res.ok) {
+      console.error(`[api] GET /medical-records failed: ${res.status}`);
+      return [];
+    }
+
+    const json: unknown = await res.json();
+    const parsed = z.array(globalMedicalRecordResponseSchema).safeParse(json);
+
+    if (!parsed.success) {
+      console.error('[api] Global medical records validation failed:', parsed.error.flatten());
+      return [];
+    }
+
+    return parsed.data;
+  } catch (error) {
+    console.error('[api] Network error fetching global medical records:', error);
+    return [];
+  }
+}
+
+/**
+ * Appends a new immutable clinical evolution entry for a patient.
+ * POST /api/v1/patients/:patientId/records
+ * Client-side safe.
+ */
+export async function createMedicalRecord(
+  patientId: string,
+  data: {
+    diagnosis: string;
+    notes: string;
+    treatment?: string;
+    prescription?: string;
+    doctorId?: string;
+  },
+): Promise<MedicalRecordResponse> {
+  const baseUrl = process.env['NEXT_PUBLIC_API_URL'] || 'http://localhost:3001';
+  const res = await fetch(`${baseUrl}/api/v1/patients/${patientId}/records`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(getClientToken()),
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Failed to create medical record: ${res.status} ${errorText}`);
+  }
+
+  const json: unknown = await res.json();
+  const parsed = medicalRecordResponseSchema.safeParse(json);
+
+  if (!parsed.success) {
+    throw new Error('Invalid response from medical records API');
+  }
+
+  return parsed.data;
+}
+
+/**
  * Fetches all upcoming appointments (dateTime >= now) from the NestJS API.
  * Server-side only (App Router).
  */
-export async function getUpcomingAppointments(): Promise<AppointmentResponse[]> {
+export async function getUpcomingAppointments(
+  accessToken?: string,
+): Promise<AppointmentResponse[]> {
   try {
     const res = await fetch(`${API_URL}/appointments/upcoming`, {
       cache: 'no-store',
+      headers: authHeaders(accessToken),
     });
 
     if (!res.ok) {
@@ -316,7 +493,10 @@ export async function getUpcomingAppointments(): Promise<AppointmentResponse[]> 
  */
 export async function getDoctors(): Promise<DoctorOption[]> {
   try {
-    const res = await fetch(`${API_URL}/doctors`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/doctors`, {
+      cache: 'no-store',
+      headers: authHeaders(getClientToken()),
+    });
 
     if (!res.ok) {
       console.error(`[api] GET /doctors failed: ${res.status}`);
@@ -347,9 +527,14 @@ export type { ClinicSettingsResponse };
  * Returns null if not yet configured or on error.
  * Server-side safe (cache: 'no-store').
  */
-export async function getClinicSettings(): Promise<ClinicSettingsResponse | null> {
+export async function getClinicSettings(
+  accessToken?: string,
+): Promise<ClinicSettingsResponse | null> {
   try {
-    const res = await fetch(`${API_URL}/settings`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/settings`, {
+      cache: 'no-store',
+      headers: authHeaders(accessToken),
+    });
 
     if (!res.ok) {
       return null;
@@ -386,7 +571,10 @@ export async function updateClinicSettings(
 ): Promise<ClinicSettingsResponse> {
   const res = await fetch(`${API_URL}/settings`, {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(getClientToken()),
+    },
     body: JSON.stringify(data),
   });
 

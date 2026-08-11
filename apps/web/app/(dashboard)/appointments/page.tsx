@@ -1,6 +1,8 @@
-import Link from 'next/link';
 import { CalendarDays, Clock, CalendarOff } from 'lucide-react';
-import { getUpcomingAppointments } from '@/lib/api';
+import Link from 'next/link';
+
+import { NewAppointmentDialog } from '@/components/appointments/new-appointment-dialog';
+import { AppointmentStatusSelector } from '@/components/dashboard/appointment-status-selector';
 import {
   Table,
   TableBody,
@@ -9,8 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { AppointmentStatusSelector } from '@/components/dashboard/appointment-status-selector';
-import { NewAppointmentDialog } from '@/components/appointments/new-appointment-dialog';
+import { getUpcomingAppointments } from '@/lib/api';
+import { getAuthToken } from '@/lib/auth';
 
 // ── Disable caching for live data ─────────────────────────────────────────────
 export const dynamic = 'force-dynamic';
@@ -65,7 +67,7 @@ function EmptyState() {
  * in a glassmorphism table with status badges and inline status selector.
  */
 export default async function AgendaPage() {
-  const appointments = await getUpcomingAppointments();
+  const appointments = await getUpcomingAppointments(getAuthToken());
 
   return (
     <div className="space-y-5 animate-fade-in pb-8">

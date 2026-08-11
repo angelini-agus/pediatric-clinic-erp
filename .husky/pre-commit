@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Corriendo lint-staged (ESLint + Prettier)..."
+pnpm lint-staged
+
+echo "✅ Pre-commit checks pasados."

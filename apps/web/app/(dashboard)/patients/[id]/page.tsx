@@ -1,15 +1,18 @@
-import { getPatient, getMedicalRecords, getTodaysAppointments } from '@/lib/api';
-import { PatientProfileCard } from '@/components/patients/patient-profile-card';
-import { NewMedicalRecordForm } from '@/components/patients/new-medical-record-form';
-import { PrescriptionForm } from '@/components/patients/prescription-form';
-import { MedicalRecordsTimeline } from '@/components/patients/medical-records-timeline';
 import { UserX, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+
+import { MedicalRecordsTimeline } from '@/components/patients/medical-records-timeline';
+import { NewMedicalRecordForm } from '@/components/patients/new-medical-record-form';
+import { PatientProfileCard } from '@/components/patients/patient-profile-card';
+import { PrescriptionForm } from '@/components/patients/prescription-form';
+import { getPatient, getMedicalRecords, getTodaysAppointments } from '@/lib/api';
+import { getAuthToken } from '@/lib/auth';
+
 
 // ── Disable aggressive caching for live medical data ─────────────────────────
 export const dynamic = 'force-dynamic';
 
-interface PatientPageProps {
+type PatientPageProps = {
   params: {
     id: string;
   };
@@ -21,7 +24,7 @@ interface PatientPageProps {
  *
  * Fetches:
  *  1. Patient metadata (GET /api/v1/patients/:id)
- *  2. Immutable medical history (GET /api/v1/patients/:id/medical-records)
+ *  2. Immutable medical history (GET /api/v1/patients/:id/records)
  *
  * Layout:
  *  - Left column (col-span-4): Patient Profile Card with personal & clinical details
@@ -31,10 +34,11 @@ export default async function PatientPage({ params }: PatientPageProps) {
   const { id } = params;
 
   // Concurrent server-side fetches
+  const accessToken = getAuthToken();
   const [patient, medicalRecords, appointments] = await Promise.all([
-    getPatient(id),
-    getMedicalRecords(id),
-    getTodaysAppointments(),
+    getPatient(id, accessToken),
+    getMedicalRecords(id, accessToken),
+    getTodaysAppointments(accessToken),
   ]);
 
   // ── Patient Not Found State ────────────────────────────────────────────────

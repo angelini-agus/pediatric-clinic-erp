@@ -24,7 +24,8 @@ export const medicalRecordCreateSchema = z.object({
   doctorId: z
     .string()
     .trim()
-    .min(1, { message: 'Doctor ID is required' }),
+    .min(1, { message: 'Doctor ID is required' })
+    .optional(),
 });
 
 export type MedicalRecordCreate = z.infer<typeof medicalRecordCreateSchema>;

@@ -1,17 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { CalendarIcon, Clock, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { z } from 'zod';
+
+
 import type { PatientResponse, DoctorOption } from '@/lib/api';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+
 import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -19,6 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { getClientAuthHeaders } from '@/lib/api';
+import { cn } from '@/lib/utils';
 
 // ── Time slot generator ───────────────────────────────────────────────────────
 
@@ -73,7 +77,7 @@ type NewAppointmentFormValues = z.infer<typeof newAppointmentFormSchema>;
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
-interface NewAppointmentFormProps {
+type NewAppointmentFormProps = {
   onSuccess: () => void;
 }
 
@@ -163,7 +167,9 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
     const checkAvailability = async () => {
       setIsCheckingAvailability(true);
       try {
-        const res = await fetch(`${API_URL}/appointments/upcoming`);
+        const res = await fetch(`${API_URL}/appointments/upcoming`, {
+          headers: getClientAuthHeaders(),
+        });
         if (!res.ok) return;
 
         const json: unknown = await res.json();
@@ -208,8 +214,8 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
     const load = async () => {
       try {
         const [patientsRes, doctorsRes] = await Promise.all([
-          fetch(`${API_URL}/patients`),
-          fetch(`${API_URL}/doctors`),
+          fetch(`${API_URL}/patients`, { headers: getClientAuthHeaders() }),
+          fetch(`${API_URL}/doctors`, { headers: getClientAuthHeaders() }),
         ]);
         const [patientsJson, doctorsJson]: [unknown, unknown] = await Promise.all([
           patientsRes.json(),
@@ -250,7 +256,10 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
     try {
       const res = await fetch(`${API_URL}/appointments`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...getClientAuthHeaders(),
+        },
         body: JSON.stringify({
           patientId: data.patientId,
           doctorId: data.doctorId,

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { GlobalMedicalRecordsController } from './global-medical-records.controller.js';
 import { MedicalRecordsController } from './medical-records.controller.js';
 import { MedicalRecordsService } from './medical-records.service.js';
 
@@ -9,7 +10,7 @@ import { MedicalRecordsService } from './medical-records.service.js';
  * PrismaService is automatically injected from PrismaModule (@Global).
  */
 @Module({
-  controllers: [MedicalRecordsController],
+  controllers: [MedicalRecordsController, GlobalMedicalRecordsController],
   providers: [MedicalRecordsService],
   exports: [MedicalRecordsService],
 })

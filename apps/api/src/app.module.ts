@@ -1,23 +1,24 @@
-import { APP_PIPE, APP_FILTER } from '@nestjs/core';
-import { ZodValidationPipe } from 'nestjs-zod';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_PIPE, APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
+import { ZodValidationPipe } from 'nestjs-zod';
 
-import { AllExceptionsFilter } from './common/filters/all-exceptions.filter.js';
-
+import { AnalyticsModule } from './analytics/analytics.module.js';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
-import { validateEnv } from './config/env.validation.js';
-import { HealthModule } from './health/health.module.js';
-import { PatientsModule } from './patients/patients.module.js';
 import { AppointmentsModule } from './appointments/appointments.module.js';
+import { AuthModule } from './auth/auth.module.js';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter.js';
+import { JwtAuthGuard } from './common/guards/jwt-auth.guard.js';
+import { validateEnv } from './config/env.validation.js';
+import { DoctorsModule } from './doctors/doctors.module.js';
+import { HealthModule } from './health/health.module.js';
 import { MedicalRecordsModule } from './medical-records/medical-records.module.js';
+import { PatientsModule } from './patients/patients.module.js';
 import { PrescriptionsModule } from './prescriptions/prescriptions.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
-import { DoctorsModule } from './doctors/doctors.module.js';
-import { AnalyticsModule } from './analytics/analytics.module.js';
 import { SettingsModule } from './settings/settings.module.js';
 
 @Module({
@@ -67,6 +68,7 @@ import { SettingsModule } from './settings/settings.module.js';
 
     // ── Feature Modules ──────────────────────────────────────────
     PrismaModule,
+    AuthModule,
     HealthModule,
     PatientsModule,
     AppointmentsModule,
@@ -85,6 +87,9 @@ import { SettingsModule } from './settings/settings.module.js';
     // ── Global Exception Filter (DI-aware) ───────────────────────
     // Registered as APP_FILTER so NestJS injects PinoLogger
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
+    // ── Global JWT Authentication Guard (security by default) ─────
+    // Protects every endpoint; opt-out per-route with @Public().
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
   ],
 })
 export class AppModule {}

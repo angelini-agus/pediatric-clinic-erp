@@ -1,4 +1,3 @@
-import { VersioningType } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import { patchNestJsSwagger } from 'nestjs-zod';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -26,19 +25,14 @@ async function bootstrap(): Promise<void> {
   // ── Logger (nestjs-pino) ─────────────────────────────────────
   app.useLogger(app.get(Logger));
 
-  // ── Global Prefix & URI Versioning (/api/v1) ─────────────────
-  const apiPrefix = 'api';
+  // ── Global Prefix (/api/v1) ──────────────────────────────────
+  const apiPrefix = 'api/v1';
   app.setGlobalPrefix(apiPrefix);
-  app.enableVersioning({
-    type: VersioningType.URI,
-    defaultVersion: '1',
-  });
 
   // ── CORS ─────────────────────────────────────────────────────
-  // Origin configured from environment variables via ConfigService
   const corsOrigin = process.env['CORS_ORIGIN'] ?? 'http://localhost:3000';
   app.enableCors({
-    origin: corsOrigin,
+    origin: [corsOrigin, 'http://localhost:3000', 'http://127.0.0.1:3000'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -68,6 +62,7 @@ async function bootstrap(): Promise<void> {
       .addTag('auth', 'Authentication and authorization')
       .addTag('patients', 'Pediatric patient management')
       .addTag('appointments', 'Medical appointment management')
+      .addTag('medical-records', 'Immutable clinical records')
       .build();
 
     const document = SwaggerModule.createDocument(app, swaggerConfig);
@@ -84,9 +79,8 @@ async function bootstrap(): Promise<void> {
   const port = process.env['PORT'] ?? 3001;
   await app.listen(port, '0.0.0.0');
 
-  console.log(`\n🚀 API running at: http://localhost:${port}/api`);
-  console.log(`📖 Swagger at:     http://localhost:${port}/api/docs\n`);
+  console.log(`\n🚀 API running at: http://localhost:${port}/${apiPrefix}`);
+  console.log(`📖 Swagger at:     http://localhost:${port}/${apiPrefix}/docs\n`);
 }
 
 void bootstrap();
-

@@ -5,7 +5,10 @@ import {
   HealthCheckService,
   MemoryHealthIndicator,
   type HealthCheckResult,
+  type HealthIndicatorResult,
 } from '@nestjs/terminus';
+
+import { Public } from '../common/decorators/public.decorator.js';
 
 /**
  * Health Check Controller
@@ -28,6 +31,7 @@ import {
  * }
  */
 @ApiTags('health')
+@Public()
 @Controller({ path: 'health', version: '1' })
 export class HealthController {
   constructor(
@@ -44,9 +48,11 @@ export class HealthController {
   check(): Promise<HealthCheckResult> {
     return this.health.check([
       // Heap memory: triggers alert if exceeds 250MB
-      async () => this.memory.checkHeap('memory_heap', 250 * 1024 * 1024),
+      async (): Promise<HealthIndicatorResult> =>
+        this.memory.checkHeap('memory_heap', 250 * 1024 * 1024),
       // RSS memory: triggers alert if exceeds 500MB
-      async () => this.memory.checkRSS('memory_rss', 500 * 1024 * 1024),
+      async (): Promise<HealthIndicatorResult> =>
+        this.memory.checkRSS('memory_rss', 500 * 1024 * 1024),
     ]);
   }
 }

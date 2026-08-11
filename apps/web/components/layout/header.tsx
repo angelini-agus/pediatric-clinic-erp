@@ -1,4 +1,6 @@
+import Link from 'next/link';
 import { Bell, Search, Settings, Plus } from 'lucide-react';
+import { UserDropdownMenu } from './user-dropdown-menu';
 
 function getFormattedDate(): string {
   return new Intl.DateTimeFormat('es-AR', {
@@ -62,23 +64,18 @@ export function Header() {
         </button>
 
         {/* Settings button */}
-        <button
-          type="button"
+        <Link
+          href="/settings"
           aria-label="Configuración"
           className="w-9 h-9 rounded-xl bg-white/70 backdrop-blur-sm flex items-center justify-center text-slate-500 hover:bg-white hover:text-slate-700 transition-all duration-150 shrink-0 shadow-sm"
         >
           <Settings className="h-4 w-4" />
-        </button>
+        </Link>
 
-        {/* User profile button */}
-        <button
-          type="button"
-          aria-label="Perfil"
-          className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-400 to-violet-600 flex items-center justify-center text-white font-bold text-xs shadow-sm shrink-0"
-        >
-          RS
-        </button>
+        {/* User profile dropdown button */}
+        <UserDropdownMenu variant="header" />
       </div>
     </header>
   );
 }
+

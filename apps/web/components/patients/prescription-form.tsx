@@ -1,10 +1,12 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { FileText, Loader2, Pill, Printer, PlusCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { FileText, Loader2, Pill, Printer, PlusCircle } from 'lucide-react';
+
+import { getClientAuthHeaders } from '@/lib/api';
 import { cn } from '@/lib/utils';
 
 // ── Validation schema for client-side form ────────────────────────────────────
@@ -30,7 +32,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
-interface PrescriptionFormProps {
+type PrescriptionFormProps = {
   patientId: string;
   doctorId: string;
 }
@@ -68,7 +70,10 @@ export function PrescriptionForm({
         `${API_URL}/patients/${patientId}/prescriptions`,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...getClientAuthHeaders(),
+          },
           body: JSON.stringify({
             doctorId,
             medication: data.medication,
@@ -104,7 +109,7 @@ export function PrescriptionForm({
       {/* Header — Collapsible toggle */}
       <button
         type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={() => { setIsOpen((prev) => !prev); }}
         className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/40 transition-colors"
         aria-expanded={isOpen}
       >

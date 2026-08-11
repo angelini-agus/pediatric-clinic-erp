@@ -1,6 +1,8 @@
-import { getPatients } from '@/lib/api';
-import { PatientsGrid } from '@/components/patients/patients-grid';
 import { Users } from 'lucide-react';
+
+import { PatientsGrid } from '@/components/patients/patients-grid';
+import { getPatients } from '@/lib/api';
+import { getAuthToken } from '@/lib/auth';
 
 // ── Disable caching for live data ──────────────────────────────────────────────
 export const dynamic = 'force-dynamic';
@@ -12,7 +14,7 @@ export const dynamic = 'force-dynamic';
  * Displays the complete list of pediatric patients registered in the clinic.
  */
 export default async function PatientsPage() {
-  const patients = await getPatients();
+  const patients = await getPatients(getAuthToken());
 
   return (
     <div className="space-y-5 animate-fade-in pb-8">

@@ -1,3 +1,12 @@
+import { CalendarDays, Clock, CalendarOff } from 'lucide-react';
+import Link from 'next/link';
+
+import { AppointmentStatusSelector } from './appointment-status-selector';
+
+import type { badgeVariants } from '@/components/ui/badge';
+import type { VariantProps } from 'class-variance-authority';
+
+import { Badge } from '@/components/ui/badge';
 import {
   Table,
   TableBody,
@@ -6,14 +15,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { CalendarDays, Clock, CalendarOff } from 'lucide-react';
 import { getTodaysAppointments, type AppointmentResponse } from '@/lib/api';
-import type { VariantProps } from 'class-variance-authority';
-import type { badgeVariants } from '@/components/ui/badge';
+import { getAuthToken } from '@/lib/auth';
 
-import Link from 'next/link';
-import { AppointmentStatusSelector } from './appointment-status-selector';
+
+
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -92,7 +98,7 @@ function EmptyState() {
  * in a table with dynamic status badges and real patient/doctor data.
  */
 export async function TodaysBookingCard() {
-  const appointments = await getTodaysAppointments();
+  const appointments = await getTodaysAppointments(getAuthToken());
 
   return (
     <div className="relative overflow-hidden bg-white/75 backdrop-blur-xl rounded-2xl shadow-sm p-5">

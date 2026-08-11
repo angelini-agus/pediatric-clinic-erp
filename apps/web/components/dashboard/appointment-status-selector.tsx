@@ -1,11 +1,14 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Badge, type badgeVariants } from '@/components/ui/badge';
 import { ChevronDown, Loader2, Check } from 'lucide-react';
-import type { VariantProps } from 'class-variance-authority';
+import { useRouter } from 'next/navigation';
+import { useState, useRef, useEffect } from 'react';
+
 import type { AppointmentStatus } from '@pediatric-erp/schemas';
+import type { VariantProps } from 'class-variance-authority';
+
+import { Badge, type badgeVariants } from '@/components/ui/badge';
+import { getClientAuthHeaders } from '@/lib/api';
 import { cn } from '@/lib/utils';
 
 type BadgeVariant = VariantProps<typeof badgeVariants>['variant'];
@@ -35,7 +38,7 @@ const STATUS_LABELS: Record<AppointmentStatus, string> = {
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
-interface AppointmentStatusSelectorProps {
+type AppointmentStatusSelectorProps = {
   appointmentId: string;
   currentStatus: AppointmentStatus;
 }
@@ -68,7 +71,7 @@ export function AppointmentStatusSelector({
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => { document.removeEventListener('mousedown', handleClickOutside); };
   }, []);
 
   const API_URL =
@@ -87,7 +90,10 @@ export function AppointmentStatusSelector({
         `${API_URL}/appointments/${appointmentId}/status`,
         {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...getClientAuthHeaders(),
+          },
           body: JSON.stringify({ status: newStatus }),
         },
       );
@@ -114,7 +120,7 @@ export function AppointmentStatusSelector({
       <button
         type="button"
         disabled={isUpdating}
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={() => { setIsOpen((prev) => !prev); }}
         className={cn(
           'inline-flex items-center gap-1.5 focus:outline-none transition-all rounded-full',
           isUpdating && 'opacity-50 pointer-events-none cursor-wait',

@@ -29,10 +29,12 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@prisma/client": "^6.2.1"
+    "@prisma/client": "^6.2.1",
+    "bcryptjs": "^3.0.3"
   },
   "devDependencies": {
     "@pediatric-erp/eslint-config": "workspace:*",
+    "@types/bcryptjs": "^3.0.0",
     "@types/node": "^22.10.7",
     "prisma": "^6.2.1",
     "tsx": "^4.19.2",
@@ -42,4 +44,3 @@
     "seed": "tsx prisma/seed.ts"
   }
 }
-

@@ -24,26 +24,28 @@ import {
 /**
  * MedicalRecordsController — REST endpoints for patient clinical histories.
  *
- * Base path: /api/v1/patients/:patientId/medical-records
+ * Controller path: 'patients' (resolves to /api/v1/patients via URI versioning)
+ * Methods:
+ *  - POST /api/v1/patients/:patientId/records
+ *  - POST /api/v1/patients/:patientId/medical-records
+ *  - GET  /api/v1/patients/:patientId/records
+ *  - GET  /api/v1/patients/:patientId/medical-records
  *
  * LAW 26.529 IMMUTABILITY RESTRICTION:
- * - NO PATCH or DELETE endpoints exist or are allowed.
+ * - NO PATCH, PUT, or DELETE endpoints exist or are allowed.
  * - Clinical evolutions are append-only legal records.
- *
- * Endpoints:
- *  GET  /api/v1/patients/:patientId/medical-records - List clinical history (200)
- *  POST /api/v1/patients/:patientId/medical-records - Append evolution record (201)
  */
 @ApiTags('medical-records')
-@Controller({ path: 'patients/:patientId/medical-records', version: '1' })
+@Controller({ path: 'patients', version: '1' })
 export class MedicalRecordsController {
   constructor(private readonly medicalRecordsService: MedicalRecordsService) {}
 
   /**
+   * GET /api/v1/patients/:patientId/records
    * GET /api/v1/patients/:patientId/medical-records
    * Returns complete clinical history for a patient ordered by creation date descending.
    */
-  @Get()
+  @Get([':patientId/records', ':patientId/medical-records'])
   @ApiOperation({
     summary: 'List patient medical records',
     description:
@@ -64,11 +66,12 @@ export class MedicalRecordsController {
   }
 
   /**
+   * POST /api/v1/patients/:patientId/records
    * POST /api/v1/patients/:patientId/medical-records
    * Appends a new immutable clinical evolution entry to the patient record.
-   * Atomically creates an AuditLog entry in the same transaction.
+   * Atomically creates an AuditLog entry in the same transaction (Law 26.529 compliance).
    */
-  @Post()
+  @Post([':patientId/records', ':patientId/medical-records'])
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: 'Append medical record entry',
