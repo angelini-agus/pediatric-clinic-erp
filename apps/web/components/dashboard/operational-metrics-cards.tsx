@@ -39,10 +39,10 @@ export async function OperationalMetricsCards() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
       {/* ── CARD 1: Próximo Paciente ─────────────────────────────────────── */}
-      <div className="relative overflow-hidden bg-white/60 backdrop-blur-xl rounded-[2rem] border-none shadow-sm p-6 flex flex-col justify-between group transition-all duration-300 hover:bg-white/75 hover:shadow-md">
-        {/* Decorative ambient blobs */}
-        <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-indigo-400/20 blur-2xl pointer-events-none" />
-        <div className="absolute -bottom-8 -left-4 w-24 h-24 rounded-full bg-violet-400/15 blur-2xl pointer-events-none" />
+      <div
+        className="relative overflow-hidden backdrop-blur-xl rounded-[2rem] border-none shadow-sm p-6 flex flex-col justify-between group transition-all duration-300 hover:shadow-md will-change-transform"
+        style={{ background: 'radial-gradient(ellipse at 110% -10%, rgba(99,102,241,0.12) 0%, rgba(255,255,255,0.6) 55%)' }}
+      >
 
         <div className="relative z-10 space-y-3">
           <div className="flex items-center justify-between">
@@ -84,10 +84,10 @@ export async function OperationalMetricsCards() {
       </div>
 
       {/* ── CARD 2: Embudo de Turnos ─────────────────────────────────────── */}
-      <div className="relative overflow-hidden bg-white/60 backdrop-blur-xl rounded-[2rem] border-none shadow-sm p-6 flex flex-col justify-between group transition-all duration-300 hover:bg-white/75 hover:shadow-md">
-        {/* Decorative ambient blobs */}
-        <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-blue-400/20 blur-2xl pointer-events-none" />
-        <div className="absolute -bottom-8 -left-4 w-24 h-24 rounded-full bg-cyan-400/15 blur-2xl pointer-events-none" />
+      <div
+        className="relative overflow-hidden backdrop-blur-xl rounded-[2rem] border-none shadow-sm p-6 flex flex-col justify-between group transition-all duration-300 hover:shadow-md will-change-transform"
+        style={{ background: 'radial-gradient(ellipse at 110% -10%, rgba(59,130,246,0.12) 0%, rgba(255,255,255,0.6) 55%)' }}
+      >
 
         <div className="relative z-10 space-y-3">
           <div className="flex items-center justify-between">
@@ -156,18 +156,17 @@ export async function OperationalMetricsCards() {
       {/* ── CARD 3: Evoluciones Pendientes ───────────────────────────────── */}
       <div
         className={cn(
-          'relative overflow-hidden backdrop-blur-xl rounded-[2rem] border-none shadow-sm p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-md',
+          'relative overflow-hidden backdrop-blur-xl rounded-[2rem] border-none shadow-sm p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-md will-change-transform',
           unsignedRecords > 0
-            ? 'bg-amber-50/50 border border-amber-200/50'
-            : 'bg-white/60 hover:bg-white/75',
+            ? 'border border-amber-200/50'
+            : '',
         )}
+        style={{
+          background: unsignedRecords > 0
+            ? 'radial-gradient(ellipse at 110% -10%, rgba(251,191,36,0.18) 0%, rgba(255,251,235,0.5) 55%)'
+            : 'radial-gradient(ellipse at 110% -10%, rgba(52,211,153,0.12) 0%, rgba(255,255,255,0.6) 55%)',
+        }}
       >
-        {/* Ambient alert background glow if unsignedRecords > 0 */}
-        {unsignedRecords > 0 ? (
-          <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-amber-400/25 blur-2xl pointer-events-none" />
-        ) : (
-          <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-emerald-400/15 blur-2xl pointer-events-none" />
-        )}
 
         <div className="relative z-10 space-y-3">
           <div className="flex items-center justify-between">
@@ -218,10 +217,10 @@ export async function OperationalMetricsCards() {
       </div>
 
       {/* ── CARD 4: Ausentismos / Cancelados ─────────────────────────────── */}
-      <div className="relative overflow-hidden bg-white/60 backdrop-blur-xl rounded-[2rem] border-none shadow-sm p-6 flex flex-col justify-between group transition-all duration-300 hover:bg-white/75 hover:shadow-md">
-        {/* Decorative ambient blobs */}
-        <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-rose-400/20 blur-2xl pointer-events-none" />
-        <div className="absolute -bottom-8 -left-4 w-24 h-24 rounded-full bg-orange-400/15 blur-2xl pointer-events-none" />
+      <div
+        className="relative overflow-hidden backdrop-blur-xl rounded-[2rem] border-none shadow-sm p-6 flex flex-col justify-between group transition-all duration-300 hover:shadow-md will-change-transform"
+        style={{ background: 'radial-gradient(ellipse at 110% -10%, rgba(251,113,133,0.12) 0%, rgba(255,255,255,0.6) 55%)' }}
+      >
 
         <div className="relative z-10 space-y-3">
           <div className="flex items-center justify-between">

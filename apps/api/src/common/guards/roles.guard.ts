@@ -6,9 +6,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import type { FastifyRequest } from 'fastify';
 
 import { ROLES_KEY, type AppRole } from '../decorators/roles.decorator.js';
+
+import type { FastifyRequest } from 'fastify';
+
 
 /**
  * Type representing the JWT payload expected on the request
@@ -41,7 +43,7 @@ type AuthenticatedRequest = FastifyRequest & {
  *
  * Usage:
  * 1. Apply globally in AppModule or specifically per module/controller.
- * 2. Mark endpoints with @Roles('admin', 'doctor').
+ * 2. Mark endpoints with @Roles('ADMIN', 'DOCTOR').
  * 3. If endpoint has no @Roles, guard allows access (public).
  *
  * @example
@@ -51,7 +53,7 @@ type AuthenticatedRequest = FastifyRequest & {
  *
  * // In a controller:
  * @UseGuards(AuthGuard('jwt'), RolesGuard)
- * @Roles('admin')
+ * @Roles('ADMIN')
  * @Get('private')
  * getPrivateData() { ... }
  * ```

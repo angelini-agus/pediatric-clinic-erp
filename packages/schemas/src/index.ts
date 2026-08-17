@@ -73,6 +73,8 @@ export {
   type AuthRole,
   loginSchema,
   type Login,
+  registerSchema,
+  type Register,
   authUserSchema,
   type AuthUser,
   loginResponseSchema,

@@ -1,11 +1,35 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import type { Prisma } from '@pediatric-erp/db';
 
+
+import { AuditService } from '../audit/audit.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+
 import type { CreatePatientDto } from './dto/create-patient.dto.js';
+import type { Prisma } from '@pediatric-erp/db';
 
 /** Full Patient record type (without includes). */
 type Patient = Prisma.PatientGetPayload<Record<string, never>>;
+
+/** Default page size for server-side pagination. */
+const DEFAULT_PAGE_SIZE = 20;
+/** Hard cap on page size (anti-DoS). */
+const MAX_PAGE_SIZE = 100;
+
+/** Options accepted by `findAll` (query filters + pagination). */
+export type FindAllPatientsOptions = {
+  /** Free-text search on firstName, lastName or documentNumber. */
+  query?: string;
+  /** 1-indexed page number. */
+  page?: number;
+  /** Items per page. */
+  pageSize?: number;
+};
+
+/** Paginated patient list payload. */
+export type PatientsPage = {
+  data: Patient[];
+  total: number;
+};
 
 /**
  * PatientsService — business logic for patient management.
@@ -17,19 +41,24 @@ type Patient = Prisma.PatientGetPayload<Record<string, never>>;
  */
 @Injectable()
 export class PatientsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly audit: AuditService,
+  ) {}
 
   /**
-   * Creates a new patient in the database.
+   * Creates a new patient in the database and records an audit event.
+   *
    * @param dto - Validated input data (via Zod + nestjs-zod)
+   * @param actorId - Authenticated user id (req.user.sub)
    * @returns Newly created patient record
    */
-  async create(dto: CreatePatientDto): Promise<Patient> {
-    return this.prisma.client.patient.create({
+  async create(dto: CreatePatientDto, actorId: string): Promise<Patient> {
+    const patient = await this.prisma.client.patient.create({
       data: {
         firstName: dto.firstName,
         lastName: dto.lastName,
-        documentType: dto.documentType ?? 'DNI',
+        documentType: dto.documentType,
         documentNumber: dto.documentNumber,
         dateOfBirth: dto.dateOfBirth,
         biologicalSex: dto.biologicalSex,
@@ -46,18 +75,59 @@ export class PatientsService {
         apgarScore: dto.apgarScore ?? null,
       },
     });
+
+    await this.audit.log({
+      action: 'CREATE_PATIENT',
+      entityName: 'Patient',
+      entityId: patient.id,
+      userId: actorId,
+      patientId: patient.id,
+    });
+
+    return patient;
   }
 
   /**
-   * Returns all active (non-deleted) patients.
+   * Returns a page of active (non-deleted) patients, optionally filtered
+   * by a free-text query across firstName, lastName and documentNumber
+   * (case-insensitive `contains`, served by the
+   * `patients_lastName_firstName_idx` and `patients_documentNumber_idx`
+   * indexes).
    *
    * STRICT RULE: Query MUST include `where: { deletedAt: null }`.
    */
-  async findAll(): Promise<Patient[]> {
-    return this.prisma.client.patient.findMany({
-      where: { deletedAt: null },
-      orderBy: { createdAt: 'desc' },
-    });
+  async findAll(
+    options: FindAllPatientsOptions = {},
+  ): Promise<PatientsPage> {
+    const rawPage = options.page ?? 1;
+    const rawPageSize = options.pageSize ?? DEFAULT_PAGE_SIZE;
+    const page =
+      Number.isFinite(rawPage) && rawPage > 0 ? Math.floor(rawPage) : 1;
+    const pageSize = Number.isFinite(rawPageSize)
+      ? Math.min(MAX_PAGE_SIZE, Math.max(1, Math.floor(rawPageSize)))
+      : DEFAULT_PAGE_SIZE;
+    const query = options.query?.trim();
+
+    const where: Prisma.PatientWhereInput = { deletedAt: null };
+    if (query !== undefined && query.length > 0) {
+      where.OR = [
+        { firstName: { contains: query, mode: 'insensitive' } },
+        { lastName: { contains: query, mode: 'insensitive' } },
+        { documentNumber: { contains: query, mode: 'insensitive' } },
+      ];
+    }
+
+    const [data, total] = await this.prisma.client.$transaction([
+      this.prisma.client.patient.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      this.prisma.client.patient.count({ where }),
+    ]);
+
+    return { data, total };
   }
 
   /**
@@ -80,21 +150,32 @@ export class PatientsService {
   }
 
   /**
-   * Marks a patient as deleted (soft-delete).
+   * Marks a patient as deleted (soft-delete) and records an audit event.
    *
    * STRICT RULE: NEVER use prisma.patient.delete().
    * `deletedAt` is set to current date and time.
    *
    * @param id - Patient CUID ID
+   * @param actorId - Authenticated user id (req.user.sub)
    * @returns Updated record with `deletedAt` set
    * @throws NotFoundException if patient does not exist (Prisma P2025)
    */
-  async softDelete(id: string): Promise<Patient> {
+  async softDelete(id: string, actorId: string): Promise<Patient> {
     try {
-      return await this.prisma.client.patient.update({
+      const patient = await this.prisma.client.patient.update({
         where: { id },
         data: { deletedAt: new Date() },
       });
+
+      await this.audit.log({
+        action: 'SOFT_DELETE_PATIENT',
+        entityName: 'Patient',
+        entityId: id,
+        userId: actorId,
+        patientId: id,
+      });
+
+      return patient;
     } catch (error: unknown) {
       // Prisma P2025: "Record to update not found"
       if (

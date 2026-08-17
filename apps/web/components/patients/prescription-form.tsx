@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { getClientAuthHeaders } from '@/lib/api';
+import { CLIENT_API_URL } from '@/lib/api';
 import { cn } from '@/lib/utils';
 
 // ── Validation schema for client-side form ────────────────────────────────────
@@ -60,19 +60,18 @@ export function PrescriptionForm({
     },
   });
 
-  const API_URL =
-    process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001/api/v1';
-
   const onSubmit = async (data: FormValues) => {
     setApiError(null);
     try {
+      // Va por el proxy interno: el navegador adjunta la cookie httpOnly
+      // automáticamente y el Route Handler inyecta `Authorization: Bearer`.
+      // La respuesta es un PDF (binary blob) que el proxy streamea sin buffering.
       const response = await fetch(
-        `${API_URL}/patients/${patientId}/prescriptions`,
+        `${CLIENT_API_URL}/patients/${patientId}/prescriptions`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            ...getClientAuthHeaders(),
           },
           body: JSON.stringify({
             doctorId,

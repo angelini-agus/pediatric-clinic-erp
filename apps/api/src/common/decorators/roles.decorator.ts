@@ -6,14 +6,24 @@ import { SetMetadata } from '@nestjs/common';
  * RULE: Use Discriminated Union to model complex permissions.
  * When adding a new role, update it in RolesGuard as well.
  *
+ * Values MUST match the `UserRole` enum in `packages/db/prisma/schema.prisma`
+ * character-for-character (UPPER_SNAKE_CASE). The JWT payload signed by
+ * the auth service carries the Prisma enum value directly; if `AppRole`
+ * diverges, `RolesGuard` would silently fail to match (string comparison).
+ *
  * Current roles:
- * - 'super_admin': Total system access (IT, clinic owners)
- * - 'admin': Administrative management (senior secretaries)
- * - 'doctor': Access to medical records and own appointments
- * - 'secretary': Management of appointments and basic patient data
- * - 'patient': Read-only access to own data
+ * - SUPER_ADMIN: Total system access (IT, clinic owners)
+ * - ADMIN:       Administrative management (senior secretaries)
+ * - DOCTOR:      Access to medical records and own appointments
+ * - SECRETARY:   Management of appointments and basic patient data
+ * - PATIENT:     Read-only access to own data
  */
-export type AppRole = 'super_admin' | 'admin' | 'doctor' | 'secretary' | 'patient';
+export type AppRole =
+  | 'SUPER_ADMIN'
+  | 'ADMIN'
+  | 'DOCTOR'
+  | 'SECRETARY'
+  | 'PATIENT';
 
 export const ROLES_KEY = 'roles';
 
@@ -23,7 +33,7 @@ export const ROLES_KEY = 'roles';
  * @example
  * ```typescript
  * @Get('admin-only')
- * @Roles('admin', 'super_admin')
+ * @Roles('ADMIN', 'SUPER_ADMIN')
  * getAdminData() { ... }
  * ```
  */

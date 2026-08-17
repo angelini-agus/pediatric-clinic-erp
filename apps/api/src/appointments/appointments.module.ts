@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 
+import { AuditModule } from '../audit/audit.module.js';
+
 import { AppointmentsController } from './appointments.controller.js';
 import { AppointmentsService } from './appointments.service.js';
 
@@ -9,6 +11,7 @@ import { AppointmentsService } from './appointments.service.js';
  * PrismaService is automatically injected from PrismaModule (@Global).
  */
 @Module({
+  imports: [AuditModule],
   controllers: [AppointmentsController],
   providers: [AppointmentsService],
   exports: [AppointmentsService],

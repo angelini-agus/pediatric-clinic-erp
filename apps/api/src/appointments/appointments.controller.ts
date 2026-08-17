@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Req,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -18,6 +19,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+
+import { Roles } from '../common/decorators/roles.decorator.js';
+
+
 import {
   AppointmentsService,
   type AppointmentWithDetails,
@@ -25,6 +30,10 @@ import {
 } from './appointments.service.js';
 import { CreateAppointmentDto } from './dto/create-appointment.dto.js';
 import { UpdateAppointmentStatusDto } from './dto/update-appointment-status.dto.js';
+
+import type { JwtPayload } from '../auth/jwt.strategy.js';
+import type { FastifyRequest } from 'fastify';
+
 
 /**
  * AppointmentsController — REST endpoints for medical appointment management.
@@ -36,9 +45,16 @@ import { UpdateAppointmentStatusDto } from './dto/update-appointment-status.dto.
  *  POST   /api/v1/appointments             - Schedule new appointment (201)
  *  PATCH  /api/v1/appointments/:id/status   - Update appointment status (200)
  *  DELETE /api/v1/appointments/:id          - Soft-delete appointment (204)
+ *
+ * RBAC:
+ * - Class default: all staff (SECRETARY, ADMIN, DOCTOR, SUPER_ADMIN)
+ *   schedule and operate appointments.
+ * - DELETE override: only ADMIN / SUPER_ADMIN can soft-delete an
+ *   appointment (cancellations are safer done via status=CANCELED).
  */
 @ApiTags('appointments')
 @Controller({ path: 'appointments', version: '1' })
+@Roles('SECRETARY', 'ADMIN', 'DOCTOR', 'SUPER_ADMIN')
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
@@ -91,8 +107,11 @@ export class AppointmentsController {
     description: 'Appointment scheduled successfully.',
     schema: { $ref: '#/components/schemas/CreateAppointmentDto' },
   })
-  create(@Body() dto: CreateAppointmentDto): Promise<AppointmentRecord> {
-    return this.appointmentsService.create(dto);
+  create(
+    @Body() dto: CreateAppointmentDto,
+    @Req() request: FastifyRequest & { user: JwtPayload },
+  ): Promise<AppointmentRecord> {
+    return this.appointmentsService.create(dto, request.user.sub);
   }
 
   /**
@@ -116,8 +135,9 @@ export class AppointmentsController {
   updateStatus(
     @Param('id') id: string,
     @Body() dto: UpdateAppointmentStatusDto,
+    @Req() request: FastifyRequest & { user: JwtPayload },
   ): Promise<AppointmentRecord> {
-    return this.appointmentsService.updateStatus(id, dto);
+    return this.appointmentsService.updateStatus(id, dto, request.user.sub);
   }
 
   /**
@@ -125,6 +145,7 @@ export class AppointmentsController {
    * Soft-delete: sets deletedAt with current date, does NOT physically delete record.
    */
   @Delete(':id')
+  @Roles('ADMIN', 'SUPER_ADMIN')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Delete appointment (soft-delete)',
@@ -139,8 +160,11 @@ export class AppointmentsController {
   @ApiNoContentResponse({
     description: 'Appointment logically deleted (soft-delete).',
   })
-  async softDelete(@Param('id') id: string): Promise<void> {
-    await this.appointmentsService.softDelete(id);
+  async softDelete(
+    @Param('id') id: string,
+    @Req() request: FastifyRequest & { user: JwtPayload },
+  ): Promise<void> {
+    await this.appointmentsService.softDelete(id, request.user.sub);
   }
 }
 

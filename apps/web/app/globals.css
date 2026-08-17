@@ -1,13 +1,12 @@
-@import url('https://api.fontshare.com/v2/css?f[]=roundo@700,600,500,400,300&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap');
+/* Fuentes cargadas vía next/font/google en app/layout.tsx (sin @import
+   bloqueante). Ver `app/layout.tsx` para la configuración. */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --font-roundo: 'Roundo', system-ui, -apple-system, sans-serif;
-  --font-inter: 'Inter', system-ui, sans-serif;
+  --font-jakarta: var(--font-jakarta, system-ui, sans-serif);
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
@@ -25,7 +24,7 @@
   *, *::before, *::after { box-sizing: border-box; }
 
   html {
-    font-family: var(--font-roundo);
+    font-family: var(--font-jakarta), system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -76,5 +75,20 @@
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+}
+
+/* ── Accesibilidad: Movimiento reducido ──────────────────────────────────── */
+/* Respeta la preferencia del SO (Windows "Mostrar animaciones", macOS
+   "Reducir movimiento"). Desactiva todas las transiciones y animaciones
+   para usuarios sensibles al movimiento — cumple WCAG 2.1 SC 2.3.3.       */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

@@ -1,28 +1,27 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   Users,
   Calendar,
-  FileText,
   Stethoscope,
   Settings,
 } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Pacientes', href: '/patients', icon: Users },
   { name: 'Turnos', href: '/appointments', icon: Calendar },
-  { name: 'Historia Clínica', href: '/patients', icon: FileText },
   { name: 'Consultas', href: '/consultations', icon: Stethoscope },
   { name: 'Configuración', href: '/settings', icon: Settings },
 ];
 
 
-export function SidebarNav() {
+export function SidebarNav(): React.JSX.Element {
   const pathname = usePathname();
 
   return (
@@ -32,7 +31,7 @@ export function SidebarNav() {
         const isActive =
           pathname === item.href ||
           (pathname === '/' && item.href === '/dashboard') ||
-          (item.href !== '/dashboard' && pathname?.startsWith(item.href));
+          (item.href !== '/dashboard' && pathname.startsWith(item.href));
 
         return (
           <Link

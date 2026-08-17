@@ -1,5 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+
+import { Roles } from '../common/decorators/roles.decorator.js';
+
 import { AnalyticsService } from './analytics.service.js';
 import { DashboardAnalyticsDto } from './dto/dashboard-analytics.dto.js';
 
@@ -10,9 +13,13 @@ import { DashboardAnalyticsDto } from './dto/dashboard-analytics.dto.js';
  *
  * Endpoints:
  *  GET /api/v1/analytics/dashboard - Real-time dashboard metrics (200)
+ *
+ * RBAC: Operational metrics are part of the daily workflow for every
+ * staff role (reception, medical, administrative).
  */
 @ApiTags('analytics')
 @Controller({ path: 'analytics', version: '1' })
+@Roles('SECRETARY', 'ADMIN', 'DOCTOR', 'SUPER_ADMIN')
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 

@@ -3,8 +3,6 @@ const nextConfig = {
   // Strict mode activa doble rendering en desarrollo para detectar side-effects
   reactStrictMode: true,
 
-  // Habilitar compilador SWC (reemplaza Babel)
-  swcMinify: true,
 
   // Seguridad: headers HTTP en todas las rutas
   async headers() {

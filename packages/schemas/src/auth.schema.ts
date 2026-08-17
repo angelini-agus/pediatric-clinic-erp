@@ -24,6 +24,40 @@ export const loginSchema = z.object({
 export type Login = z.infer<typeof loginSchema>;
 
 /**
+ * POST /api/v1/auth/register request body.
+ *
+ * Reglas:
+ *  - `email`: normalizado (trim + lowercase) antes de persistir.
+ *  - `password`: mínimo 8 caracteres para evitar contraseñas triviales.
+ *    El backend se encarga de hashear con bcrypt antes de guardar.
+ *  - `confirmPassword`: debe coincidir con `password` — se valida con
+ *    `.refine()` para mantener el feedback de error en español.
+ */
+export const registerSchema = z
+  .object({
+    fullName: z
+      .string()
+      .trim()
+      .min(1, 'El nombre completo es obligatorio')
+      .max(200, 'El nombre no puede superar los 200 caracteres'),
+    email: z
+      .string()
+      .email('Email inválido')
+      .max(200)
+      .transform((value) => value.trim().toLowerCase()),
+    password: z
+      .string()
+      .min(8, 'La contraseña debe tener al menos 8 caracteres')
+      .max(200, 'La contraseña no puede superar los 200 caracteres'),
+    confirmPassword: z.string().min(1, 'Confirmá tu contraseña'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Las contraseñas no coinciden',
+    path: ['confirmPassword'],
+  });
+export type Register = z.infer<typeof registerSchema>;
+
+/**
  * Authenticated user returned to the client (never includes the password).
  */
 export const authUserSchema = z.object({

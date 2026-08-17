@@ -1,8 +1,27 @@
-import { Controller, Get, Patch, Body, HttpCode, HttpStatus } from '@nestjs/common';
-import { SettingsService } from './settings.service.js';
-import { UpdateSettingsDto } from './dto/update-settings.dto.js';
+import { Body, Controller, Get, HttpCode, HttpStatus, Patch } from '@nestjs/common';
 
+
+import { Roles } from '../common/decorators/roles.decorator.js';
+
+import { UpdateSettingsDto } from './dto/update-settings.dto.js';
+import { SettingsService } from './settings.service.js';
+
+import type { ClinicSettings } from '@pediatric-erp/db';
+
+/**
+ * SettingsController — REST endpoints for clinic configuration.
+ *
+ * Base path: /api/v1/settings
+ *
+ * Endpoints:
+ *  GET   /api/v1/settings - Get current clinic settings (200)
+ *  PATCH /api/v1/settings - Upsert clinic settings (200)
+ *
+ * RBAC: All staff roles can read and update clinic configuration that
+ * is not clinically sensitive (clinic name, address, phone).
+ */
 @Controller('settings')
+@Roles('SECRETARY', 'ADMIN', 'DOCTOR', 'SUPER_ADMIN')
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 
@@ -11,7 +30,7 @@ export class SettingsController {
    * Returns current clinic settings, or null if not yet configured.
    */
   @Get()
-  async getSettings() {
+  async getSettings(): Promise<ClinicSettings | null> {
     return this.settingsService.getSettings();
   }
 
@@ -21,7 +40,7 @@ export class SettingsController {
    */
   @Patch()
   @HttpCode(HttpStatus.OK)
-  async updateSettings(@Body() dto: UpdateSettingsDto) {
+  async updateSettings(@Body() dto: UpdateSettingsDto): Promise<ClinicSettings> {
     return this.settingsService.upsertSettings(dto);
   }
 }

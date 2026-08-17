@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/table';
 import { getUpcomingAppointments } from '@/lib/api';
 import { getAuthToken } from '@/lib/auth';
+import { formatAge } from '@/lib/patient-utils';
 
 // ── Disable caching for live data ─────────────────────────────────────────────
 export const dynamic = 'force-dynamic';
@@ -32,15 +33,6 @@ function formatDateTime(date: Date): { date: string; time: string } {
       hour12: true,
     }),
   };
-}
-
-function formatAge(dateOfBirth: Date): string {
-  const now = new Date();
-  const months =
-    (now.getFullYear() - dateOfBirth.getFullYear()) * 12 +
-    (now.getMonth() - dateOfBirth.getMonth());
-  if (months < 24) return `${months} m`;
-  return `${Math.floor(months / 12)} años`;
 }
 
 // ── Empty State ───────────────────────────────────────────────────────────────
@@ -104,61 +96,63 @@ export default async function AgendaPage() {
           {appointments.length === 0 ? (
             <EmptyState />
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow className="border-slate-100">
-                  <TableHead className="text-slate-400">Fecha</TableHead>
-                  <TableHead className="w-[90px] text-slate-400">Hora</TableHead>
-                  <TableHead className="text-slate-400">Paciente</TableHead>
-                  <TableHead className="text-slate-400">Tutor Responsable</TableHead>
-                  <TableHead className="text-slate-400">Motivo / Tipo</TableHead>
-                  <TableHead className="text-slate-400">Médico</TableHead>
-                  <TableHead className="text-right text-slate-400">Estado</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {appointments.map((appt) => {
-                  const { date, time } = formatDateTime(appt.dateTime);
-                  const age = formatAge(appt.patient.dateOfBirth);
-                  return (
-                    <TableRow
-                      key={appt.id}
-                      className="border-slate-50 hover:bg-slate-50/80 transition-colors"
-                    >
-                      <TableCell className="text-slate-600 text-xs font-medium capitalize">
-                        {date}
-                      </TableCell>
-                      <TableCell className="font-semibold text-slate-700">
-                        {time}
-                      </TableCell>
-                      <TableCell>
-                        <Link href={`/patients/${appt.patient.id}`} className="group block">
-                          <div className="font-medium text-slate-900 group-hover:underline group-hover:text-brand transition-colors cursor-pointer">
-                            {appt.patient.firstName} {appt.patient.lastName}
-                          </div>
-                          <div className="text-xs text-slate-400">{age}</div>
-                        </Link>
-                      </TableCell>
-                      <TableCell className="text-slate-500 text-xs">
-                        {appt.patient.guardianFullName}
-                      </TableCell>
-                      <TableCell className="text-slate-700 text-xs font-medium">
-                        {appt.type}
-                      </TableCell>
-                      <TableCell className="text-slate-500 text-xs">
-                        Dr. {appt.doctor.fullName}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <AppointmentStatusSelector
-                          appointmentId={appt.id}
-                          currentStatus={appt.status}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+            <div className="overflow-x-auto w-full">
+              <Table data-testid="appointments-table">
+                <TableHeader>
+                  <TableRow className="border-slate-100">
+                    <TableHead className="text-slate-400">Fecha</TableHead>
+                    <TableHead className="w-[90px] text-slate-400">Hora</TableHead>
+                    <TableHead className="text-slate-400">Paciente</TableHead>
+                    <TableHead className="text-slate-400">Tutor Responsable</TableHead>
+                    <TableHead className="text-slate-400">Motivo / Tipo</TableHead>
+                    <TableHead className="text-slate-400">Médico</TableHead>
+                    <TableHead className="text-right text-slate-400">Estado</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {appointments.map((appt) => {
+                    const { date, time } = formatDateTime(appt.dateTime);
+                    const age = formatAge(appt.patient.dateOfBirth);
+                    return (
+                      <TableRow
+                        key={appt.id}
+                        className="border-slate-50 hover:bg-slate-50/80 transition-colors"
+                      >
+                        <TableCell className="text-slate-600 text-xs font-medium capitalize">
+                          {date}
+                        </TableCell>
+                        <TableCell className="font-semibold text-slate-700">
+                          {time}
+                        </TableCell>
+                        <TableCell>
+                          <Link href={`/patients/${appt.patient.id}`} className="group block">
+                            <div className="font-medium text-slate-900 group-hover:underline group-hover:text-brand transition-colors cursor-pointer">
+                              {appt.patient.firstName} {appt.patient.lastName}
+                            </div>
+                            <div className="text-xs text-slate-400">{age}</div>
+                          </Link>
+                        </TableCell>
+                        <TableCell className="text-slate-500 text-xs">
+                          {appt.patient.guardianFullName}
+                        </TableCell>
+                        <TableCell className="text-slate-700 text-xs font-medium">
+                          {appt.type}
+                        </TableCell>
+                        <TableCell className="text-slate-500 text-xs">
+                          Dr. {appt.doctor.fullName}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <AppointmentStatusSelector
+                            appointmentId={appt.id}
+                            currentStatus={appt.status}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </div>
       </div>

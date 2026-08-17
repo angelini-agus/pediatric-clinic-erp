@@ -1,3 +1,5 @@
+import defaultTheme from 'tailwindcss/defaultTheme';
+
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
@@ -87,7 +89,10 @@ const config: Config = {
         '5xl': '2.5rem',
       },
       fontFamily: {
-        sans: ['var(--font-roundo)', 'Roundo', 'var(--font-inter)', 'system-ui', 'sans-serif'],
+        // `--font-bricolage` y `--font-jakarta` provistos por next/font/google
+        // en app/layout.tsx (sin @import bloqueante).
+        display: ['var(--font-bricolage)', ...defaultTheme.fontFamily.sans],
+        sans: ['var(--font-jakarta)', ...defaultTheme.fontFamily.sans],
         mono: ['var(--font-mono)', 'monospace'],
       },
       animation: {
@@ -96,11 +101,14 @@ const config: Config = {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'float-badge': 'floatBadge 4s ease-in-out infinite',
         'float-badge-delay': 'floatBadge 4s 2s ease-in-out infinite',
+        float: 'float 5s ease-in-out infinite',
+        'float-delayed': 'float 5s ease-in-out infinite 2.5s',
       },
       keyframes: {
         fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
         slideUp: { '0%': { transform: 'translateY(8px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
         floatBadge: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-8px)' } },
+        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-12px)' } },
       },
     },
   },

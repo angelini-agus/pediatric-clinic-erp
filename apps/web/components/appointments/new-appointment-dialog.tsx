@@ -36,6 +36,7 @@ export function NewAppointmentDialog() {
       <button
         type="button"
         id="btn-new-appointment"
+        data-testid="btn-new-appointment"
         onClick={open}
         className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:bg-brand-600 active:scale-[0.98]"
       >

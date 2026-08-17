@@ -1,5 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+
+import { Roles } from '../common/decorators/roles.decorator.js';
+
 import { DoctorsService, type DoctorListItem } from './doctors.service.js';
 
 /**
@@ -9,9 +12,13 @@ import { DoctorsService, type DoctorListItem } from './doctors.service.js';
  *
  * Endpoints:
  *  GET /api/v1/doctors - List all active doctors (200)
+ *
+ * RBAC: Doctor lookup is needed to schedule appointments and sign
+ * evolutions, so all staff roles can read this directory.
  */
 @ApiTags('doctors')
 @Controller({ path: 'doctors', version: '1' })
+@Roles('SECRETARY', 'ADMIN', 'DOCTOR', 'SUPER_ADMIN')
 export class DoctorsController {
   constructor(private readonly doctorsService: DoctorsService) {}
 

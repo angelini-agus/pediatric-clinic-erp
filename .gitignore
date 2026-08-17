@@ -8,16 +8,15 @@ dist/
 out/
 build/
 *.tsbuildinfo
+.astro/
 
 # Prisma
 prisma/migrations/
 
 # Environment files
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+!.env.example
 
 # Logs
 *.log
@@ -44,6 +43,12 @@ Thumbs.db
 # Testing
 coverage/
 .nyc_output/
+
+# Playwright E2E (session state + artifacts)
+apps/web/e2e/.auth/
+apps/web/test-results/
+apps/web/playwright-report/
+apps/web/blob-report/
 
 # Docker
 postgres-data/

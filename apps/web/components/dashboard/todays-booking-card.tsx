@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/table';
 import { getTodaysAppointments, type AppointmentResponse } from '@/lib/api';
 import { getAuthToken } from '@/lib/auth';
+import { formatAge, formatGuardianDisplay } from '@/lib/patient-utils';
 
 
 
@@ -53,30 +54,6 @@ function formatTime(date: Date): string {
   });
 }
 
-/**
- * Returns a human-readable age string from a date of birth.
- * e.g. "3 años", "18 meses", "9 meses"
- */
-function formatAge(dateOfBirth: Date): string {
-  const now = new Date();
-  const months =
-    (now.getFullYear() - dateOfBirth.getFullYear()) * 12 +
-    (now.getMonth() - dateOfBirth.getMonth());
-  if (months < 24) return `${months} meses`;
-  const years = Math.floor(months / 12);
-  return `${years} años`;
-}
-
-/**
- * Formats guardian display string.
- * e.g. "Sofía González (Madre)"
- */
-function formatGuardian(appointment: AppointmentResponse): string {
-  const rel =
-    appointment.patient.guardianRelationship.charAt(0).toUpperCase() +
-    appointment.patient.guardianRelationship.slice(1).toLowerCase();
-  return `${appointment.patient.guardianFullName} (${rel})`;
-}
 
 // ── Empty State ───────────────────────────────────────────────────────────────
 
@@ -101,10 +78,10 @@ export async function TodaysBookingCard() {
   const appointments = await getTodaysAppointments(getAuthToken());
 
   return (
-    <div className="relative overflow-hidden bg-white/75 backdrop-blur-xl rounded-2xl shadow-sm p-5">
-      {/* Decorative blobs — indigo/violet palette */}
-      <div className="absolute -top-6 -right-6 w-40 h-40 rounded-full bg-indigo-400/25 blur-2xl" />
-      <div className="absolute -bottom-8 -left-4 w-32 h-32 rounded-full bg-violet-400/20 blur-2xl" />
+    <div
+      className="relative overflow-hidden backdrop-blur-xl rounded-2xl shadow-sm p-5 will-change-transform"
+      style={{ background: 'radial-gradient(ellipse at 105% -5%, rgba(99,102,241,0.14) 0%, rgba(255,255,255,0.75) 50%)' }}
+    >
 
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-4">
@@ -128,7 +105,7 @@ export async function TodaysBookingCard() {
         {appointments.length === 0 ? (
           <EmptyState />
         ) : (
-          <Table>
+          <Table data-testid="todays-bookings-table">
             <TableHeader>
               <TableRow className="border-slate-100">
                 <TableHead className="w-[100px] text-slate-400">Hora</TableHead>
@@ -162,7 +139,7 @@ export async function TodaysBookingCard() {
                     </Link>
                   </TableCell>
                   <TableCell className="text-slate-500 text-xs">
-                    {formatGuardian(appt)}
+                    {formatGuardianDisplay(appt.patient.guardianFullName, appt.patient.guardianRelationship)}
                   </TableCell>
                   <TableCell className="text-slate-700 text-xs font-medium">
                     {appt.type}

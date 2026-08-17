@@ -18,11 +18,14 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+import { Roles } from '../common/decorators/roles.decorator.js';
+
 import { CreatePrescriptionDto } from './dto/create-prescription.dto.js';
 import {
   PrescriptionsService,
   type PrescriptionWithRelations,
 } from './prescriptions.service.js';
+
 
 /**
  * PrescriptionsController — REST endpoints for medical prescriptions & PDF generation.
@@ -31,9 +34,14 @@ import {
  *  POST /api/v1/patients/:patientId/prescriptions  - Issue prescription & stream PDF (201)
  *  GET  /api/v1/patients/:patientId/prescriptions  - List patient's prescriptions (200)
  *  GET  /api/v1/prescriptions/:id/pdf               - Stream PDF for an existing prescription (200)
+ *
+ * RBAC — a prescription is a legal medical act:
+ * - Class default: DOCTOR, ADMIN, SUPER_ADMIN can READ prescriptions.
+ * - POST override: ONLY DOCTOR can ISSUE (sign) a prescription.
  */
 @ApiTags('prescriptions')
 @Controller({ version: '1' })
+@Roles('DOCTOR', 'ADMIN', 'SUPER_ADMIN')
 export class PrescriptionsController {
   constructor(private readonly prescriptionsService: PrescriptionsService) {}
 
@@ -42,6 +50,7 @@ export class PrescriptionsController {
    * Issues a new medical prescription, records audit trail, and streams the generated PDF document.
    */
   @Post('patients/:patientId/prescriptions')
+  @Roles('DOCTOR')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: 'Issue medical prescription (PDF generation)',

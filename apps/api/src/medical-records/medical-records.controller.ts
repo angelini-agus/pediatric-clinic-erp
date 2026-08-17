@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Req,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -15,11 +16,19 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+
+
+import { Roles } from '../common/decorators/roles.decorator.js';
+
 import { CreateMedicalRecordDto } from './dto/create-medical-record.dto.js';
 import {
   MedicalRecordsService,
   type MedicalRecordWithDoctor,
 } from './medical-records.service.js';
+
+
+import type { JwtPayload } from '../auth/jwt.strategy.js';
+import type { FastifyRequest } from 'fastify';
 
 /**
  * MedicalRecordsController — REST endpoints for patient clinical histories.
@@ -34,9 +43,21 @@ import {
  * LAW 26.529 IMMUTABILITY RESTRICTION:
  * - NO PATCH, PUT, or DELETE endpoints exist or are allowed.
  * - Clinical evolutions are append-only legal records.
+ *
+ * SECURITY:
+ * - `doctorId` on create is sourced exclusively from `req.user.sub`
+ *   (JWT subject) — NEVER from the request body — preventing a doctor
+ *   from forging a record signed by another professional.
+ *
+ * RBAC:
+ * - Class default: DOCTOR, ADMIN, SUPER_ADMIN can READ clinical
+ *   evolutions. SECRETARY and PATIENT never see clinical content.
+ * - POST override: ONLY DOCTOR can WRITE (sign) evolutions. An
+ *   ADMIN/SUPER_ADMIN cannot forge a clinical signature.
  */
 @ApiTags('medical-records')
 @Controller({ path: 'patients', version: '1' })
+@Roles('DOCTOR', 'ADMIN', 'SUPER_ADMIN')
 export class MedicalRecordsController {
   constructor(private readonly medicalRecordsService: MedicalRecordsService) {}
 
@@ -70,13 +91,17 @@ export class MedicalRecordsController {
    * POST /api/v1/patients/:patientId/medical-records
    * Appends a new immutable clinical evolution entry to the patient record.
    * Atomically creates an AuditLog entry in the same transaction (Law 26.529 compliance).
+   *
+   * The signed-in user (`req.user.sub`) is the only authority on
+   * `doctorId`; the request body is ignored for that field.
    */
   @Post([':patientId/records', ':patientId/medical-records'])
+  @Roles('DOCTOR')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: 'Append medical record entry',
     description:
-      'Creates a new immutable clinical evolution entry for a patient. Writes an audit log record atomically (Law 26.529 compliance).',
+      'Creates a new immutable clinical evolution entry for a patient. The doctor identity is taken from the authenticated JWT, never from the request body. Writes an audit log record atomically (Law 26.529 compliance).',
   })
   @ApiParam({
     name: 'patientId',
@@ -90,7 +115,9 @@ export class MedicalRecordsController {
   create(
     @Param('patientId') patientId: string,
     @Body() dto: CreateMedicalRecordDto,
+    @Req() request: FastifyRequest & { user: JwtPayload },
   ): Promise<MedicalRecordWithDoctor> {
-    return this.medicalRecordsService.create(patientId, dto);
+    const doctorId = request.user.sub;
+    return this.medicalRecordsService.create(patientId, doctorId, dto);
   }
 }

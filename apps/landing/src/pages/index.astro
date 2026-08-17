@@ -1,0 +1,71 @@
+---
+import { HeroSection } from '../components/HeroSection';
+import { LandingNavbar } from '../components/LandingNavbar';
+import '../styles/global.css';
+
+const SITE_URL = 'https://ipedierp.com.ar';
+const TITLE = 'iPediERP — Cuidando la Salud, Inspirando Vidas';
+const DESCRIPTION =
+  'Atención pediátrica integral con médicos especializados. Accedé al portal para turnos, historial clínico y gestión de salud de tus hijos.';
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{TITLE}</title>
+    <meta name="description" content={DESCRIPTION} />
+    <meta
+      name="keywords"
+      content="clínica pediátrica, pediatra, turno pediátrico, salud infantil, pediatría argentina"
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="author" content="iPediERP" />
+    <meta name="theme-color" content="#ECF3FA" />
+    <link rel="canonical" href={SITE_URL} />
+
+    <!-- OpenGraph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="iPediERP" />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:title" content={TITLE} />
+    <meta property="og:description" content={DESCRIPTION} />
+    <meta property="og:url" content={SITE_URL} />
+    <meta property="og:image" content={`${SITE_URL}/hero-doctor.jpg`} />
+    <meta property="og:image:alt" content="Dra. Martinangelio — Pediatra Jefe de iPediERP" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={TITLE} />
+    <meta name="twitter:description" content={DESCRIPTION} />
+    <meta name="twitter:image" content={`${SITE_URL}/hero-doctor.jpg`} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Fonts: Bricolage Grotesque (display) + Plus Jakarta Sans (sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:wght@400..800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style is:global>
+      :root {
+        --font-bricolage: 'Bricolage Grotesque', system-ui, sans-serif;
+        --font-jakarta: 'Plus Jakarta Sans', system-ui, sans-serif;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
+  </head>
+  <body class="font-sans antialiased">
+    <div class="font-sans h-[100dvh] w-screen overflow-hidden flex flex-col bg-gradient-to-br from-[#ECF3FA] to-[#DFEDFA]">
+      <LandingNavbar client:load />
+      <HeroSection />
+    </div>
+  </body>
+</html>

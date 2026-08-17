@@ -16,6 +16,7 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
+    "@fastify/helmet": "11",
     "@fastify/static": "6",
     "@nestjs/common": "^10.4.15",
     "@nestjs/config": "^3.3.0",

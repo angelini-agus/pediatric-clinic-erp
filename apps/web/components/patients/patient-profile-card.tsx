@@ -1,50 +1,23 @@
-import type { PatientResponse } from '@/lib/api';
 import {
-  User,
-  Phone,
-  Heart,
-  Shield,
   Baby,
-  FileText,
   Droplets,
+  FileText,
+  Heart,
+  Phone,
+  Shield,
+  User,
+  type LucideIcon,
 } from 'lucide-react';
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+import type { PatientResponse } from '@/lib/api';
 
-function formatAge(dateOfBirth: Date): string {
-  const now = new Date();
-  const months =
-    (now.getFullYear() - dateOfBirth.getFullYear()) * 12 +
-    (now.getMonth() - dateOfBirth.getMonth());
-  if (months < 24) return `${months} meses`;
-  return `${Math.floor(months / 12)} años`;
-}
-
-function formatDate(date: Date): string {
-  return date.toLocaleDateString('es-AR', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  });
-}
-
-function getInitials(firstName: string, lastName: string): string {
-  return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
-}
-
-function formatGuardianRelationship(rel: string): string {
-  const map: Record<string, string> = {
-    MOTHER: 'Madre',
-    FATHER: 'Padre',
-    GRANDMOTHER: 'Abuela',
-    GRANDFATHER: 'Abuelo',
-    GUARDIAN: 'Tutor Legal',
-    OTHER: 'Otro',
-  };
-  return map[rel] ?? rel;
-}
-
-import type { LucideIcon } from 'lucide-react';
+import {
+  formatAge,
+  formatBiologicalSex,
+  formatGuardianRelationship,
+  getInitials,
+  formatDate,
+} from '@/lib/patient-utils';
 
 // ── Data Row ──────────────────────────────────────────────────────────────────
 
@@ -56,8 +29,10 @@ function DataRow({
   icon: LucideIcon;
   label: string;
   value: string | null | undefined;
-}) {
-  if (!value) return null;
+}): React.JSX.Element | null {
+  if (!value) {
+    return null;
+  }
   return (
     <div className="flex items-start gap-2.5 py-2 border-b border-slate-100 last:border-0">
       <div className="w-6 h-6 rounded-lg bg-brand/10 flex items-center justify-center shrink-0 mt-0.5">
@@ -73,14 +48,14 @@ function DataRow({
 
 // ── Main Component ────────────────────────────────────────────────────────────
 
-interface PatientProfileCardProps {
+type PatientProfileCardProps = {
   patient: PatientResponse;
 }
 
-export function PatientProfileCard({ patient }: PatientProfileCardProps) {
+export function PatientProfileCard({ patient }: PatientProfileCardProps): React.JSX.Element {
   const age = formatAge(patient.dateOfBirth);
   const initials = getInitials(patient.firstName, patient.lastName);
-  const sexLabel = patient.biologicalSex === 'FEMALE' ? 'Femenino' : 'Masculino';
+  const sexLabel = formatBiologicalSex(patient.biologicalSex);
   const guardianRel = formatGuardianRelationship(patient.guardianRelationship);
 
   return (
@@ -115,7 +90,7 @@ export function PatientProfileCard({ patient }: PatientProfileCardProps) {
           <DataRow
             icon={Baby}
             label="Semanas Gestacionales"
-            value={`${patient.gestationalWeeks} semanas`}
+            value={`${String(patient.gestationalWeeks)} semanas`}
           />
         )}
         {patient.birthWeightGrams && (

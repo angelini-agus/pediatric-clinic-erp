@@ -6,6 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
+
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 type ErrorResponse = {
@@ -16,6 +17,58 @@ type ErrorResponse = {
   readonly message: string | string[];
   readonly error?: string;
 };
+
+/**
+ * Detects whether an unknown exception is a Prisma `PrismaClientKnownRequestError`.
+ *
+ * Guards against `instanceof` failing across duplicated Prisma client
+ * copies (pnpm workspaces), so identification is done structurally:
+ * the constructor name plus the presence of a Prisma error code
+ * (e.g. `P2002`, `P2025`).
+ */
+function getPrismaErrorCode(exception: unknown): string | undefined {
+  if (typeof exception !== 'object' || exception === null) {
+    return undefined;
+  }
+  const candidate = exception as {
+    code?: unknown;
+    constructor?: { name?: string };
+  };
+  if (candidate.constructor?.name !== 'PrismaClientKnownRequestError') {
+    return undefined;
+  }
+  return typeof candidate.code === 'string' ? candidate.code : undefined;
+}
+
+/**
+ * Maps a Prisma error code to an HTTP status, or 500 for unhandled codes.
+ */
+function mapPrismaCodeToStatus(code: string): HttpStatus {
+  switch (code) {
+    case 'P2002':
+      return HttpStatus.CONFLICT;
+    case 'P2025':
+      return HttpStatus.NOT_FOUND;
+    default:
+      return HttpStatus.INTERNAL_SERVER_ERROR;
+  }
+}
+
+/**
+ * Safe, DB-agnostic message per Prisma error code — NEVER includes
+ * `meta` (target fields, unique constraints, record ids, model names)
+ * or any other database detail.
+ */
+function mapPrismaCodeToMessage(code: string): string {
+  switch (code) {
+    case 'P2002':
+      return 'Resource already exists (unique constraint violation)';
+    case 'P2025':
+      return 'Resource not found';
+    default:
+      return 'Internal server error';
+  }
+}
 
 /**
  * Global Exception Filter
@@ -48,14 +101,22 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const reply = ctx.getResponse<FastifyReply>();
     const request = ctx.getRequest<FastifyRequest>();
 
+    const prismaCode = getPrismaErrorCode(exception);
+    const isPrismaError = prismaCode !== undefined;
+
     const isHttpException = exception instanceof HttpException;
-    const statusCode = isHttpException
-      ? exception.getStatus()
-      : HttpStatus.INTERNAL_SERVER_ERROR;
+    const statusCode = prismaCode
+      ? mapPrismaCodeToStatus(prismaCode)
+      : isHttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
 
     const httpResponse = isHttpException ? exception.getResponse() : null;
 
-    const message: string | string[] = (() => {
+    const message: string | string[] = ((): string | string[] => {
+      if (isPrismaError) {
+        return mapPrismaCodeToMessage(prismaCode);
+      }
       if (
         httpResponse !== null &&
         typeof httpResponse === 'object' &&
@@ -69,7 +130,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       return 'Internal server error';
     })();
 
-    const errorName: string | undefined = (() => {
+    const errorName: string | undefined = ((): string | undefined => {
       if (
         httpResponse !== null &&
         typeof httpResponse === 'object' &&
