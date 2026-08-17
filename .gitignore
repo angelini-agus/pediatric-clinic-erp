@@ -40,6 +40,11 @@ Thumbs.db
 # Turborepo cache
 .turbo/
 
+# Agent skills
+.agents/
+.superpowers/
+skills-lock.json
+
 # Testing
 coverage/
 .nyc_output/
