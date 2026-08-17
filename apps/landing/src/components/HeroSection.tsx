@@ -159,7 +159,7 @@ export function HeroSection(): React.JSX.Element {
               alt="Dra. Martinangelio — Pediatra Jefe"
               width={900}
               height={1100}
-              fetchPriority="high"
+              {...({ fetchpriority: 'high' } as React.ImgHTMLAttributes<HTMLImageElement>)}
               className="object-contain object-bottom drop-shadow-xl lg:object-cover lg:object-bottom"
             />
           </div>
