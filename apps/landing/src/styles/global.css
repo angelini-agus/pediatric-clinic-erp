@@ -1,3 +1,197 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Tipografía display por nivel semántico ────────────────────────
+   Cualquier h1/h2/h3 usa Bricolage Grotesque por defecto, aunque la
+   sección no declare font-display explícitamente. Sin esto, secciones
+   como mission-section.tsx heredan la sans y rompen la consistencia
+   del hero. Las secciones que ya aplican tracking-tight/leading-tight
+   siguen ganando por especificidad normal. */
+@layer base {
+  h1, h2, h3 {
+    font-family: var(--font-bricolage), system-ui, sans-serif;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+}
+
+@layer utilities {
+  .tracking-display { letter-spacing: -0.02em; }
+  .tracking-display-tight { letter-spacing: -0.03em; }
+  .leading-display { line-height: 1.05; }
+  .leading-display-snug { line-height: 1.15; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Motion system — iPediERP landing
+   • Load-in (above the fold): CSS puro, staggered con animation-delay
+   • Scroll reveal: IntersectionObserver (index.astro) + clase .is-visible
+   • Solo anima transform / opacity / translate / scale (GPU)
+   • prefers-reduced-motion → todo desactivado
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+  --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-out-cubic: cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* ── Load-in (entrada al cargar la página, sin JS) ── */
+.load-rise {
+  animation: rise-in 0.8s var(--ease-out-quint) both;
+}
+.load-fade {
+  animation: fade-in 0.9s var(--ease-out-quint) both;
+}
+.load-drop {
+  animation: drop-in 0.6s var(--ease-out-quint) both;
+}
+.load-float-delayed {
+  animation:
+    fade-in 0.9s var(--ease-out-quint) 0.45s both,
+    floaty 5s ease-in-out 2.5s infinite;
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(26px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade-in {
+  from { opacity: 0; transform: scale(1.03); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes drop-in {
+  from { opacity: 0; transform: translateY(-16px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ── Scroll reveal (progressive enhancement: solo si hay JS) ── */
+.js .reveal,
+.js .reveal-float {
+  opacity: 0;
+  translate: var(--reveal-x, 0px) var(--reveal-y, 28px);
+}
+.js .reveal-left { --reveal-x: -32px; --reveal-y: 0px; }
+.js .reveal-right { --reveal-x: 32px; --reveal-y: 0px; }
+.js .reveal-scale { --reveal-y: 20px; scale: 0.95; }
+
+.js .reveal.is-visible {
+  opacity: 1;
+  translate: 0 0;
+  animation: reveal-up 0.7s var(--ease-out-quint) backwards;
+}
+.js .reveal-scale.is-visible {
+  scale: 1;
+  animation:
+    reveal-up 0.7s var(--ease-out-quint) backwards,
+    scale-in 0.7s var(--ease-out-quint) backwards;
+}
+.js .reveal-float.is-visible {
+  opacity: 1;
+  translate: 0 0;
+  animation:
+    reveal-up 0.7s var(--ease-out-quint) backwards,
+    floaty 5s ease-in-out 2.5s infinite;
+}
+
+/* Línea del timeline que crece desde la izquierda */
+.js .reveal-x {
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.js .reveal-x.is-visible {
+  opacity: 1;
+  transform: scaleX(1);
+  animation: grow-x 1s var(--ease-out-quint) both;
+}
+
+@keyframes reveal-up {
+  from { opacity: 0; translate: var(--reveal-x, 0px) var(--reveal-y, 28px); }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes scale-in {
+  from { scale: 0.95; }
+  to { scale: 1; }
+}
+@keyframes grow-x {
+  from { opacity: 0; transform: scaleX(0); }
+  to { opacity: 1; transform: scaleX(1); }
+}
+
+/* ── Float suave para badges flotantes ── */
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* ── Micro-interacciones ── */
+
+/* Shine sweep en CTAs (barrido de luz al hover) */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+  transform: translateX(-130%);
+  transition: transform 0.7s var(--ease-out-quint);
+  pointer-events: none;
+}
+.btn-shine:hover::after {
+  transform: translateX(130%);
+}
+
+/* Anillo pulsante en el punto verde de "Turnos libres hoy" */
+.ping-dot {
+  position: relative;
+}
+.ping-dot::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 9999px;
+  background: rgba(34, 197, 94, 0.5);
+  animation: ping-soft 2.2s var(--ease-out-cubic) infinite;
+}
+@keyframes ping-soft {
+  0% { transform: scale(1); opacity: 0.9; }
+  75%, 100% { transform: scale(2.8); opacity: 0; }
+}
+
+/* ── Accesibilidad: respetar prefers-reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .load-rise,
+  .load-fade,
+  .load-drop,
+  .load-float-delayed {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .js .reveal,
+  .js .reveal-left,
+  .js .reveal-right,
+  .js .reveal-scale,
+  .js .reveal-x,
+  .js .reveal-float {
+    opacity: 1 !important;
+    translate: none !important;
+    scale: none !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  .btn-shine::after,
+  .ping-dot::before {
+    display: none;
+  }
+  .animate-float,
+  .animate-float-delayed,
+  .animate-ping,
+  .animate-pulse,
+  .animate-bounce {
+    animation: none !important;
+  }
+}

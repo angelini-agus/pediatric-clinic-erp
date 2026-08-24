@@ -42,7 +42,7 @@ export function MissionSection(): React.JSX.Element {
         <a
           href="#nosotros"
           id="mission-about-us-cta"
-          className="inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/8 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:border-white/30 hover:bg-white/15 hover:shadow-lg active:scale-[0.97]"
+          className="inline-flex items-center gap-3 rounded-xl border border-white/15 bg-white/8 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:border-white/30 hover:bg-white/15 hover:shadow-lg active:scale-[0.97]"
         >
           Sobre Nosotros
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

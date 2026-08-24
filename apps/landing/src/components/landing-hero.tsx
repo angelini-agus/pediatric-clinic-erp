@@ -94,7 +94,7 @@ export function LandingHero(): React.JSX.Element {
             <a
               href="#agendar"
               id="hero-cta-reserve"
-              className="inline-flex items-center gap-2 rounded-full bg-brand px-8 py-3.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-brand-600 hover:shadow-lg hover:shadow-brand/25 active:scale-[0.97]"
+              className="inline-flex items-center gap-2 rounded-xl bg-brand px-8 py-3.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-brand-600 hover:shadow-lg hover:shadow-brand/25 active:scale-[0.97]"
             >
               Reservar Cita
             </a>

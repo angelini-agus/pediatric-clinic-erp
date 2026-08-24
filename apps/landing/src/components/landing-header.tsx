@@ -53,7 +53,7 @@ export function LandingHeader(): React.JSX.Element {
         <a
           href="#contacto"
           id="header-contact-cta"
-          className="flex-shrink-0 rounded-full bg-brand px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-600 hover:shadow-md active:scale-[0.97]"
+          className="flex-shrink-0 rounded-xl bg-brand px-5 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-600 hover:shadow-md active:scale-[0.97]"
         >
           Contáctanos
         </a>

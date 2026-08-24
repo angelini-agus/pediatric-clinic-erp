@@ -1,12 +1,19 @@
 ---
+import { AboutDoctorSection } from '../components/AboutDoctorSection';
+import { ContactoSection } from '../components/ContactoSection';
+import { FaqSection } from '../components/FaqSection';
 import { HeroSection } from '../components/HeroSection';
+import { JourneySection } from '../components/JourneySection';
+import { LandingFooter } from '../components/LandingFooter';
 import { LandingNavbar } from '../components/LandingNavbar';
+import { TestimonialsSection } from '../components/TestimonialsSection';
+import { TurnosSection } from '../components/TurnosSection';
 import '../styles/global.css';
 
 const SITE_URL = 'https://ipedierp.com.ar';
-const TITLE = 'iPediERP — Cuidando la Salud, Inspirando Vidas';
+const TITLE = 'iPediERP — Dra. Martinangelio | Pediatra en Pueblo Esther';
 const DESCRIPTION =
-  'Atención pediátrica integral con médicos especializados. Accedé al portal para turnos, historial clínico y gestión de salud de tus hijos.';
+  'Consultorio pediátrico de la Dra. Martinangelio en Pueblo Esther. Jefa del Servicio de Pediatría del Hospital Eva Perón. Atención personalizada y seguimiento integral.';
 ---
 
 <!doctype html>
@@ -22,7 +29,7 @@ const DESCRIPTION =
     />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="author" content="iPediERP" />
-    <meta name="theme-color" content="#ECF3FA" />
+    <meta name="theme-color" content="#EAF6F0" />
     <link rel="canonical" href={SITE_URL} />
 
     <!-- OpenGraph -->
@@ -62,10 +69,75 @@ const DESCRIPTION =
       }
     </style>
   </head>
-  <body class="font-sans antialiased">
-    <div class="font-sans h-[100dvh] w-screen overflow-hidden flex flex-col bg-gradient-to-br from-[#ECF3FA] to-[#DFEDFA]">
+  <body class="font-sans antialiased bg-paper text-ink-700">
+    <!--
+      Hero wrapper: fondo menta #EAF6F0, posición relativa para el wave superpuesto.
+      min-h-[100dvh] asegura altura mínima de viewport sin depender del navbar
+      (que ahora es fixed y no ocupa espacio en el flujo).
+    -->
+    <!--
+      overflow:visible permite que la foto de la Dra. (z-30 en HeroSection)
+      se extienda hacia abajo del corte recto, atravesando la línea entre
+      el fondo menta y el fondo oscuro de AboutDoctorSection.
+      h-[100dvh]: el hero ocupa exactamente un viewport, nunca más.
+    -->
+    <div class="font-sans h-[100dvh] w-full flex flex-col relative" style="background-color: #EAF6F0; overflow: visible;">
       <LandingNavbar client:load />
       <HeroSection />
     </div>
+
+    <AboutDoctorSection />
+
+    <!--
+      Wave divider: transición del bloque oscuro (#16192a) de vuelta a menta (#EAF6F0).
+      El wave va en el borde inferior de AboutDoctorSection.
+      Solo 2 waves en toda la página: este y el de arriba — no más.
+    -->
+    <div style="background-color: #16192a; line-height: 0;">
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 1440 56"
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+        style="display:block; width:100%; height:56px;"
+      >
+        <path
+          d="M0,28 C240,56 480,56 720,28 C960,0 1200,0 1440,28 L1440,56 L0,56 Z"
+          fill="#EAF6F0"
+        />
+      </svg>
+    </div>
+
+    <JourneySection />
+    <FaqSection />
+    <TestimonialsSection />
+    <TurnosSection />
+    <ContactoSection />
+    <LandingFooter />
+    <script is:inline>
+      (function () {
+        document.documentElement.classList.add('js');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var els = document.querySelectorAll(
+          '.reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-x, .reveal-float'
+        );
+        if (!('IntersectionObserver' in window)) {
+          for (var i = 0; i < els.length; i++) els[i].classList.add('is-visible');
+          return;
+        }
+        var io = new IntersectionObserver(
+          function (entries) {
+            for (var i = 0; i < entries.length; i++) {
+              if (entries[i].isIntersecting) {
+                entries[i].target.classList.add('is-visible');
+                io.unobserve(entries[i].target);
+              }
+            }
+          },
+          { threshold: 0.15, rootMargin: '0px 0px -8% 0px' }
+        );
+        for (var i = 0; i < els.length; i++) io.observe(els[i]);
+      })();
+    </script>
   </body>
 </html>
