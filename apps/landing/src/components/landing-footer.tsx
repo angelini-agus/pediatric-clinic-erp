@@ -140,8 +140,7 @@ export function LandingFooter(): React.JSX.Element {
             derechos reservados.
           </p>
           <div className="flex items-center gap-5">
-            {/* TODO (Agus): reemplazar [MP] por el número de matrícula real */}
-            <p>MP [MP] · Pueblo Esther, Santa Fe</p>
+            <p>MP {CLINIC_INFO.medicalLicense} · Pueblo Esther, Santa Fe</p>
             <a
               href="#top"
               className="inline-flex items-center gap-1.5 transition-colors hover:text-white"

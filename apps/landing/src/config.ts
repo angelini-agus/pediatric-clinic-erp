@@ -19,6 +19,8 @@ export const CLINIC_INFO = {
   descriptor: 'Consultorios de Pediatría Integral',
   doctor: 'Dra. Martinangelio',
   doctorFullName: 'Dra. Patricia Martinangelio',
+  // Matrícula profesional de la provincia de Santa Fe
+  medicalLicense: '19693',
   // Año de graduación como Médica Pediátrica (para derivar años de trayectoria).
   pediatricSince: 2014,
   title: 'Pediatra',
