@@ -65,7 +65,7 @@ apps/
   api/       NestJS: auth (JWT), pacientes, turnos, historia clínica,
              prescripciones (PDF), analytics, settings, auditoría.
   web/       Next.js: dashboard del personal + BFF (/api/auth/*, /api/proxy/*).
-  landing/   Astro: sitio público SEO-first (Consultorio Martinangelio).
+  landing/   Astro: sitio público SEO-first (Miradas — Consultorios de Pediatría Integral).
 packages/
   db/        Prisma schema + migraciones + seed.
   schemas/   Zod: env, auth, patient, appointment, medical-record, etc.

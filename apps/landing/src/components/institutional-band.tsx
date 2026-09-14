@@ -9,7 +9,9 @@
 
 import { Hospital } from 'lucide-react';
 
-const INSTITUTIONS = ['Hospital Eva Perón', '[Institución 2]', '[Institución 3]'];
+import { CLINIC_INFO } from '../config';
+
+const INSTITUTIONS = ['Hospital Eva Perón', 'Sanatorio de Niños', 'Grupo Oroño'];
 
 /* Silueta de la banda — top recto (y=0) con esquinas r=42; el borde
    inferior cierra a y=128 en la derecha y cae a y=128+drop en la
@@ -45,7 +47,7 @@ function BandShape({ width, drop, className }: BandShapeProps): React.JSX.Elemen
 export function InstitutionalBand(): React.JSX.Element {
   return (
     <section
-      aria-label="Instituciones en las que trabaja la Dra. Martinangelio"
+      aria-label={`Instituciones en las que trabaja la ${CLINIC_INFO.doctorFullName}`}
       className="relative overflow-hidden py-10 lg:py-12"
     >
       <div className="mx-auto max-w-[1400px] px-6">
@@ -58,7 +60,9 @@ export function InstitutionalBand(): React.JSX.Element {
           />
 
           <div className="relative z-10">
-            <h3 className="heading-h3 text-[#241D15]">Presente en instituciones de referencia</h3>
+            <h3 className="heading-h3 text-[#241D15]">
+              Trayectoria en instituciones de referencia
+            </h3>
 
             <ul className="mt-5 flex flex-wrap items-center justify-center gap-x-10 gap-y-3">
               {INSTITUTIONS.map((institution) => (

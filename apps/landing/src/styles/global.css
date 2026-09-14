@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ── Design tokens ──────────────────────────────────────────────────
-   Sistema de diseño "Consultorio Martinangelio".
+   Sistema de diseño "Miradas — Consultorios de Pediatría Integral".
    Fuentes: Fraunces (heading serif) + Nunito Sans (body) + Pacifico (script),
    importadas en index.astro. */
 :root {
@@ -106,7 +106,7 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   Motion system — iPediERP landing
+   Motion system — Miradas landing
    • Load-in (above the fold): CSS puro, staggered con animation-delay
    • Scroll reveal: IntersectionObserver (index.astro) + clase .is-visible
    • Solo anima transform / opacity / translate / scale (GPU)

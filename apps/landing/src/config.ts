@@ -15,7 +15,12 @@ function whatsappLink(message: string): string {
 export const WHATSAPP_LINK = whatsappLink('Hola, quiero hacer una consulta.');
 
 export const CLINIC_INFO = {
+  brand: 'Miradas',
+  descriptor: 'Consultorios de Pediatría Integral',
   doctor: 'Dra. Martinangelio',
+  doctorFullName: 'Dra. Patricia Martinangelio',
+  // Año de graduación como Médica Pediátrica (para derivar años de trayectoria).
+  pediatricSince: 2014,
   title: 'Pediatra',
   location: 'Pueblo Esther, Santa Fe',
   // TODO (Agus): reemplazar [DIRECCIÓN] por la dirección real del consultorio

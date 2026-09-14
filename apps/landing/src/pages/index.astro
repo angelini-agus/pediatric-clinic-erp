@@ -10,20 +10,22 @@ import { LandingNavbar } from '../components/landing-navbar';
 import { TestimonialsSection } from '../components/testimonials-section';
 import { TurnosSection } from '../components/turnos-section';
 import { WhatsAppFloat } from '../components/whatsapp-float';
+import { CLINIC_INFO } from '../config';
 import '../styles/global.css';
 
 const SITE_URL = 'https://ipedierp.com.ar';
-const TITLE = 'Dra. Martinangelio — Pediatra particular en Pueblo Esther';
+const TITLE = `${CLINIC_INFO.brand} — ${CLINIC_INFO.descriptor} | ${CLINIC_INFO.doctorFullName}, Pediatra en Pueblo Esther`;
 const DESCRIPTION =
-  'Pediatra en Pueblo Esther. La misma médica de la preconcepción a la adolescencia. Jefa de Pediatría del Hospital Eva Perón. Sacá turno online.';
+  'Pediatra en Pueblo Esther. La misma médica de la preconcepción a la adolescencia. Recibida en 2014, con experiencia en guardia de urgencias y recepción de recién nacidos. Sacá turno online.';
 
 // ── Datos estructurados (schema.org/Physician) ──────────────────────
-// Los placeholders [DIRECCIÓN] / [NÚMERO] se reemplazan cuando Agus
-// confirme los datos reales (mismos placeholders que src/config.ts).
+// El placeholder [DIRECCIÓN] se reemplaza cuando Agus confirme la
+// dirección real (mismo placeholder que src/config.ts).
 const PHYSICIAN_JSON_LD = {
   '@context': 'https://schema.org',
   '@type': 'Physician',
-  name: 'Dra. Martinangelio — Consultorio Pediátrico',
+  name: `${CLINIC_INFO.brand} — ${CLINIC_INFO.descriptor}`,
+  alternateName: `${CLINIC_INFO.doctorFullName} — Pediatra en Pueblo Esther`,
   description: DESCRIPTION,
   url: SITE_URL,
   image: `${SITE_URL}/hero-doctor.jpg`,
@@ -36,8 +38,7 @@ const PHYSICIAN_JSON_LD = {
     addressCountry: 'AR',
   },
   areaServed: { '@type': 'City', name: 'Pueblo Esther' },
-  // TODO (Agus): reemplazar [NÚMERO] por el WhatsApp real (formato +549...)
-  telephone: '[NÚMERO]',
+  telephone: '+5493413464378',
 };
 ---
 
@@ -50,16 +51,16 @@ const PHYSICIAN_JSON_LD = {
     <meta name="description" content={DESCRIPTION} />
     <meta
       name="keywords"
-      content="pediatra Pueblo Esther, pediatra particular Rosario, pediatra zona sur, consultorio pediátrico, salud infantil, pediatría argentina"
+      content="Miradas, pediatra Pueblo Esther, consultorios de pediatría integral, pediatra particular Rosario, pediatra zona sur, consultorio pediátrico, salud infantil, pediatría argentina"
     />
     <meta name="robots" content="index, follow, max-image-preview:large" />
-    <meta name="author" content="Consultorio Martinangelio" />
+    <meta name="author" content={`${CLINIC_INFO.brand} — ${CLINIC_INFO.descriptor}`} />
     <meta name="theme-color" content="#F4EEDF" />
     <link rel="canonical" href={SITE_URL} />
 
     <!-- OpenGraph -->
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Consultorio Martinangelio" />
+    <meta property="og:site_name" content={CLINIC_INFO.brand} />
     <meta property="og:locale" content="es_AR" />
     <meta property="og:title" content={TITLE} />
     <meta property="og:description" content={DESCRIPTION} />
@@ -68,7 +69,10 @@ const PHYSICIAN_JSON_LD = {
     <!-- TODO (Agus): reemplazar por una imagen OG dedicada de 1200x630 -->
     <meta property="og:image:width" content="896" />
     <meta property="og:image:height" content="1200" />
-    <meta property="og:image:alt" content="Dra. Martinangelio — Pediatra en Pueblo Esther" />
+    <meta
+      property="og:image:alt"
+      content={`${CLINIC_INFO.doctorFullName} — Pediatra en Pueblo Esther`}
+    />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />

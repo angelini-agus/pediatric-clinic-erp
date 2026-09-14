@@ -1,6 +1,6 @@
 import { ArrowRight } from 'lucide-react';
 
-import { ENV_URL_ERP } from '../config';
+import { CLINIC_INFO, ENV_URL_ERP } from '../config';
 
 type PhotoPillProps = {
   color: string;
@@ -104,25 +104,6 @@ function DoodleCloud(): React.JSX.Element {
   );
 }
 
-/* ── Doodle: onda gruesa (al estilo de la que recorre detrás del niño) ── */
-function DoodleWave(): React.JSX.Element {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 200 320"
-      className="absolute left-0 top-24 w-full"
-      fill="none"
-    >
-      <path
-        d="M20 100 C60 60 120 70 150 110 C180 150 130 200 90 240 C60 270 90 300 130 300"
-        stroke="#E8A62C"
-        strokeWidth="16"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
 /* ── Doodle: bloques ABC (outline, sobre el crema, a la izquierda de la píldora coral) ── */
 function DoodleBlocks(): React.JSX.Element {
   return (
@@ -169,7 +150,7 @@ function DoodleZigzag(): React.JSX.Element {
  * izq. H1 serif oscuro + bajada chica + 2 CTAs (mostaza con círculo oscuro,
  * coral sólido); der. collage de 3 píldoras stadium (mostaza grande con
  * foto que sobresale, celeste arriba, coral abajo) + doodles (libro, nube,
- * onda, bloques ABC, zigzag). Copy/links nuestros, tratamiento visual igual.
+ * bloques ABC, zigzag). Copy/links nuestros, tratamiento visual igual.
  */
 export function HeroSection(): React.JSX.Element {
   return (
@@ -243,7 +224,10 @@ export function HeroSection(): React.JSX.Element {
 
       {/* ── Columna derecha — collage 3 píldoras + doodles ── */}
       <div className="relative w-[48%] lg:w-1/2 h-full" style={{ overflow: 'visible' }}>
-        <div className="absolute inset-0 load-fade" style={{ zIndex: 30, animationDelay: '220ms' }}>
+        <div
+          className="absolute inset-0 load-fade"
+          style={{ zIndex: 30, animationDelay: '220ms', translate: '0 -50px' }}
+        >
           {/* Píldora mostaza grande — foto recortada que sobresale */}
           <div
             className="absolute rounded-full"
@@ -260,13 +244,12 @@ export function HeroSection(): React.JSX.Element {
           >
             <DoodleBook />
             <DoodleCloud />
-            <DoodleWave />
             {/* Foto de la Dra. dentro del óvalo de la píldora.
                 WebP optimizado (900px, ~68 KB) generado con sharp desde
                 public/doctora_landing.PNG (el original se conserva). */}
             <img
               src="/doctora-landing.webp"
-              alt="Dra. Martinangelio con guardapolvo y estetoscopio"
+              alt={`${CLINIC_INFO.doctorFullName} con guardapolvo y estetoscopio`}
               className="absolute left-1/2 top-1/2 z-10 object-cover"
               style={{
                 width: '94%',

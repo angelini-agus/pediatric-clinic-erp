@@ -98,7 +98,7 @@ export function ContactoSection(): React.JSX.Element {
           style={{ border: '1px solid rgba(36,29,21,0.08)', animationDelay: '150ms' }}
         >
           <iframe
-            title="Mapa — Consultorio de la Dra. Martinangelio, Pueblo Esther"
+            title={`Mapa — Consultorio de la ${CLINIC_INFO.doctorFullName}, Pueblo Esther`}
             src="https://www.google.com/maps?q=Pueblo%20Esther%2C%20Santa%20Fe&output=embed"
             width="100%"
             height="360"

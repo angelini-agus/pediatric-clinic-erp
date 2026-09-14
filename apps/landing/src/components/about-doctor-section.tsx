@@ -1,4 +1,6 @@
-﻿/* ─── Sección "Sobre la Dra. Martinangelio" ─────────────────────────
+﻿import { CLINIC_INFO } from '../config';
+
+/* ─── Sección "Sobre la Dra. Martinangelio" ─────────────────────────
    Referencia Meelo: trío de cards casi cuadradas — las laterales con
    foto full-bleed y una "mancha" orgánica (borde superior ondulado de
    dos lomas, no elipse) pegada abajo con el texto; la del medio en
@@ -112,8 +114,8 @@ function StoryCoralCard(): React.JSX.Element {
           Privada
         </p>
         <p className="mt-3 max-w-[240px] text-sm leading-relaxed text-[#241D15]">
-          Ejerce en hospitales públicos y privados de la zona, además de su consultorio particular
-          en Pueblo Esther.
+          Se formó y trabajó en el sistema público y privado. Hoy atiende en su consultorio
+          particular en Pueblo Esther.
         </p>
       </div>
     </article>
@@ -121,12 +123,14 @@ function StoryCoralCard(): React.JSX.Element {
 }
 
 export function AboutDoctorSection(): React.JSX.Element {
+  const yearsOfPractice = new Date().getFullYear() - CLINIC_INFO.pediatricSince;
+
   return (
     <section
       id="doctora"
       className="bg-dots relative overflow-hidden py-20 lg:py-28 scroll-mt-16"
       style={{ backgroundColor: '#F4EEDF' }}
-      aria-label="Sobre la Dra. Martinangelio"
+      aria-label={`Sobre ${CLINIC_INFO.doctorFullName}`}
     >
       <div className="relative z-10 mx-auto max-w-[1400px] px-6">
         {/* ── Header de la sección ── */}
@@ -148,8 +152,8 @@ export function AboutDoctorSection(): React.JSX.Element {
             <StoryPhotoCard
               accent="#AEC17A"
               photoLabel="la Dra. en el consultorio"
-              title="Jefa de Servicio"
-              text="Jefa del Servicio de Pediatría del Hospital Eva Perón, Granadero Baigorria."
+              title="Experiencia hospitalaria"
+              text="Hospital Eva Perón, Sanatorio de Niños y Grupo Oroño: guardia de urgencias y recepción de recién nacidos."
             />
           </div>
 
@@ -161,8 +165,8 @@ export function AboutDoctorSection(): React.JSX.Element {
             <StoryPhotoCard
               accent="#F3A9C0"
               photoLabel="la Dra. en el hospital"
-              title="[X]+ Años de Trayectoria"
-              text="Más de [X] años dedicados exclusivamente a la pediatría."
+              title={`${String(yearsOfPractice)}+ Años de Trayectoria`}
+              text={`Recibida de Médica Pediátrica en ${String(CLINIC_INFO.pediatricSince)}. Más de ${String(yearsOfPractice)} años dedicados exclusivamente a la pediatría.`}
             />
           </div>
         </div>

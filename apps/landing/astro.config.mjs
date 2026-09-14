@@ -18,4 +18,9 @@ export default defineConfig({
       applyBaseStyles: false,
     }),
   ],
+  vite: {
+    resolve: {
+      dedupe: ['react', 'react-dom'],
+    },
+  },
 });

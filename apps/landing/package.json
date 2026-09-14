@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "private": true,
-  "description": "Astro landing page — iPediERP public site (SEO-first, zero JS)",
+  "description": "Astro landing page — Miradas public site (SEO-first, zero JS)",
   "engines": {
     "node": ">=22.12.0"
   },

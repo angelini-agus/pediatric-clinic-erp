@@ -5,7 +5,7 @@ import { getAuthToken } from '@/lib/auth';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Configuración | iPediERP',
+  title: 'Configuración',
   description: 'Configuración del perfil médico y datos de la clínica para la emisión de recetas.',
 };
 

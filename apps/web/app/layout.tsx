@@ -19,12 +19,19 @@ const jakarta = Plus_Jakarta_Sans({
 });
 export const metadata: Metadata = {
   title: {
-    default: 'PediERP — Sistema de Gestión para Clínicas Pediátricas',
-    template: '%s | PediERP',
+    default: 'Miradas — Consultorios de Pediatría Integral',
+    template: '%s | Miradas',
   },
   description:
-    'Sistema ERP médico pediátrico para el mercado argentino. Gestión de turnos, historias clínicas y más. Cumple con Ley 26.529.',
-  keywords: ['ERP médico', 'clínica pediátrica', 'gestión médica', 'Argentina', 'Ley 26529'],
+    'Portal del paciente y sistema de gestión de Miradas — Consultorios de Pediatría Integral. Turnos, historias clínicas y recetas. Cumple con Ley 26.529.',
+  keywords: [
+    'Miradas',
+    'pediatría integral',
+    'ERP médico',
+    'gestión médica',
+    'Argentina',
+    'Ley 26529',
+  ],
   metadataBase: new URL(process.env['NEXT_PUBLIC_APP_URL'] ?? 'http://localhost:3000'),
   robots: {
     index: false, // ERP interno — no indexar

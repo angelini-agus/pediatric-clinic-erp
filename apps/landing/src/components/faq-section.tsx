@@ -28,7 +28,7 @@ const FAQS = [
     accent: 'pink',
     question: '¿Tiene experiencia real, no solo consultorio particular?',
     answer:
-      'Es Jefa del Servicio de Pediatría del Hospital Eva Perón y atiende también en otros hospitales públicos y privados de la zona.',
+      'Sí. Se recibió de Médica Pediátrica en 2014; pasó por el Hospital Eva Perón, el Sanatorio de Niños de Rosario y el Grupo Oroño, con experiencia en guardia de urgencias y recepción de recién nacidos.',
   },
   {
     accent: 'lavender',

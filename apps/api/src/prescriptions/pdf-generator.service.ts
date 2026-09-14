@@ -37,10 +37,10 @@ export class PdfGeneratorService {
   async generatePrescriptionPdf(prescription: PrescriptionWithRelations): Promise<Buffer> {
     // Fetch clinic settings; fall back to safe defaults if not yet configured
     const settings = await this.settingsService.getSettings();
-    const clinicName = settings?.clinicName ?? 'iPediERP';
+    const clinicName = settings?.clinicName ?? 'Miradas';
     const clinicSubtitle = settings?.clinicName
       ? `${settings.clinicName} — Sistema de Gestión Pediátrica`
-      : 'Clínica Pediátrica & Especialidades Infanto-Juveniles';
+      : 'Consultorios de Pediatría Integral';
     const doctorFullName = settings?.fullName ?? prescription.doctor.fullName;
     const doctorSpecialty = settings?.specialty ?? prescription.doctor.specialty ?? 'Pediatra';
     const doctorLicense =

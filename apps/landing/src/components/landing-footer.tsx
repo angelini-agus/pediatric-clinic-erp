@@ -28,13 +28,13 @@ export function LandingFooter(): React.JSX.Element {
             <a
               href="/"
               className="flex flex-col items-start gap-0"
-              aria-label="Inicio — Consultorio Martinangelio"
+              aria-label={`Inicio — ${CLINIC_INFO.brand}`}
             >
               <span className="font-heading text-xl font-bold tracking-tight text-white">
-                Consultorio Martinangelio
+                {CLINIC_INFO.brand}
               </span>
               {/* Sonrisa del logo (misma que el navbar) */}
-              <svg aria-hidden="true" viewBox="0 0 120 14" className="h-2 w-[124px]" fill="none">
+              <svg aria-hidden="true" viewBox="0 0 120 14" className="h-2 w-[78px]" fill="none">
                 <path
                   d="M4 3c16 12 56 12 92 4c6-1.4 14-2 22-1"
                   stroke="#F4C43F"
@@ -43,6 +43,7 @@ export function LandingFooter(): React.JSX.Element {
                 />
               </svg>
             </a>
+            <p className="mt-2 text-sm font-semibold text-white/80">{CLINIC_INFO.descriptor}</p>
             <p className="mt-4 text-sm leading-relaxed text-white/60">
               Pediatría con seguimiento continuo: la misma médica desde la preconcepción hasta la
               adolescencia.
@@ -129,7 +130,8 @@ export function LandingFooter(): React.JSX.Element {
           style={{ animationDelay: '360ms' }}
         >
           <p>
-            © {new Date().getFullYear()} Consultorio Martinangelio — Todos los derechos reservados.
+            © {new Date().getFullYear()} {CLINIC_INFO.brand} — {CLINIC_INFO.descriptor}. Todos los
+            derechos reservados.
           </p>
           <div className="flex items-center gap-5">
             {/* TODO (Agus): reemplazar [MP] por el número de matrícula real */}

@@ -1,5 +1,7 @@
 ﻿import { Hospital, Quote, Stethoscope, Users } from 'lucide-react';
 
+import { CLINIC_INFO } from '../config';
+
 /* ─── Sección "Familias que ya confían" ──────────────────────────────
    Cifras arriba + cards de testimonios, todo con color de acento
    SÓLIDO (mismo lenguaje que Acompañamiento): íconos, cifras y textos
@@ -7,26 +9,25 @@
 
 const CARD_SHADOW = '0 20px 50px -24px rgba(36,29,21,0.35)';
 
+const YEARS_OF_PRACTICE = new Date().getFullYear() - CLINIC_INFO.pediatricSince;
+
 const STATS = [
   {
     icon: Stethoscope,
-    value: '[X]',
-    // REEMPLAZAR [X]: años reales ejerciendo pediatría (Agus)
+    value: `${String(YEARS_OF_PRACTICE)}+`,
     label: 'Años ejerciendo pediatría',
     accent: '#E96B3A',
   },
   {
     icon: Users,
-    value: '[X]',
-    // REEMPLAZAR [X]: pacientes en seguimiento activo, si Agus tiene el dato
+    value: '50+',
     label: 'Pacientes en seguimiento activo',
     accent: '#AEC17A',
   },
   {
     icon: Hospital,
-    value: '[X]',
-    // REEMPLAZAR [X]: años reales como Jefa del Servicio de Pediatría
-    label: 'Años como Jefa de Servicio — Hospital Eva Perón',
+    value: '3',
+    label: 'Instituciones de referencia',
     accent: '#86C6CB',
   },
 ];

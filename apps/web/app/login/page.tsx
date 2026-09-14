@@ -113,10 +113,8 @@ export default function LoginPage(): React.JSX.Element {
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand text-white shadow-lg shadow-indigo-500/30">
             <HeartPulse className="h-7 w-7" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">PediERP</h1>
-          <p className="mt-1 text-sm text-slate-500">
-            Sistema de gestión para clínicas pediátricas
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Miradas</h1>
+          <p className="mt-1 text-sm text-slate-500">Consultorios de Pediatría Integral</p>
         </div>
 
         {/* Top-level error */}

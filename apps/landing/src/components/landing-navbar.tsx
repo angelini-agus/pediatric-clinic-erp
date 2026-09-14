@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { ENV_URL_ERP } from '../config';
+import { CLINIC_INFO, ENV_URL_ERP } from '../config';
 
 const NAV_LINKS = [
   { label: 'Dra. Martinangelio', href: '#doctora' },
@@ -124,20 +124,20 @@ export function LandingNavbar(): React.JSX.Element {
             />
           </div>
 
-          {/* ── Logo — wordmark blanco + sonrisa amarilla ── */}
+          {/* ── Logo — wordmark + sonrisa amarilla ── */}
           <a
             href="/"
             className="relative flex shrink-0 flex-col items-start gap-0 cursor-pointer"
-            aria-label="Inicio — Consultorio Martinangelio"
+            aria-label={`Inicio — ${CLINIC_INFO.brand}`}
           >
             <span className="font-heading text-lg font-bold tracking-tight text-[#241D15] lg:text-xl">
-              Consultorio Martinangelio
+              {CLINIC_INFO.brand}
             </span>
-            {/* Sonrisa bajo la primera palabra (como la del logo Meelo) */}
+            {/* Sonrisa bajo la palabra (como la del logo Meelo) */}
             <svg
               aria-hidden="true"
               viewBox="0 0 120 14"
-              className="h-2 w-[112px] lg:w-[120px]"
+              className="h-2 w-[70px] lg:w-[76px]"
               fill="none"
             >
               <path

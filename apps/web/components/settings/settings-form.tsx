@@ -165,7 +165,7 @@ export function SettingsForm({ defaultValues }: SettingsFormProps): React.JSX.El
               <input
                 id="clinicName"
                 type="text"
-                placeholder="Clínica Pediátrica San Martín"
+                placeholder="Miradas — Consultorios de Pediatría Integral"
                 {...register('clinicName')}
                 className={`w-full rounded-xl border bg-white/80 px-4 py-3 text-sm text-slate-800 placeholder-slate-400 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-brand/30 ${
                   errors.clinicName

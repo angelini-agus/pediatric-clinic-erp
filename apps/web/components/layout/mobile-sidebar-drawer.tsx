@@ -83,7 +83,7 @@ export function MobileSidebarDrawer({
               <Activity className="h-4 w-4 stroke-[2.5]" />
             </div>
             <div className="font-bold text-slate-900 text-base leading-none tracking-tight">
-              i<span className="text-brand">PediERP</span>
+              <span className="text-brand">Mi</span>radas
             </div>
           </div>
           <button
