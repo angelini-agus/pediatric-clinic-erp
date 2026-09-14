@@ -22,7 +22,11 @@ export default function DashboardLoading(): React.JSX.Element {
       {/* Tabs skeleton */}
       <div className="flex items-center gap-1 border-b border-slate-100">
         {[80, 96, 88, 104, 92].map((w, i) => (
-          <div key={i} className="h-9 rounded-md bg-slate-100" style={{ width: `${String(w)}px` }} />
+          <div
+            key={i}
+            className="h-9 rounded-md bg-slate-100"
+            style={{ width: `${String(w)}px` }}
+          />
         ))}
       </div>
 
@@ -37,7 +41,11 @@ export default function DashboardLoading(): React.JSX.Element {
         </div>
         <div className="space-y-3">
           {[100, 92, 96, 88, 90].map((w, i) => (
-            <div key={i} className="h-10 rounded-xl bg-slate-50 border border-slate-100" style={{ width: `${String(w)}%` }} />
+            <div
+              key={i}
+              className="h-10 rounded-xl bg-slate-50 border border-slate-100"
+              style={{ width: `${String(w)}%` }}
+            />
           ))}
         </div>
       </div>

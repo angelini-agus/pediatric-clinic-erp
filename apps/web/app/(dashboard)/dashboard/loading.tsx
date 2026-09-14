@@ -2,7 +2,7 @@
  * loading.tsx — Next.js Suspense fallback for the Dashboard page.
  * Shows skeleton placeholders while TodaysBookingCard fetches appointments.
  */
-export default function DashboardLoading() {
+export default function DashboardLoading(): React.JSX.Element {
   return (
     <div className="space-y-5 animate-pulse">
       {/* KPI Cards skeleton */}

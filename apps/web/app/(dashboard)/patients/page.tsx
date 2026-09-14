@@ -36,8 +36,7 @@ export default async function PatientsPage({
   searchParams,
 }: PatientsPageProps): Promise<React.JSX.Element> {
   const rawPage = Number.parseInt(searchParams?.page ?? '1', 10);
-  const initialPage =
-    Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
+  const initialPage = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
 
   const initialQuery = searchParams?.q?.trim() ?? '';
 

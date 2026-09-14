@@ -10,7 +10,6 @@ import { AuthService } from './auth.service.js';
 
 import type { Login } from '@pediatric-erp/schemas';
 
-
 type LoginPayload = Login;
 
 const PLAIN_PASSWORD = 'admin123';
@@ -88,9 +87,7 @@ describe('AuthService', () => {
   it('should throw UnauthorizedException when the user does not exist', async () => {
     prisma.client.user.findFirst.mockResolvedValue(null);
 
-    await expect(service.login(credentials)).rejects.toBeInstanceOf(
-      UnauthorizedException,
-    );
+    await expect(service.login(credentials)).rejects.toBeInstanceOf(UnauthorizedException);
     expect(jwt.signAsync).not.toHaveBeenCalled();
   });
 

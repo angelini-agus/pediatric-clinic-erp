@@ -3,7 +3,6 @@
 import { Activity, X } from 'lucide-react';
 import { useEffect } from 'react';
 
-
 import { SidebarNav } from './sidebar-nav';
 import { UserDropdownMenu } from './user-dropdown-menu';
 
@@ -13,7 +12,7 @@ type MobileSidebarDrawerProps = {
   readonly open: boolean;
   readonly onClose: () => void;
   readonly user: AuthUser | null;
-}
+};
 
 /**
  * MobileSidebarDrawer — Drawer lateral controlado por estado del padre.
@@ -26,7 +25,11 @@ type MobileSidebarDrawerProps = {
  *  - Renderiza la MISMA `SidebarNav` que el sidebar de escritorio,
  *    garantizando paridad visual y de comportamiento.
  */
-export function MobileSidebarDrawer({ open, onClose, user }: MobileSidebarDrawerProps): React.JSX.Element {
+export function MobileSidebarDrawer({
+  open,
+  onClose,
+  user,
+}: MobileSidebarDrawerProps): React.JSX.Element {
   useEffect(() => {
     if (!open) {
       return;

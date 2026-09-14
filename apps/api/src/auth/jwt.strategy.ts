@@ -14,7 +14,7 @@ export type JwtPayload = {
   readonly sub: string;
   readonly email: string;
   readonly role: AuthRole;
-}
+};
 
 /**
  * JwtStrategy — verifies the Bearer token signature/expiry using

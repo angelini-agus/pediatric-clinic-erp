@@ -8,7 +8,6 @@ import { PrescriptionForm } from '@/components/patients/prescription-form';
 import { getPatient, getMedicalRecords, getTodaysAppointments } from '@/lib/api';
 import { getAuthToken } from '@/lib/auth';
 
-
 // ── Disable aggressive caching for live medical data ─────────────────────────
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +15,7 @@ type PatientPageProps = {
   params: {
     id: string;
   };
-}
+};
 
 /**
  * PatientPage — Server Component.
@@ -30,7 +29,9 @@ type PatientPageProps = {
  *  - Left column (col-span-4): Patient Profile Card with personal & clinical details
  *  - Right column (col-span-8): New evolution form + Medical Records timeline
  */
-export default async function PatientPage({ params }: PatientPageProps) {
+export default async function PatientPage({
+  params,
+}: PatientPageProps): Promise<React.JSX.Element> {
   const { id } = params;
 
   // Concurrent server-side fetches
@@ -96,16 +97,10 @@ export default async function PatientPage({ params }: PatientPageProps) {
           {/* Action Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* New Evolution Form (Collapsible Client Component) */}
-            <NewMedicalRecordForm
-              patientId={patient.id}
-              doctorId={doctorId}
-            />
+            <NewMedicalRecordForm patientId={patient.id} doctorId={doctorId} />
 
             {/* Prescription Form (PDF Generation Client Component) */}
-            <PrescriptionForm
-              patientId={patient.id}
-              doctorId={doctorId}
-            />
+            <PrescriptionForm patientId={patient.id} doctorId={doctorId} />
           </div>
 
           {/* Clinical History Timeline */}
@@ -115,8 +110,7 @@ export default async function PatientPage({ params }: PatientPageProps) {
                 Historial Clínico (Evoluciones)
               </h2>
               <span className="text-xs font-semibold text-slate-400 bg-white/60 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm">
-                {medicalRecords.length}{' '}
-                {medicalRecords.length === 1 ? 'Registro' : 'Registros'}
+                {medicalRecords.length} {medicalRecords.length === 1 ? 'Registro' : 'Registros'}
               </span>
             </div>
 

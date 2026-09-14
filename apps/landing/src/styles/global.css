@@ -2,25 +2,107 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Design tokens ──────────────────────────────────────────────────
+   Sistema de diseño "Consultorio Martinangelio".
+   Fuentes: Fraunces (heading serif) + Nunito Sans (body) + Pacifico (script),
+   importadas en index.astro. */
+:root {
+  /* Paleta */
+  --color-bg: #f4eedf;
+  --color-text: #241d15;
+  --color-text-heading: #3a2a1b;
+  --color-text-secondary: #6b5f52;
+  --color-coral: #e96b3a;
+  --color-mustard: #f4c43f;
+  --color-sage: #aec17a;
+  --color-pink: #f3a9c0;
+  --color-lavender: #c9b8ea;
+  --color-teal: #86c6cb;
+  --color-sky: #8cd7f2;
+  --color-white: #ffffff;
+
+  /* Radios de borde */
+  --radius-pill: 999px;
+  --radius-card: 28px;
+  --radius-arch: 999px 999px 28px 28px;
+
+  /* Tipografía */
+  --font-heading: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body: 'Nunito Sans', system-ui, sans-serif;
+  --font-script: 'Pacifico', cursive;
+}
+
 /* ── Tipografía display por nivel semántico ────────────────────────
-   Cualquier h1/h2/h3 usa Bricolage Grotesque por defecto, aunque la
+   Cualquier h1/h2/h3 usa la fuente heading por defecto, aunque la
    sección no declare font-display explícitamente. Sin esto, secciones
-   como mission-section.tsx heredan la sans y rompen la consistencia
-   del hero. Las secciones que ya aplican tracking-tight/leading-tight
-   siguen ganando por especificidad normal. */
+   heredan la sans y rompen la consistencia del hero. */
 @layer base {
-  h1, h2, h3 {
-    font-family: var(--font-bricolage), system-ui, sans-serif;
+  body {
+    font-family: var(--font-body);
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading);
     letter-spacing: -0.02em;
     line-height: 1.1;
   }
 }
 
+/* ── Jerarquía de headings reutilizable ──
+   H1 (solo hero): 56-64px desktop / 36-40px mobile, peso 800
+   H2 (título de sección): 36-40px desktop / 28px mobile, peso 800
+   H3 (título de card): 20-24px desktop / 18px mobile, peso 700
+   Body: 15-16px, peso 400-500
+   Label/badge: 12-13px, peso 600 */
 @layer utilities {
-  .tracking-display { letter-spacing: -0.02em; }
-  .tracking-display-tight { letter-spacing: -0.03em; }
-  .leading-display { line-height: 1.05; }
-  .leading-display-snug { line-height: 1.15; }
+  .heading-h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(2.25rem, 4.2vw, 4rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .heading-h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--color-text-heading);
+  }
+  .heading-h3 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.125rem, 1.6vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .label-badge {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .font-script {
+    font-family: var(--font-script);
+    font-weight: 400;
+  }
+  /* Textura de puntitos del fondo crema (referencia Meelo) — se usa en
+     secciones con fondo --color-bg. El color se hereda por background-image */
+  .bg-dots {
+    background-image: radial-gradient(rgba(58, 42, 27, 0.07) 1.5px, transparent 1.5px);
+    background-size: 22px 22px;
+  }
+  .tracking-display {
+    letter-spacing: -0.02em;
+  }
+  .tracking-display-tight {
+    letter-spacing: -0.03em;
+  }
+  .leading-display {
+    line-height: 1.05;
+  }
+  .leading-display-snug {
+    line-height: 1.15;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -52,16 +134,34 @@
 }
 
 @keyframes rise-in {
-  from { opacity: 0; transform: translateY(26px); }
-  to { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 @keyframes fade-in {
-  from { opacity: 0; transform: scale(1.03); }
-  to { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 @keyframes drop-in {
-  from { opacity: 0; transform: translateY(-16px); }
-  to { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ── Scroll reveal (progressive enhancement: solo si hay JS) ── */
@@ -70,9 +170,18 @@
   opacity: 0;
   translate: var(--reveal-x, 0px) var(--reveal-y, 28px);
 }
-.js .reveal-left { --reveal-x: -32px; --reveal-y: 0px; }
-.js .reveal-right { --reveal-x: 32px; --reveal-y: 0px; }
-.js .reveal-scale { --reveal-y: 20px; scale: 0.95; }
+.js .reveal-left {
+  --reveal-x: -32px;
+  --reveal-y: 0px;
+}
+.js .reveal-right {
+  --reveal-x: 32px;
+  --reveal-y: 0px;
+}
+.js .reveal-scale {
+  --reveal-y: 20px;
+  scale: 0.95;
+}
 
 .js .reveal.is-visible {
   opacity: 1;
@@ -106,22 +215,43 @@
 }
 
 @keyframes reveal-up {
-  from { opacity: 0; translate: var(--reveal-x, 0px) var(--reveal-y, 28px); }
-  to { opacity: 1; translate: 0 0; }
+  from {
+    opacity: 0;
+    translate: var(--reveal-x, 0px) var(--reveal-y, 28px);
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
 }
 @keyframes scale-in {
-  from { scale: 0.95; }
-  to { scale: 1; }
+  from {
+    scale: 0.95;
+  }
+  to {
+    scale: 1;
+  }
 }
 @keyframes grow-x {
-  from { opacity: 0; transform: scaleX(0); }
-  to { opacity: 1; transform: scaleX(1); }
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
 }
 
 /* ── Float suave para badges flotantes ── */
 @keyframes floaty {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 /* ── Micro-interacciones ── */
@@ -135,7 +265,12 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 70%
+  );
   transform: translateX(-130%);
   transition: transform 0.7s var(--ease-out-quint);
   pointer-events: none;
@@ -157,8 +292,15 @@
   animation: ping-soft 2.2s var(--ease-out-cubic) infinite;
 }
 @keyframes ping-soft {
-  0% { transform: scale(1); opacity: 0.9; }
-  75%, 100% { transform: scale(2.8); opacity: 0; }
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  75%,
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
 }
 
 /* ── Accesibilidad: respetar prefers-reduced-motion ── */

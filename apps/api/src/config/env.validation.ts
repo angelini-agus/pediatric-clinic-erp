@@ -1,4 +1,5 @@
 import { envSchema } from '@pediatric-erp/schemas';
+
 import type { Env } from '@pediatric-erp/schemas';
 
 /**
@@ -32,4 +33,3 @@ export function validateEnv(config: Record<string, unknown>): Env {
 
   return result.data;
 }
-

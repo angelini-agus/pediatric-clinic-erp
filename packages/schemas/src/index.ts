@@ -47,16 +47,10 @@ export {
 } from './appointment.schema.js';
 
 // Medical Record
-export {
-  medicalRecordCreateSchema,
-  type MedicalRecordCreate,
-} from './medical-record.schema.js';
+export { medicalRecordCreateSchema, type MedicalRecordCreate } from './medical-record.schema.js';
 
 // Prescription
-export {
-  prescriptionCreateSchema,
-  type PrescriptionCreate,
-} from './prescription.schema.js';
+export { prescriptionCreateSchema, type PrescriptionCreate } from './prescription.schema.js';
 
 // ClinicSettings
 export {
@@ -80,7 +74,3 @@ export {
   loginResponseSchema,
   type LoginResponse,
 } from './auth.schema.js';
-
-
-
-

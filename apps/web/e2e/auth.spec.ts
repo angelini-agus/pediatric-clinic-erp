@@ -1,9 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import {
-  E2E_TEST_EMAIL,
-  E2E_TEST_PASSWORD,
-} from './helpers';
+import { E2E_TEST_EMAIL, E2E_TEST_PASSWORD } from './helpers';
 
 /**
  * Security & Authentication golden paths.

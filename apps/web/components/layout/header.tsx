@@ -1,10 +1,11 @@
 import { Bell, Plus, Settings } from 'lucide-react';
 import Link from 'next/link';
 
+import { getUserInitials } from '@/lib/utils';
+
 import { DateDisplay } from './date-display';
 import { HeaderSearch } from './header-search';
 import { UserDropdownMenu } from './user-dropdown-menu';
-import { getUserInitials } from '@/lib/utils';
 
 import type { AuthUser } from '@pediatric-erp/schemas';
 
@@ -103,4 +104,3 @@ export function Header({ onMenuClick, user }: HeaderProps): React.JSX.Element {
     </header>
   );
 }
-

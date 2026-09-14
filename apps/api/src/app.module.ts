@@ -108,4 +108,3 @@ import { SettingsModule } from './settings/settings.module.js';
   ],
 })
 export class AppModule {}
-

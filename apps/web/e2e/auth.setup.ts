@@ -1,10 +1,6 @@
 import { expect, test as setup } from '@playwright/test';
 
-import {
-  AUTH_STORAGE_STATE,
-  E2E_TEST_EMAIL,
-  E2E_TEST_PASSWORD,
-} from './helpers';
+import { AUTH_STORAGE_STATE, E2E_TEST_EMAIL, E2E_TEST_PASSWORD } from './helpers';
 
 /**
  * Setup worker: authenticates ONCE via the real UI (BFF /api/auth/login →

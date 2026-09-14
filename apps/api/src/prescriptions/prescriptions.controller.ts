@@ -21,11 +21,7 @@ import {
 import { Roles } from '../common/decorators/roles.decorator.js';
 
 import { CreatePrescriptionDto } from './dto/create-prescription.dto.js';
-import {
-  PrescriptionsService,
-  type PrescriptionWithRelations,
-} from './prescriptions.service.js';
-
+import { PrescriptionsService, type PrescriptionWithRelations } from './prescriptions.service.js';
 
 /**
  * PrescriptionsController — REST endpoints for medical prescriptions & PDF generation.
@@ -88,7 +84,7 @@ export class PrescriptionsController {
   @ApiOperation({
     summary: "List patient's prescriptions",
     description:
-      "Returns all active prescriptions issued for a patient, ordered by creation date descending.",
+      'Returns all active prescriptions issued for a patient, ordered by creation date descending.',
   })
   @ApiParam({
     name: 'patientId',
@@ -98,9 +94,7 @@ export class PrescriptionsController {
   @ApiOkResponse({
     description: "List of patient's prescriptions.",
   })
-  findByPatientId(
-    @Param('patientId') patientId: string,
-  ): Promise<PrescriptionWithRelations[]> {
+  findByPatientId(@Param('patientId') patientId: string): Promise<PrescriptionWithRelations[]> {
     return this.prescriptionsService.findByPatientId(patientId);
   }
 

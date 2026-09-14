@@ -2,27 +2,18 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema, type Register } from '@pediatric-erp/schemas';
-import {
-  HeartPulse,
-  Loader2,
-  LockKeyhole,
-  Mail,
-  User as UserIcon,
-} from 'lucide-react';
+import { HeartPulse, Loader2, LockKeyhole, Mail, User as UserIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-
 
 import { cn } from '@/lib/utils';
 
 type RegisterFormValues = Register;
 
 type RegisterPageState =
-  | { kind: 'idle' }
-  | { kind: 'submitting' }
-  | { kind: 'error'; message: string };
+  { kind: 'idle' } | { kind: 'submitting' } | { kind: 'error'; message: string };
 
 /**
  * RegisterPage — Client Component.
@@ -66,14 +57,10 @@ export default function RegisterPage(): React.JSX.Element {
       });
 
       if (!response.ok) {
-        const data = (await response.json().catch(() => null)) as
-          | { message?: string }
-          | null;
+        const data = (await response.json().catch(() => null)) as { message?: string } | null;
         setState({
           kind: 'error',
-          message:
-            data?.message ??
-            'No se pudo completar el registro. Verificá los datos.',
+          message: data?.message ?? 'No se pudo completar el registro. Verificá los datos.',
         });
         return;
       }
@@ -93,9 +80,7 @@ export default function RegisterPage(): React.JSX.Element {
   const triggerClass = (hasError: boolean): string =>
     cn(
       'w-full rounded-xl border bg-white/80 py-3 pl-10 pr-4 text-sm text-slate-800 placeholder-slate-400 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand',
-      hasError
-        ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-200'
-        : 'border-slate-200',
+      hasError ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-200' : 'border-slate-200',
     );
 
   const submitting = state.kind === 'submitting' || isFormSubmitting;
@@ -114,9 +99,7 @@ export default function RegisterPage(): React.JSX.Element {
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand text-white shadow-lg shadow-indigo-500/30">
             <HeartPulse className="h-7 w-7" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            Crear cuenta
-          </h1>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Crear cuenta</h1>
           <p className="mt-1 text-sm text-slate-500">
             Registrate como profesional para acceder al ERP.
           </p>
@@ -132,17 +115,10 @@ export default function RegisterPage(): React.JSX.Element {
           </div>
         )}
 
-        <form
-          onSubmit={(e) => void handleSubmit(onValid)(e)}
-          className="space-y-5"
-          noValidate
-        >
+        <form onSubmit={(e) => void handleSubmit(onValid)(e)} className="space-y-5" noValidate>
           {/* Nombre completo */}
           <div className="flex flex-col gap-2">
-            <label
-              htmlFor="fullName"
-              className="text-sm font-semibold text-slate-700"
-            >
+            <label htmlFor="fullName" className="text-sm font-semibold text-slate-700">
               Nombre Completo <span className="text-rose-500">*</span>
             </label>
             <div className="relative">
@@ -163,10 +139,7 @@ export default function RegisterPage(): React.JSX.Element {
 
           {/* Email */}
           <div className="flex flex-col gap-2">
-            <label
-              htmlFor="email"
-              className="text-sm font-semibold text-slate-700"
-            >
+            <label htmlFor="email" className="text-sm font-semibold text-slate-700">
               Correo Electrónico <span className="text-rose-500">*</span>
             </label>
             <div className="relative">
@@ -187,10 +160,7 @@ export default function RegisterPage(): React.JSX.Element {
 
           {/* Password */}
           <div className="flex flex-col gap-2">
-            <label
-              htmlFor="password"
-              className="text-sm font-semibold text-slate-700"
-            >
+            <label htmlFor="password" className="text-sm font-semibold text-slate-700">
               Contraseña <span className="text-rose-500">*</span>
             </label>
             <div className="relative">
@@ -211,10 +181,7 @@ export default function RegisterPage(): React.JSX.Element {
 
           {/* Confirmar password */}
           <div className="flex flex-col gap-2">
-            <label
-              htmlFor="confirmPassword"
-              className="text-sm font-semibold text-slate-700"
-            >
+            <label htmlFor="confirmPassword" className="text-sm font-semibold text-slate-700">
               Confirmar Contraseña <span className="text-rose-500">*</span>
             </label>
             <div className="relative">
@@ -229,9 +196,7 @@ export default function RegisterPage(): React.JSX.Element {
               />
             </div>
             {errors.confirmPassword?.message && (
-              <p className="text-xs text-rose-500">
-                {errors.confirmPassword.message}
-              </p>
+              <p className="text-xs text-rose-500">{errors.confirmPassword.message}</p>
             )}
           </div>
 
@@ -239,7 +204,7 @@ export default function RegisterPage(): React.JSX.Element {
           <button
             type="submit"
             disabled={submitting}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {submitting ? (
               <>
@@ -256,7 +221,7 @@ export default function RegisterPage(): React.JSX.Element {
           ¿Ya tenés cuenta?{' '}
           <Link
             href="/login"
-            className="font-semibold text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-brand/30 rounded"
+            className="font-semibold text-brand-600 hover:underline focus:outline-none focus:ring-2 focus:ring-brand/30 rounded"
           >
             Iniciar sesión
           </Link>

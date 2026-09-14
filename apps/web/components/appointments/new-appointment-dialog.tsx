@@ -1,31 +1,52 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
 import { CalendarPlus, X } from 'lucide-react';
-import { NewAppointmentForm } from './new-appointment-form';
+import dynamic from 'next/dynamic';
+import { useState, useEffect, useCallback } from 'react';
+
+// El formulario arrastra react-day-picker + date-fns + radix (~decenas de kB).
+// Se carga on-demand recién cuando el usuario abre el diálogo, para no
+// engordar el JS inicial de la ruta /appointments.
+const NewAppointmentForm = dynamic(
+  () => import('./new-appointment-form').then((mod) => mod.NewAppointmentForm),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center py-10 text-sm text-slate-400">
+        Cargando formulario…
+      </div>
+    ),
+  },
+);
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function NewAppointmentDialog() {
+export function NewAppointmentDialog(): React.JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
 
-  const open = () => setIsOpen(true);
-  const close = useCallback(() => setIsOpen(false), []);
+  const open = (): void => {
+    setIsOpen(true);
+  };
+  const close = useCallback(() => {
+    setIsOpen(false);
+  }, []);
 
   // Close on Escape key
   useEffect(() => {
     if (!isOpen) return;
-    const handleKey = (e: KeyboardEvent) => {
+    const handleKey = (e: KeyboardEvent): void => {
       if (e.key === 'Escape') close();
     };
     document.addEventListener('keydown', handleKey);
-    return () => document.removeEventListener('keydown', handleKey);
+    return (): void => {
+      document.removeEventListener('keydown', handleKey);
+    };
   }, [isOpen, close]);
 
   // Prevent body scroll when open
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
-    return () => {
+    return (): void => {
       document.body.style.overflow = '';
     };
   }, [isOpen]);
@@ -64,15 +85,10 @@ export function NewAppointmentDialog() {
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0">
               <div>
-                <h2
-                  id="na-dialog-title"
-                  className="text-base font-bold text-slate-900"
-                >
+                <h2 id="na-dialog-title" className="text-base font-bold text-slate-900">
                   Nuevo Turno
                 </h2>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Agendá un turno médico pediátrico
-                </p>
+                <p className="text-xs text-slate-400 mt-0.5">Agendá un turno médico pediátrico</p>
               </div>
               <button
                 type="button"

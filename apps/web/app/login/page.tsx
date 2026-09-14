@@ -1,12 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  HeartPulse,
-  Loader2,
-  LockKeyhole,
-  Mail,
-} from 'lucide-react';
+import { HeartPulse, Loader2, LockKeyhole, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -23,11 +18,7 @@ import { cn } from '@/lib/utils';
  * (trim + lowercase) que el BFF Route Handler espera.
  */
 const loginFormSchema = z.object({
-  email: z
-    .string()
-    .trim()
-    .min(1, 'El correo electrónico es obligatorio')
-    .email('Email inválido'),
+  email: z.string().trim().min(1, 'El correo electrónico es obligatorio').email('Email inválido'),
   password: z
     .string()
     .min(1, 'La contraseña es obligatoria')
@@ -37,9 +28,7 @@ const loginFormSchema = z.object({
 type LoginFormValues = z.infer<typeof loginFormSchema>;
 
 type LoginPageState =
-  | { kind: 'idle' }
-  | { kind: 'submitting' }
-  | { kind: 'error'; message: string };
+  { kind: 'idle' } | { kind: 'submitting' } | { kind: 'error'; message: string };
 
 /**
  * LoginPage — Client Component.
@@ -80,14 +69,10 @@ export default function LoginPage(): React.JSX.Element {
       });
 
       if (!response.ok) {
-        const data = (await response.json().catch(() => null)) as
-          | { message?: string }
-          | null;
+        const data = (await response.json().catch(() => null)) as { message?: string } | null;
         setState({
           kind: 'error',
-          message:
-            data?.message ??
-            'Credenciales inválidas. Verificá el correo y la contraseña.',
+          message: data?.message ?? 'Credenciales inválidas. Verificá el correo y la contraseña.',
         });
         return;
       }
@@ -111,9 +96,7 @@ export default function LoginPage(): React.JSX.Element {
   const triggerClass = (hasError: boolean): string =>
     cn(
       'w-full rounded-xl border bg-white/80 py-3 pl-10 pr-4 text-sm text-slate-800 placeholder-slate-400 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand',
-      hasError
-        ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-200'
-        : 'border-slate-200',
+      hasError ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-200' : 'border-slate-200',
     );
 
   return (
@@ -130,9 +113,7 @@ export default function LoginPage(): React.JSX.Element {
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand text-white shadow-lg shadow-indigo-500/30">
             <HeartPulse className="h-7 w-7" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            PediERP
-          </h1>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">PediERP</h1>
           <p className="mt-1 text-sm text-slate-500">
             Sistema de gestión para clínicas pediátricas
           </p>
@@ -149,17 +130,10 @@ export default function LoginPage(): React.JSX.Element {
           </div>
         )}
 
-        <form
-          onSubmit={(e) => void handleSubmit(onValid)(e)}
-          className="space-y-5"
-          noValidate
-        >
+        <form onSubmit={(e) => void handleSubmit(onValid)(e)} className="space-y-5" noValidate>
           {/* Email */}
           <div className="flex flex-col gap-2">
-            <label
-              htmlFor="email"
-              className="text-sm font-semibold text-slate-700"
-            >
+            <label htmlFor="email" className="text-sm font-semibold text-slate-700">
               Correo Electrónico
             </label>
             <div className="relative">
@@ -181,10 +155,7 @@ export default function LoginPage(): React.JSX.Element {
 
           {/* Password */}
           <div className="flex flex-col gap-2">
-            <label
-              htmlFor="password"
-              className="text-sm font-semibold text-slate-700"
-            >
+            <label htmlFor="password" className="text-sm font-semibold text-slate-700">
               Contraseña
             </label>
             <div className="relative">
@@ -209,7 +180,7 @@ export default function LoginPage(): React.JSX.Element {
             type="submit"
             data-testid="login-submit"
             disabled={submitting}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {submitting ? (
               <>
@@ -226,7 +197,7 @@ export default function LoginPage(): React.JSX.Element {
           ¿Sos profesional nuevo?{' '}
           <Link
             href="/register"
-            className="font-semibold text-brand hover:underline focus:outline-none focus:ring-2 focus:ring-brand/30 rounded"
+            className="font-semibold text-brand-600 hover:underline focus:outline-none focus:ring-2 focus:ring-brand/30 rounded"
           >
             Crear cuenta
           </Link>

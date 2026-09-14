@@ -34,10 +34,9 @@ export const patientCreateSchema = z.object({
   lastName: z.string().min(1).max(100),
   documentType: documentTypeSchema.default('DNI'),
   documentNumber: z.string().min(1).max(20),
-  dateOfBirth: z.coerce.date().refine(
-    (date) => date <= new Date(),
-    { message: 'Date of birth cannot be in the future' },
-  ),
+  dateOfBirth: z.coerce
+    .date()
+    .refine((date) => date <= new Date(), { message: 'Date of birth cannot be in the future' }),
   biologicalSex: biologicalSexSchema,
   bloodGroup: bloodGroupSchema.nullish(),
 
@@ -83,4 +82,3 @@ export const patientUpdateSchema = z.object({
   apgarScore: z.string().max(10).nullish(),
 });
 export type PatientUpdate = z.infer<typeof patientUpdateSchema>;
-

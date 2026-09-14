@@ -1,6 +1,5 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
-
 import { PrismaService } from '../prisma/prisma.service.js';
 
 import type { CreateMedicalRecordDto } from './dto/create-medical-record.dto.js';
@@ -77,10 +76,7 @@ export class MedicalRecordsService {
    * @param pageSize - Items per page (default 20, max 100)
    * @returns { data, total } page of medical records with doctor and patient metadata
    */
-  async findAll(
-    page = 1,
-    pageSize = DEFAULT_PAGE_SIZE,
-  ): Promise<MedicalRecordsPage> {
+  async findAll(page = 1, pageSize = DEFAULT_PAGE_SIZE): Promise<MedicalRecordsPage> {
     const safePage = Number.isFinite(page) && page > 0 ? Math.floor(page) : 1;
     const safePageSize = Number.isFinite(pageSize)
       ? Math.min(MAX_PAGE_SIZE, Math.max(1, Math.floor(pageSize)))

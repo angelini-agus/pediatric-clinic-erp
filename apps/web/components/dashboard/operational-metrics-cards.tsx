@@ -8,10 +8,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 
-import {
-  getDashboardAnalytics,
-  type DashboardAnalytics,
-} from '@/lib/api';
+import { getDashboardAnalytics, type DashboardAnalytics } from '@/lib/api';
 import { getAuthToken } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
@@ -26,10 +23,8 @@ import { cn } from '@/lib/utils';
  * 3. Evoluciones Pendientes (Legal alert for unsigned medical records)
  * 4. Ausentismos / Cancelados (Today's canceled appointments count)
  */
-export async function OperationalMetricsCards() {
-  const analytics: DashboardAnalytics | null = await getDashboardAnalytics(
-    getAuthToken(),
-  );
+export async function OperationalMetricsCards(): Promise<React.JSX.Element> {
+  const analytics: DashboardAnalytics | null = await getDashboardAnalytics(getAuthToken());
 
   const nextAppt = analytics?.nextAppointment ?? null;
   const funnel = analytics?.appointmentFunnel ?? { total: 0, completed: 0, waiting: 0 };
@@ -41,9 +36,11 @@ export async function OperationalMetricsCards() {
       {/* ── CARD 1: Próximo Paciente ─────────────────────────────────────── */}
       <div
         className="relative overflow-hidden backdrop-blur-xl rounded-[2rem] border-none shadow-sm p-6 flex flex-col justify-between group transition-all duration-300 hover:shadow-md will-change-transform"
-        style={{ background: 'radial-gradient(ellipse at 110% -10%, rgba(99,102,241,0.12) 0%, rgba(255,255,255,0.6) 55%)' }}
+        style={{
+          background:
+            'radial-gradient(ellipse at 110% -10%, rgba(99,102,241,0.12) 0%, rgba(255,255,255,0.6) 55%)',
+        }}
       >
-
         <div className="relative z-10 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-indigo-600/90 uppercase tracking-wider flex items-center gap-1.5">
@@ -72,9 +69,7 @@ export async function OperationalMetricsCards() {
             </div>
           ) : (
             <div className="py-2">
-              <p className="text-base font-semibold text-slate-700">
-                Sin turnos pendientes
-              </p>
+              <p className="text-base font-semibold text-slate-700">Sin turnos pendientes</p>
               <p className="text-xs text-slate-400 mt-1">
                 No hay más citas agendadas para el día de hoy.
               </p>
@@ -86,9 +81,11 @@ export async function OperationalMetricsCards() {
       {/* ── CARD 2: Embudo de Turnos ─────────────────────────────────────── */}
       <div
         className="relative overflow-hidden backdrop-blur-xl rounded-[2rem] border-none shadow-sm p-6 flex flex-col justify-between group transition-all duration-300 hover:shadow-md will-change-transform"
-        style={{ background: 'radial-gradient(ellipse at 110% -10%, rgba(59,130,246,0.12) 0%, rgba(255,255,255,0.6) 55%)' }}
+        style={{
+          background:
+            'radial-gradient(ellipse at 110% -10%, rgba(59,130,246,0.12) 0%, rgba(255,255,255,0.6) 55%)',
+        }}
       >
-
         <div className="relative z-10 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-blue-600/90 uppercase tracking-wider flex items-center gap-1.5">
@@ -114,24 +111,20 @@ export async function OperationalMetricsCards() {
               <div
                 className="bg-emerald-500 h-full rounded-full transition-all duration-500"
                 style={{
-                  width: `${
-                    funnel.total > 0
-                      ? Math.round((funnel.completed / funnel.total) * 100)
-                      : 0
-                  }%`,
+                  width: `${String(
+                    funnel.total > 0 ? Math.round((funnel.completed / funnel.total) * 100) : 0,
+                  )}%`,
                 }}
-                title={`${funnel.completed} atendidos`}
+                title={`${String(funnel.completed)} atendidos`}
               />
               <div
                 className="bg-amber-400 h-full rounded-full transition-all duration-500"
                 style={{
-                  width: `${
-                    funnel.total > 0
-                      ? Math.round((funnel.waiting / funnel.total) * 100)
-                      : 0
-                  }%`,
+                  width: `${String(
+                    funnel.total > 0 ? Math.round((funnel.waiting / funnel.total) * 100) : 0,
+                  )}%`,
                 }}
-                title={`${funnel.waiting} en espera`}
+                title={`${String(funnel.waiting)} en espera`}
               />
             </div>
           </div>
@@ -157,17 +150,15 @@ export async function OperationalMetricsCards() {
       <div
         className={cn(
           'relative overflow-hidden backdrop-blur-xl rounded-[2rem] border-none shadow-sm p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-md will-change-transform',
-          unsignedRecords > 0
-            ? 'border border-amber-200/50'
-            : '',
+          unsignedRecords > 0 ? 'border border-amber-200/50' : '',
         )}
         style={{
-          background: unsignedRecords > 0
-            ? 'radial-gradient(ellipse at 110% -10%, rgba(251,191,36,0.18) 0%, rgba(255,251,235,0.5) 55%)'
-            : 'radial-gradient(ellipse at 110% -10%, rgba(52,211,153,0.12) 0%, rgba(255,255,255,0.6) 55%)',
+          background:
+            unsignedRecords > 0
+              ? 'radial-gradient(ellipse at 110% -10%, rgba(251,191,36,0.18) 0%, rgba(255,251,235,0.5) 55%)'
+              : 'radial-gradient(ellipse at 110% -10%, rgba(52,211,153,0.12) 0%, rgba(255,255,255,0.6) 55%)',
         }}
       >
-
         <div className="relative z-10 space-y-3">
           <div className="flex items-center justify-between">
             <span
@@ -197,7 +188,8 @@ export async function OperationalMetricsCards() {
                 <span className="text-amber-700 font-bold bg-amber-100/80 px-1.5 py-0.5 rounded-md">
                   {unsignedRecords}
                 </span>{' '}
-                {unsignedRecords === 1 ? 'paciente atendido' : 'pacientes atendidos'} hoy sin historia clínica firmada.
+                {unsignedRecords === 1 ? 'paciente atendido' : 'pacientes atendidos'} hoy sin
+                historia clínica firmada.
               </p>
               <p className="text-xs text-amber-700/80 mt-2 font-medium">
                 Completá las evoluciones clínicas requeridas por Ley 26.529.
@@ -208,9 +200,7 @@ export async function OperationalMetricsCards() {
               <p className="text-sm font-semibold text-emerald-800 leading-snug">
                 Todas las historias clínicas del día están firmadas.
               </p>
-              <p className="text-xs text-slate-400 mt-2">
-                Cumplimiento legal al 100%.
-              </p>
+              <p className="text-xs text-slate-400 mt-2">Cumplimiento legal al 100%.</p>
             </div>
           )}
         </div>
@@ -219,9 +209,11 @@ export async function OperationalMetricsCards() {
       {/* ── CARD 4: Ausentismos / Cancelados ─────────────────────────────── */}
       <div
         className="relative overflow-hidden backdrop-blur-xl rounded-[2rem] border-none shadow-sm p-6 flex flex-col justify-between group transition-all duration-300 hover:shadow-md will-change-transform"
-        style={{ background: 'radial-gradient(ellipse at 110% -10%, rgba(251,113,133,0.12) 0%, rgba(255,255,255,0.6) 55%)' }}
+        style={{
+          background:
+            'radial-gradient(ellipse at 110% -10%, rgba(251,113,133,0.12) 0%, rgba(255,255,255,0.6) 55%)',
+        }}
       >
-
         <div className="relative z-10 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold text-rose-600/90 uppercase tracking-wider flex items-center gap-1.5">

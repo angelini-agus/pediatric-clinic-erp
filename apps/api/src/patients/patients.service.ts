@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
-
 import { AuditService } from '../audit/audit.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 
@@ -96,13 +95,10 @@ export class PatientsService {
    *
    * STRICT RULE: Query MUST include `where: { deletedAt: null }`.
    */
-  async findAll(
-    options: FindAllPatientsOptions = {},
-  ): Promise<PatientsPage> {
+  async findAll(options: FindAllPatientsOptions = {}): Promise<PatientsPage> {
     const rawPage = options.page ?? 1;
     const rawPageSize = options.pageSize ?? DEFAULT_PAGE_SIZE;
-    const page =
-      Number.isFinite(rawPage) && rawPage > 0 ? Math.floor(rawPage) : 1;
+    const page = Number.isFinite(rawPage) && rawPage > 0 ? Math.floor(rawPage) : 1;
     const pageSize = Number.isFinite(rawPageSize)
       ? Math.min(MAX_PAGE_SIZE, Math.max(1, Math.floor(rawPageSize)))
       : DEFAULT_PAGE_SIZE;
@@ -190,4 +186,3 @@ export class PatientsService {
     }
   }
 }
-

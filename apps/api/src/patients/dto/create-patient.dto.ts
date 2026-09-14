@@ -1,5 +1,5 @@
-import { createZodDto } from 'nestjs-zod';
 import { patientCreateSchema } from '@pediatric-erp/schemas';
+import { createZodDto } from 'nestjs-zod';
 
 /**
  * DTO for pediatric patient creation.
@@ -12,4 +12,3 @@ import { patientCreateSchema } from '@pediatric-erp/schemas';
  * FORBIDDEN: class-validator, class-transformer
  */
 export class CreatePatientDto extends createZodDto(patientCreateSchema) {}
-

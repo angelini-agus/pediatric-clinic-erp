@@ -22,9 +22,7 @@ export default function NewPatientPage(): React.JSX.Element {
           <UserPlus className="h-5 w-5" />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-slate-900">
-            Nuevo Paciente
-          </h1>
+          <h1 className="text-xl font-bold text-slate-900">Nuevo Paciente</h1>
           <p className="text-xs text-slate-400 mt-0.5">
             Registrá un nuevo paciente pediátrico y su tutor responsable.
           </p>

@@ -7,12 +7,7 @@ import { z } from 'zod';
  * are validated as string unions in Zod.
  */
 
-export const APPOINTMENT_STATUSES = [
-  'SCHEDULED',
-  'IN_PROGRESS',
-  'COMPLETED',
-  'CANCELED',
-] as const;
+export const APPOINTMENT_STATUSES = ['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELED'] as const;
 
 export const appointmentStatusSchema = z.enum(APPOINTMENT_STATUSES);
 export type AppointmentStatus = z.infer<typeof appointmentStatusSchema>;

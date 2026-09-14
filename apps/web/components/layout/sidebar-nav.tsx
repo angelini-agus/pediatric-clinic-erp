@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  LayoutDashboard,
-  Users,
-  Calendar,
-  Stethoscope,
-  Settings,
-} from 'lucide-react';
+import { LayoutDashboard, Users, Calendar, Stethoscope, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -19,7 +13,6 @@ const navItems = [
   { name: 'Consultas', href: '/consultations', icon: Stethoscope },
   { name: 'Configuración', href: '/settings', icon: Settings },
 ];
-
 
 export function SidebarNav(): React.JSX.Element {
   const pathname = usePathname();
@@ -41,15 +34,10 @@ export function SidebarNav(): React.JSX.Element {
               'flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150',
               isActive
                 ? 'bg-white/90 text-brand font-semibold shadow-sm'
-                : 'text-slate-700 hover:bg-white/50 hover:text-slate-950'
+                : 'text-slate-700 hover:bg-white/50 hover:text-slate-950',
             )}
           >
-            <Icon
-              className={cn(
-                'h-4 w-4 shrink-0',
-                isActive ? 'text-brand' : 'text-slate-500'
-              )}
-            />
+            <Icon className={cn('h-4 w-4 shrink-0', isActive ? 'text-brand' : 'text-slate-500')} />
             <span>{item.name}</span>
           </Link>
         );

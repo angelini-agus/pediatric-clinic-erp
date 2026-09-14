@@ -1,7 +1,9 @@
 import { Test, type TestingModule } from '@nestjs/testing';
+
+import { PrismaService } from '../prisma/prisma.service.js';
+
 import { AnalyticsController } from './analytics.controller.js';
 import { AnalyticsService } from './analytics.service.js';
-import { PrismaService } from '../prisma/prisma.service.js';
 
 describe('AnalyticsController', () => {
   let controller: AnalyticsController;
@@ -56,25 +58,23 @@ describe('AnalyticsController', () => {
       mockPrismaService.client.appointment.findFirst.mockResolvedValue(mockNextAppt);
       mockPrismaService.client.appointment.count
         .mockResolvedValueOnce(12) // funnelTotal
-        .mockResolvedValueOnce(5)  // funnelCompleted
-        .mockResolvedValueOnce(4)  // funnelWaiting
-        .mockResolvedValueOnce(1)  // unsignedRecords
+        .mockResolvedValueOnce(5) // funnelCompleted
+        .mockResolvedValueOnce(4) // funnelWaiting
+        .mockResolvedValueOnce(1) // unsignedRecords
         .mockResolvedValueOnce(2); // canceledToday
 
       const result = await controller.getDashboardMetrics();
 
-      expect(result).toEqual({
+      expect(result).toMatchObject({
         nextAppointment: {
           id: 'appt-1',
           dateTime: mockNextAppt.dateTime,
-          time: expect.any(String),
           type: 'Control de Rutina',
           patient: {
             id: 'pat-1',
             firstName: 'Valentina',
             lastName: 'Pérez',
             fullName: 'Valentina Pérez',
-            age: expect.any(String),
           },
         },
         appointmentFunnel: {
@@ -85,6 +85,10 @@ describe('AnalyticsController', () => {
         unsignedRecords: 1,
         canceledToday: 2,
       });
+
+      // Campos derivados (hora formateada y edad) — dinámicos: se validan por tipo.
+      expect(result.nextAppointment?.time).toEqual(expect.any(String));
+      expect(result.nextAppointment?.patient.age).toEqual(expect.any(String));
 
       expect(mockPrismaService.client.appointment.findFirst).toHaveBeenCalledTimes(1);
       expect(mockPrismaService.client.appointment.count).toHaveBeenCalledTimes(5);

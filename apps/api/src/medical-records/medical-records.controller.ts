@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Post,
-  Req,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiOkResponse,
@@ -16,16 +7,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-
-
 import { Roles } from '../common/decorators/roles.decorator.js';
 
 import { CreateMedicalRecordDto } from './dto/create-medical-record.dto.js';
-import {
-  MedicalRecordsService,
-  type MedicalRecordWithDoctor,
-} from './medical-records.service.js';
-
+import { MedicalRecordsService, type MedicalRecordWithDoctor } from './medical-records.service.js';
 
 import type { JwtPayload } from '../auth/jwt.strategy.js';
 import type { FastifyRequest } from 'fastify';
@@ -80,9 +65,7 @@ export class MedicalRecordsController {
   @ApiOkResponse({
     description: 'List of clinical record evolutions.',
   })
-  findByPatientId(
-    @Param('patientId') patientId: string,
-  ): Promise<MedicalRecordWithDoctor[]> {
+  findByPatientId(@Param('patientId') patientId: string): Promise<MedicalRecordWithDoctor[]> {
     return this.medicalRecordsService.findByPatientId(patientId);
   }
 

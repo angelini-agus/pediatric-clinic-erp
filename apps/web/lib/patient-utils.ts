@@ -71,13 +71,9 @@ export function formatGuardianRelationship(rel: string): string {
  *
  * Capitalizes the first letter of the relationship label for natural prose.
  */
-export function formatGuardianDisplay(
-  fullName: string,
-  relationshipCode: string,
-): string {
+export function formatGuardianDisplay(fullName: string, relationshipCode: string): string {
   const label = formatGuardianRelationship(relationshipCode);
-  const capitalized =
-    label.charAt(0).toUpperCase() + label.slice(1).toLowerCase();
+  const capitalized = label.charAt(0).toUpperCase() + label.slice(1).toLowerCase();
   return `${fullName} (${capitalized})`;
 }
 

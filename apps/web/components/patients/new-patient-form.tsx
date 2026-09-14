@@ -14,10 +14,11 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { createPatient } from '@/lib/api';
+import { cn } from '@/lib/utils';
+
 import type { Resolver } from 'react-hook-form';
 import type { z } from 'zod';
-
-
 
 /**
  * Tipo del formulario = output type del schema (`z.infer`). Coincide con
@@ -31,9 +32,6 @@ import type { z } from 'zod';
  * `exactOptionalPropertyTypes: true`. Por eso casteamos el resolver abajo.
  */
 type NewPatientFormValues = z.infer<typeof patientCreateSchema>;
-
-import { createPatient } from '@/lib/api';
-import { cn } from '@/lib/utils';
 
 // ── Local UI label maps ───────────────────────────────────────────────────────
 
@@ -68,9 +66,7 @@ const triggerClass = (hasError: boolean): string =>
   cn(
     'w-full rounded-xl border px-3.5 py-2.5 text-sm text-slate-800 bg-white/80',
     'focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all',
-    hasError
-      ? 'border-rose-300 focus:ring-rose-200'
-      : 'border-slate-200',
+    hasError ? 'border-rose-300 focus:ring-rose-200' : 'border-slate-200',
   );
 
 const labelClass = 'text-xs font-semibold text-slate-600 uppercase tracking-wider';
@@ -202,9 +198,7 @@ export function NewPatientForm({ onCreated }: NewPatientFormProps = {}): React.J
             {...register('firstName')}
             className={triggerClass(Boolean(errors.firstName))}
           />
-          {errors.firstName?.message && (
-            <p className={errorClass}>{errors.firstName.message}</p>
-          )}
+          {errors.firstName?.message && <p className={errorClass}>{errors.firstName.message}</p>}
         </div>
 
         <div className="flex flex-col gap-1">
@@ -219,9 +213,7 @@ export function NewPatientForm({ onCreated }: NewPatientFormProps = {}): React.J
             {...register('lastName')}
             className={triggerClass(Boolean(errors.lastName))}
           />
-          {errors.lastName?.message && (
-            <p className={errorClass}>{errors.lastName.message}</p>
-          )}
+          {errors.lastName?.message && <p className={errorClass}>{errors.lastName.message}</p>}
         </div>
 
         <div className="flex flex-col gap-1">
@@ -303,7 +295,8 @@ export function NewPatientForm({ onCreated }: NewPatientFormProps = {}): React.J
 
         <div className="flex flex-col gap-1 md:col-span-2">
           <label htmlFor="bloodGroup" className={labelClass}>
-            Grupo Sanguíneo <span className="text-slate-300 font-normal normal-case">(opcional)</span>
+            Grupo Sanguíneo{' '}
+            <span className="text-slate-300 font-normal normal-case">(opcional)</span>
           </label>
           <select
             id="bloodGroup"
@@ -318,9 +311,7 @@ export function NewPatientForm({ onCreated }: NewPatientFormProps = {}): React.J
               </option>
             ))}
           </select>
-          {errors.bloodGroup?.message && (
-            <p className={errorClass}>{errors.bloodGroup.message}</p>
-          )}
+          {errors.bloodGroup?.message && <p className={errorClass}>{errors.bloodGroup.message}</p>}
         </div>
       </Section>
 
@@ -520,9 +511,7 @@ export function NewPatientForm({ onCreated }: NewPatientFormProps = {}): React.J
             {...register('apgarScore')}
             className={triggerClass(Boolean(errors.apgarScore))}
           />
-          {errors.apgarScore?.message && (
-            <p className={errorClass}>{errors.apgarScore.message}</p>
-          )}
+          {errors.apgarScore?.message && <p className={errorClass}>{errors.apgarScore.message}</p>}
         </div>
       </Section>
 

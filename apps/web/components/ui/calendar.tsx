@@ -1,9 +1,10 @@
 'use client';
 
-import * as React from 'react';
-import { DayPicker } from 'react-day-picker';
 import { es } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import * as React from 'react';
+import { DayPicker } from 'react-day-picker';
+
 import { cn } from '@/lib/utils';
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
@@ -18,7 +19,7 @@ function Calendar({
   classNames,
   showOutsideDays = true,
   ...props
-}: CalendarProps) {
+}: CalendarProps): React.JSX.Element {
   return (
     <DayPicker
       locale={es}
@@ -44,10 +45,7 @@ function Calendar({
         weekdays: 'flex',
         weekday: 'text-slate-400 rounded-md w-9 font-normal text-[0.8rem] text-center',
         week: 'flex w-full mt-1',
-        day: cn(
-          'relative p-0 text-center text-sm',
-          'focus-within:relative focus-within:z-20',
-        ),
+        day: cn('relative p-0 text-center text-sm', 'focus-within:relative focus-within:z-20'),
         day_button: cn(
           'inline-flex items-center justify-center rounded-xl text-sm font-medium',
           'h-9 w-9 transition-all',
@@ -61,8 +59,7 @@ function Calendar({
         outside:
           '[&>button]:text-slate-300 [&>button]:aria-selected:bg-brand/50 [&>button]:aria-selected:text-slate-500',
         disabled: '[&>button]:text-slate-300',
-        range_middle:
-          '[&>button]:aria-selected:bg-brand/10 [&>button]:aria-selected:text-brand',
+        range_middle: '[&>button]:aria-selected:bg-brand/10 [&>button]:aria-selected:text-brand',
         hidden: 'invisible',
         ...classNames,
       }}

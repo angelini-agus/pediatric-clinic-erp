@@ -3,10 +3,7 @@ import { ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
 
 import { Roles } from '../common/decorators/roles.decorator.js';
 
-import {
-  MedicalRecordsService,
-  type MedicalRecordsPage,
-} from './medical-records.service.js';
+import { MedicalRecordsService, type MedicalRecordsPage } from './medical-records.service.js';
 
 /**
  * GlobalMedicalRecordsController — REST endpoint for global clinical histories across all patients.

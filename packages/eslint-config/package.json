@@ -5,6 +5,7 @@
   "description": "Shared ESLint + Prettier configuration for the monorepo",
   "type": "commonjs",
   "exports": {
+    ".": "./index.js",
     "./base": "./index.js",
     "./next": "./next.js",
     "./nest": "./nest.js"

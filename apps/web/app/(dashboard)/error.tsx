@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 type DashboardErrorProps = {
   readonly error: Error & { digest?: string };
   readonly reset: () => void;
-}
+};
 
 /**
  * Dashboard Error Boundary — `(dashboard)/error.tsx`.
@@ -37,19 +37,14 @@ export default function DashboardError({ error, reset }: DashboardErrorProps): R
         </div>
       </div>
 
-      <h2 className="text-xl font-bold text-slate-900 mb-2">
-        No pudimos cargar el panel
-      </h2>
+      <h2 className="text-xl font-bold text-slate-900 mb-2">No pudimos cargar el panel</h2>
       <p className="text-sm text-slate-500 max-w-md mb-6 leading-relaxed">
-        Ocurrió un error inesperado al obtener los datos. Puede ser un
-        problema de conexión con el servidor. Intentá nuevamente y, si
-        persiste, contactá al administrador.
+        Ocurrió un error inesperado al obtener los datos. Puede ser un problema de conexión con el
+        servidor. Intentá nuevamente y, si persiste, contactá al administrador.
       </p>
 
       {error.digest && (
-        <p className="text-[11px] font-mono text-slate-400 mb-6">
-          Código de error: {error.digest}
-        </p>
+        <p className="text-[11px] font-mono text-slate-400 mb-6">Código de error: {error.digest}</p>
       )}
 
       <button

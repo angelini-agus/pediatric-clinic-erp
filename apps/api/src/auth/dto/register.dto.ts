@@ -1,5 +1,5 @@
-import { createZodDto } from 'nestjs-zod';
 import { registerSchema } from '@pediatric-erp/schemas';
+import { createZodDto } from 'nestjs-zod';
 
 /**
  * DTO for public user registration.

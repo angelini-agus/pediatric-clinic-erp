@@ -213,9 +213,7 @@ function authHeaders(accessToken?: string): Record<string, string> {
  * con el backend NestJS. Se conserva temporalmente para no romper imports
  * legacy; eliminarla en el siguiente PR de limpieza.
  */
-export async function login(
-  input: LoginInput,
-): Promise<LoginResponse> {
+export async function login(input: LoginInput): Promise<LoginResponse> {
   const res = await fetch(`${API_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -274,9 +272,7 @@ export async function getDashboardAnalytics(
  * Fetches today's active appointments from the NestJS API.
  * Server-side only (App Router).
  */
-export async function getTodaysAppointments(
-  accessToken?: string,
-): Promise<AppointmentResponse[]> {
+export async function getTodaysAppointments(accessToken?: string): Promise<AppointmentResponse[]> {
   try {
     const res = await fetch(`${API_URL}/appointments/today`, {
       cache: 'no-store',
@@ -284,7 +280,9 @@ export async function getTodaysAppointments(
     });
 
     if (!res.ok) {
-      console.error(`[api] GET /appointments/today failed: ${String(res.status)} ${res.statusText}`);
+      console.error(
+        `[api] GET /appointments/today failed: ${String(res.status)} ${res.statusText}`,
+      );
       return [];
     }
 
@@ -434,9 +432,7 @@ export async function createPatient(
 
   if (!res.ok) {
     const errorText = await res.text();
-    throw new Error(
-      `Failed to create patient: ${String(res.status)} ${errorText}`,
-    );
+    throw new Error(`Failed to create patient: ${String(res.status)} ${errorText}`);
   }
 
   const json: unknown = await res.json();
@@ -459,10 +455,10 @@ export async function getMedicalRecords(
   accessToken?: string,
 ): Promise<MedicalRecordResponse[]> {
   try {
-    const res = await fetch(
-      `${API_URL}/patients/${patientId}/records`,
-      { cache: 'no-store', headers: authHeaders(accessToken) },
-    );
+    const res = await fetch(`${API_URL}/patients/${patientId}/records`, {
+      cache: 'no-store',
+      headers: authHeaders(accessToken),
+    });
 
     if (!res.ok) {
       console.error(`[api] GET /patients/${patientId}/records failed: ${String(res.status)}`);
@@ -573,7 +569,9 @@ export async function getUpcomingAppointments(
     });
 
     if (!res.ok) {
-      console.error(`[api] GET /appointments/upcoming failed: ${String(res.status)} ${res.statusText}`);
+      console.error(
+        `[api] GET /appointments/upcoming failed: ${String(res.status)} ${res.statusText}`,
+      );
       return [];
     }
 
@@ -671,14 +669,12 @@ export async function getClinicSettings(
  *
  * Client-side safe: va por el proxy interno (`CLIENT_API_URL`).
  */
-export async function updateClinicSettings(
-  data: {
-    fullName?: string | undefined;
-    licenseNumber?: string | undefined;
-    specialty?: string | undefined;
-    clinicName?: string | undefined;
-  },
-): Promise<ClinicSettingsResponse> {
+export async function updateClinicSettings(data: {
+  fullName?: string | undefined;
+  licenseNumber?: string | undefined;
+  specialty?: string | undefined;
+  clinicName?: string | undefined;
+}): Promise<ClinicSettingsResponse> {
   const res = await fetch(`${CLIENT_API_URL}/settings`, {
     method: 'PATCH',
     headers: {

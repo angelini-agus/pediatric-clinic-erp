@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react';
-
 import { DashboardShell } from '@/components/layout/dashboard-shell';
 import { decodeAuthPayload } from '@/lib/jwt';
+
+import type { ReactNode } from 'react';
 
 /**
  * DashboardLayout — Server Component.
@@ -15,11 +15,7 @@ import { decodeAuthPayload } from '@/lib/jwt';
  * estado del Drawer móvil; este layout sigue siendo RSC puro para permitir
  * `cookies()` server-side.
  */
-export default function DashboardLayout({
-  children,
-}: {
-  children: ReactNode;
-}): React.JSX.Element {
+export default function DashboardLayout({ children }: { children: ReactNode }): React.JSX.Element {
   const user = decodeAuthPayload();
   return <DashboardShell user={user}>{children}</DashboardShell>;
 }

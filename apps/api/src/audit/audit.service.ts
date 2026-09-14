@@ -5,7 +5,6 @@ import { PrismaService } from '../prisma/prisma.service.js';
 
 import type { Prisma } from '@pediatric-erp/db';
 
-
 /**
  * Minimal input for an append-only AuditLog entry.
  *

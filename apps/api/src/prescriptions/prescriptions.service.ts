@@ -1,12 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import type { Prisma } from '@pediatric-erp/db';
 
 import { PrismaService } from '../prisma/prisma.service.js';
+
+import { PdfGeneratorService, type PrescriptionWithRelations } from './pdf-generator.service.js';
+
 import type { CreatePrescriptionDto } from './dto/create-prescription.dto.js';
-import {
-  PdfGeneratorService,
-  type PrescriptionWithRelations,
-} from './pdf-generator.service.js';
 
 export type { PrescriptionWithRelations };
 
@@ -33,10 +31,7 @@ export class PrescriptionsService {
    * @returns Created prescription record with relations
    * @throws NotFoundException if patient does not exist
    */
-  async create(
-    patientId: string,
-    dto: CreatePrescriptionDto,
-  ): Promise<PrescriptionWithRelations> {
+  async create(patientId: string, dto: CreatePrescriptionDto): Promise<PrescriptionWithRelations> {
     const patient = await this.prisma.client.patient.findFirst({
       where: { id: patientId, deletedAt: null },
     });
@@ -50,10 +45,10 @@ export class PrescriptionsService {
       const prescription = await tx.prescription.create({
         data: {
           patientId,
-          doctorId: dto['doctorId'],
-          medication: dto['medication'],
-          dosage: dto['dosage'],
-          instructions: dto['instructions'],
+          doctorId: dto.doctorId,
+          medication: dto.medication,
+          dosage: dto.dosage,
+          instructions: dto.instructions,
         },
         include: {
           patient: true,
@@ -74,12 +69,12 @@ export class PrescriptionsService {
           action: 'CREATE_PRESCRIPTION',
           entityName: 'Prescription',
           entityId: prescription.id,
-          userId: dto['doctorId'],
+          userId: dto.doctorId,
           patientId,
           payload: {
-            medication: dto['medication'],
-            dosage: dto['dosage'],
-            instructions: dto['instructions'],
+            medication: dto.medication,
+            dosage: dto.dosage,
+            instructions: dto.instructions,
           },
         },
       });
@@ -94,9 +89,7 @@ export class PrescriptionsService {
    * @param patientId - Patient CUID ID
    * @returns Array of prescriptions with doctor metadata
    */
-  async findByPatientId(
-    patientId: string,
-  ): Promise<PrescriptionWithRelations[]> {
+  async findByPatientId(patientId: string): Promise<PrescriptionWithRelations[]> {
     const patient = await this.prisma.client.patient.findFirst({
       where: { id: patientId, deletedAt: null },
     });
@@ -162,9 +155,7 @@ export class PrescriptionsService {
    * @param prescription - Prescription record with relations
    * @returns Buffer containing the PDF
    */
-  async generatePdfBuffer(
-    prescription: PrescriptionWithRelations,
-  ): Promise<Buffer> {
+  async generatePdfBuffer(prescription: PrescriptionWithRelations): Promise<Buffer> {
     return this.pdfGeneratorService.generatePrescriptionPdf(prescription);
   }
 }

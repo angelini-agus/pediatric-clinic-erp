@@ -37,14 +37,12 @@ function formatDateTime(date: Date): { date: string; time: string } {
 
 // ── Empty State ───────────────────────────────────────────────────────────────
 
-function EmptyState() {
+function EmptyState(): React.JSX.Element {
   return (
     <div className="flex flex-col items-center justify-center py-16 gap-3 text-slate-400">
       <CalendarOff className="h-10 w-10 text-slate-300" strokeWidth={1.5} />
       <p className="text-sm font-medium text-slate-500">No hay turnos próximos</p>
-      <p className="text-xs text-slate-400">
-        Los turnos agendados desde hoy aparecerán aquí.
-      </p>
+      <p className="text-xs text-slate-400">Los turnos agendados desde hoy aparecerán aquí.</p>
     </div>
   );
 }
@@ -58,7 +56,7 @@ function EmptyState() {
  * Fetches and displays all upcoming appointments (dateTime >= now)
  * in a glassmorphism table with status badges and inline status selector.
  */
-export default async function AgendaPage() {
+export default async function AgendaPage(): Promise<React.JSX.Element> {
   const appointments = await getUpcomingAppointments(getAuthToken());
 
   return (
@@ -70,16 +68,13 @@ export default async function AgendaPage() {
             <CalendarDays className="h-5 w-5 text-brand" />
             Agenda de Turnos
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Turnos próximos agendados en la clínica
-          </p>
+          <p className="text-xs text-slate-400 mt-0.5">Turnos próximos agendados en la clínica</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 bg-white/60 backdrop-blur-sm px-3.5 py-2 rounded-full shadow-sm">
             <Clock className="h-3.5 w-3.5 text-slate-500" />
             <span>
-              {appointments.length}{' '}
-              {appointments.length === 1 ? 'Turno' : 'Turnos'}
+              {appointments.length} {appointments.length === 1 ? 'Turno' : 'Turnos'}
             </span>
           </div>
           <NewAppointmentDialog />
@@ -121,9 +116,7 @@ export default async function AgendaPage() {
                         <TableCell className="text-slate-600 text-xs font-medium capitalize">
                           {date}
                         </TableCell>
-                        <TableCell className="font-semibold text-slate-700">
-                          {time}
-                        </TableCell>
+                        <TableCell className="font-semibold text-slate-700">{time}</TableCell>
                         <TableCell>
                           <Link href={`/patients/${appt.patient.id}`} className="group block">
                             <div className="font-medium text-slate-900 group-hover:underline group-hover:text-brand transition-colors cursor-pointer">

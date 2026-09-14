@@ -117,11 +117,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       if (isPrismaError) {
         return mapPrismaCodeToMessage(prismaCode);
       }
-      if (
-        httpResponse !== null &&
-        typeof httpResponse === 'object' &&
-        'message' in httpResponse
-      ) {
+      if (httpResponse !== null && typeof httpResponse === 'object' && 'message' in httpResponse) {
         return (httpResponse as { message: string | string[] }).message;
       }
       if (isHttpException) {
@@ -131,11 +127,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     })();
 
     const errorName: string | undefined = ((): string | undefined => {
-      if (
-        httpResponse !== null &&
-        typeof httpResponse === 'object' &&
-        'error' in httpResponse
-      ) {
+      if (httpResponse !== null && typeof httpResponse === 'object' && 'error' in httpResponse) {
         return (httpResponse as { error: string }).error;
       }
       return undefined;
@@ -160,4 +152,3 @@ export class AllExceptionsFilter implements ExceptionFilter {
     void reply.status(statusCode).send(responseBody);
   }
 }
-

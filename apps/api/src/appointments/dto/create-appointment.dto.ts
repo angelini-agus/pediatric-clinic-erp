@@ -1,5 +1,5 @@
-import { createZodDto } from 'nestjs-zod';
 import { appointmentCreateSchema } from '@pediatric-erp/schemas';
+import { createZodDto } from 'nestjs-zod';
 
 /**
  * DTO for creating a medical appointment.

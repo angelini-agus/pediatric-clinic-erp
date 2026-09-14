@@ -19,9 +19,7 @@ export const envSchema = z.object({
   DATABASE_URL: z
     .string()
     .url()
-    .describe(
-      'PostgreSQL connection string. Format: postgresql://user:password@host:port/dbname',
-    ),
+    .describe('PostgreSQL connection string. Format: postgresql://user:password@host:port/dbname'),
 
   // --- Authentication / JWT ---
   JWT_SECRET: z
@@ -47,9 +45,7 @@ export const envSchema = z.object({
     .describe('Maximum requests per THROTTLE_TTL_SECONDS'),
 
   // --- Logging ---
-  LOG_LEVEL: z
-    .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace'])
-    .default('info'),
+  LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 });
 
 /**
@@ -57,4 +53,3 @@ export const envSchema = z.object({
  * Use z.infer — DO NOT duplicate as an interface.
  */
 export type Env = z.infer<typeof envSchema>;
-

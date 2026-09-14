@@ -35,6 +35,7 @@ apps/web/
 ```
 
 **Rationale:**
+
 - `new-patient-form.tsx` owns form data, validation, submission, toast, `router.refresh()`
 - `new-patient-dialog.tsx` owns `isOpen` state, backdrop, Escape-key handling
 - Mirrors existing `NewMedicalRecordForm` pattern; each file stays under 200 lines
@@ -44,9 +45,11 @@ apps/web/
 ## Task 1: `NewPatientForm` — Form body component
 
 **Files:**
+
 - Create: `apps/web/components/patients/new-patient-form.tsx`
 
 **Interfaces:**
+
 - Consumes: nothing from other tasks
 - Produces: `export function NewPatientForm({ onSuccess }: NewPatientFormProps)` — calls `onSuccess()` after successful POST (800ms delay to show success toast)
 
@@ -81,16 +84,8 @@ const newPatientFormSchema = z.object({
     .refine((v) => new Date(v) <= new Date(), {
       message: 'La fecha no puede ser futura',
     }),
-  tutorName: z
-    .string()
-    .trim()
-    .min(2, 'El nombre del tutor es obligatorio')
-    .max(200),
-  contactInfo: z
-    .string()
-    .trim()
-    .min(6, 'El teléfono/contacto es obligatorio')
-    .max(30),
+  tutorName: z.string().trim().min(2, 'El nombre del tutor es obligatorio').max(200),
+  contactInfo: z.string().trim().min(6, 'El teléfono/contacto es obligatorio').max(30),
 });
 
 type NewPatientFormValues = z.infer<typeof newPatientFormSchema>;
@@ -130,8 +125,7 @@ export function NewPatientForm({ onSuccess }: NewPatientFormProps) {
     defaultValues: { fullName: '', birthDate: '', tutorName: '', contactInfo: '' },
   });
 
-  const API_URL =
-    process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001/api/v1';
+  const API_URL = process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001/api/v1';
 
   const onSubmit = async (data: NewPatientFormValues) => {
     setToast(null);
@@ -155,8 +149,7 @@ export function NewPatientForm({ onSuccess }: NewPatientFormProps) {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        const msg =
-          (err as { message?: string }).message ?? 'Error al registrar el paciente.';
+        const msg = (err as { message?: string }).message ?? 'Error al registrar el paciente.';
         setToast({ type: 'error', message: msg });
         return;
       }
@@ -194,9 +187,7 @@ export function NewPatientForm({ onSuccess }: NewPatientFormProps) {
             errors.fullName ? 'border-rose-300 focus:ring-rose-200' : 'border-slate-200',
           )}
         />
-        {errors.fullName && (
-          <p className="text-xs text-rose-500">{errors.fullName.message}</p>
-        )}
+        {errors.fullName && <p className="text-xs text-rose-500">{errors.fullName.message}</p>}
       </div>
 
       {/* Fecha de nacimiento */}
@@ -218,9 +209,7 @@ export function NewPatientForm({ onSuccess }: NewPatientFormProps) {
             errors.birthDate ? 'border-rose-300 focus:ring-rose-200' : 'border-slate-200',
           )}
         />
-        {errors.birthDate && (
-          <p className="text-xs text-rose-500">{errors.birthDate.message}</p>
-        )}
+        {errors.birthDate && <p className="text-xs text-rose-500">{errors.birthDate.message}</p>}
       </div>
 
       {/* Nombre del tutor */}
@@ -242,9 +231,7 @@ export function NewPatientForm({ onSuccess }: NewPatientFormProps) {
             errors.tutorName ? 'border-rose-300 focus:ring-rose-200' : 'border-slate-200',
           )}
         />
-        {errors.tutorName && (
-          <p className="text-xs text-rose-500">{errors.tutorName.message}</p>
-        )}
+        {errors.tutorName && <p className="text-xs text-rose-500">{errors.tutorName.message}</p>}
       </div>
 
       {/* Teléfono / Contacto */}
@@ -294,7 +281,11 @@ export function NewPatientForm({ onSuccess }: NewPatientFormProps) {
       <div className="flex items-center justify-end gap-2 pt-1">
         <button
           type="button"
-          onClick={() => { reset(); setToast(null); onSuccess(); }}
+          onClick={() => {
+            reset();
+            setToast(null);
+            onSuccess();
+          }}
           className="px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors rounded-xl hover:bg-slate-100"
         >
           Cancelar
@@ -323,9 +314,11 @@ export function NewPatientForm({ onSuccess }: NewPatientFormProps) {
 - [ ] **Step 2: Verify TypeScript compiles with no errors**
 
 Run from repo root:
+
 ```bash
 cd apps/web && npx tsc --noEmit 2>&1 | head -40
 ```
+
 Expected: no output. Fix any errors before proceeding.
 
 - [ ] **Step 3: Commit**
@@ -340,9 +333,11 @@ git commit -m "feat(web): add NewPatientForm with RHF + zodResolver and inline t
 ## Task 2: `NewPatientDialog` — Modal wrapper component
 
 **Files:**
+
 - Create: `apps/web/components/patients/new-patient-dialog.tsx`
 
 **Interfaces:**
+
 - Consumes: `NewPatientForm` from Task 1 — `import { NewPatientForm } from './new-patient-form'`
 - Produces: `export function NewPatientDialog()` — self-contained, no props
 
@@ -414,10 +409,7 @@ export function NewPatientDialog() {
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
               <div>
-                <h2
-                  id="np-dialog-title"
-                  className="text-base font-bold text-slate-900"
-                >
+                <h2 id="np-dialog-title" className="text-base font-bold text-slate-900">
                   Nuevo Paciente
                 </h2>
                 <p className="text-xs text-slate-400 mt-0.5">
@@ -452,6 +444,7 @@ export function NewPatientDialog() {
 ```bash
 cd apps/web && npx tsc --noEmit 2>&1 | head -40
 ```
+
 Expected: no output.
 
 - [ ] **Step 3: Commit**
@@ -466,13 +459,16 @@ git commit -m "feat(web): add NewPatientDialog modal with backdrop blur, Escape 
 ## Task 3: Wire `NewPatientDialog` into the patients page
 
 **Files:**
+
 - Modify: `apps/web/app/(dashboard)/patients/page.tsx`
 
 **Interfaces:**
+
 - Consumes: `NewPatientDialog` from Task 2 — `import { NewPatientDialog } from '@/components/patients/new-patient-dialog'`
 - Produces: updated `PatientsPage` with button in header row
 
 **Current file** (`apps/web/app/(dashboard)/patients/page.tsx`):
+
 ```tsx
 import { getPatients } from '@/lib/api';
 import { PatientsGrid } from '@/components/patients/patients-grid';
@@ -497,7 +493,9 @@ export default async function PatientsPage() {
           </p>
         </div>
         <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 bg-white/60 backdrop-blur-sm px-3.5 py-2 rounded-full shadow-sm">
-          <span>{patients.length} {patients.length === 1 ? 'Paciente' : 'Pacientes Registrados'}</span>
+          <span>
+            {patients.length} {patients.length === 1 ? 'Paciente' : 'Pacientes Registrados'}
+          </span>
         </div>
       </div>
 
@@ -536,7 +534,9 @@ export default async function PatientsPage() {
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 bg-white/60 backdrop-blur-sm px-3.5 py-2 rounded-full shadow-sm">
-            <span>{patients.length} {patients.length === 1 ? 'Paciente' : 'Pacientes Registrados'}</span>
+            <span>
+              {patients.length} {patients.length === 1 ? 'Paciente' : 'Pacientes Registrados'}
+            </span>
           </div>
           <NewPatientDialog />
         </div>
@@ -556,6 +556,7 @@ export default async function PatientsPage() {
 ```bash
 cd apps/web && npx tsc --noEmit 2>&1 | head -40
 ```
+
 Expected: no output.
 
 - [ ] **Step 3: Run a Next.js build to catch any import/module errors**
@@ -563,6 +564,7 @@ Expected: no output.
 ```bash
 cd apps/web && npx next build 2>&1 | tail -25
 ```
+
 Expected: build succeeds with route table showing `/patients`. No red error lines.
 
 - [ ] **Step 4: Commit**

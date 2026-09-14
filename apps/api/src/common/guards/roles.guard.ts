@@ -11,7 +11,6 @@ import { ROLES_KEY, type AppRole } from '../decorators/roles.decorator.js';
 
 import type { FastifyRequest } from 'fastify';
 
-
 /**
  * Type representing the JWT payload expected on the request
  * after passing through AuthGuard (to be implemented in Auth Sprint).
@@ -94,4 +93,3 @@ export class RolesGuard implements CanActivate {
     return true;
   }
 }
-

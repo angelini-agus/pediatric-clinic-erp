@@ -28,13 +28,15 @@ export const appointmentFunnelSchema = z.object({
 export const dashboardAnalyticsSchema = z.object({
   nextAppointment: nextAppointmentSchema.describe('Next scheduled appointment today or null'),
   appointmentFunnel: appointmentFunnelSchema.describe('Funnel metrics for today'),
-  unsignedRecords: z.number().int().nonnegative().describe('Completed appointments today without a signed medical record'),
+  unsignedRecords: z
+    .number()
+    .int()
+    .nonnegative()
+    .describe('Completed appointments today without a signed medical record'),
   canceledToday: z.number().int().nonnegative().describe('Canceled appointments today'),
 });
 
 /**
  * DashboardAnalyticsDto — Response DTO for GET /api/v1/analytics/dashboard.
  */
-export class DashboardAnalyticsDto extends createZodDto(
-  dashboardAnalyticsSchema,
-) {}
+export class DashboardAnalyticsDto extends createZodDto(dashboardAnalyticsSchema) {}

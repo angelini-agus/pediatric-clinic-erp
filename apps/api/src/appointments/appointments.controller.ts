@@ -19,9 +19,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-
 import { Roles } from '../common/decorators/roles.decorator.js';
-
 
 import {
   AppointmentsService,
@@ -33,7 +31,6 @@ import { UpdateAppointmentStatusDto } from './dto/update-appointment-status.dto.
 
 import type { JwtPayload } from '../auth/jwt.strategy.js';
 import type { FastifyRequest } from 'fastify';
-
 
 /**
  * AppointmentsController — REST endpoints for medical appointment management.
@@ -66,7 +63,7 @@ export class AppointmentsController {
   @ApiOperation({
     summary: "List today's active appointments",
     description:
-      "Returns all active appointments scheduled for today (00:00 to 23:59), including patient details and doctor metadata. Filters deletedAt: null.",
+      'Returns all active appointments scheduled for today (00:00 to 23:59), including patient details and doctor metadata. Filters deletedAt: null.',
   })
   @ApiOkResponse({
     description: "Today's active appointments with patient and doctor details.",
@@ -100,8 +97,7 @@ export class AppointmentsController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: 'Schedule new appointment',
-    description:
-      'Creates a new medical appointment record in the database. Validated via Zod.',
+    description: 'Creates a new medical appointment record in the database. Validated via Zod.',
   })
   @ApiCreatedResponse({
     description: 'Appointment scheduled successfully.',
@@ -167,4 +163,3 @@ export class AppointmentsController {
     await this.appointmentsService.softDelete(id, request.user.sub);
   }
 }
-

@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import type { ClinicSettings } from '@pediatric-erp/db';
+
 import { PrismaService } from '../prisma/prisma.service.js';
+
 import type { UpdateSettingsDto } from './dto/update-settings.dto.js';
+import type { ClinicSettings } from '@pediatric-erp/db';
 
 const SINGLETON_ID = 'singleton';
 

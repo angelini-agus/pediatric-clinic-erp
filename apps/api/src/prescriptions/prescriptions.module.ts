@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
+
 import { SettingsModule } from '../settings/settings.module.js';
+
 import { PdfGeneratorService } from './pdf-generator.service.js';
 import { PrescriptionsController } from './prescriptions.controller.js';
 import { PrescriptionsService } from './prescriptions.service.js';

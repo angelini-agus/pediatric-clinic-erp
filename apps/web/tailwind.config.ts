@@ -79,7 +79,8 @@ const config: Config = {
       },
       boxShadow: {
         soft: '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
-        'card-shell': '0 20px 60px -10px rgba(99, 102, 241, 0.12), 0 8px 32px -4px rgba(0, 0, 0, 0.08)',
+        'card-shell':
+          '0 20px 60px -10px rgba(99, 102, 241, 0.12), 0 8px 32px -4px rgba(0, 0, 0, 0.08)',
         'pill-active': '0 2px 8px 0 rgba(99, 102, 241, 0.20), 0 1px 3px 0 rgba(0,0,0,0.06)',
         glass: '0 4px 16px 0 rgba(99, 102, 241, 0.08)',
         'landing-badge': '0 8px 30px -4px rgba(12, 112, 117, 0.18), 0 2px 8px rgba(0,0,0,0.06)',
@@ -106,9 +107,18 @@ const config: Config = {
       },
       keyframes: {
         fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
-        slideUp: { '0%': { transform: 'translateY(8px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
-        floatBadge: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-8px)' } },
-        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-12px)' } },
+        slideUp: {
+          '0%': { transform: 'translateY(8px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        floatBadge: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-8px)' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-12px)' },
+        },
       },
     },
   },

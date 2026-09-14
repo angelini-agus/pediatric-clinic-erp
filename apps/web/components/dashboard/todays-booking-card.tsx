@@ -1,12 +1,6 @@
 import { CalendarDays, Clock, CalendarOff } from 'lucide-react';
 import Link from 'next/link';
 
-import { AppointmentStatusSelector } from './appointment-status-selector';
-
-import type { badgeVariants } from '@/components/ui/badge';
-import type { VariantProps } from 'class-variance-authority';
-
-import { Badge } from '@/components/ui/badge';
 import {
   Table,
   TableBody,
@@ -15,32 +9,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { getTodaysAppointments, type AppointmentResponse } from '@/lib/api';
+import { getTodaysAppointments } from '@/lib/api';
 import { getAuthToken } from '@/lib/auth';
 import { formatAge, formatGuardianDisplay } from '@/lib/patient-utils';
 
-
-
+import { AppointmentStatusSelector } from './appointment-status-selector';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
-
-type BadgeVariant = VariantProps<typeof badgeVariants>['variant'];
-
-/** Maps Prisma AppointmentStatus (UPPER_SNAKE_CASE) to Badge variant (camelCase). */
-const STATUS_TO_VARIANT: Record<AppointmentResponse['status'], BadgeVariant> = {
-  SCHEDULED: 'scheduled',
-  IN_PROGRESS: 'inProgress',
-  COMPLETED: 'completed',
-  CANCELED: 'canceled',
-};
-
-/** Maps Prisma AppointmentStatus to Spanish UI label. */
-const STATUS_LABEL: Record<AppointmentResponse['status'], string> = {
-  SCHEDULED: 'Programado',
-  IN_PROGRESS: 'En Curso',
-  COMPLETED: 'Completado',
-  CANCELED: 'Cancelado',
-};
 
 /**
  * Formats a Date to "HH:MM AM/PM" string (local 12h time).
@@ -54,10 +29,9 @@ function formatTime(date: Date): string {
   });
 }
 
-
 // ── Empty State ───────────────────────────────────────────────────────────────
 
-function EmptyState() {
+function EmptyState(): React.JSX.Element {
   return (
     <div className="flex flex-col items-center justify-center py-14 gap-3 text-slate-400">
       <CalendarOff className="h-10 w-10 text-slate-300" strokeWidth={1.5} />
@@ -74,15 +48,17 @@ function EmptyState() {
  * Fetches today's active appointments from the NestJS API and renders them
  * in a table with dynamic status badges and real patient/doctor data.
  */
-export async function TodaysBookingCard() {
+export async function TodaysBookingCard(): Promise<React.JSX.Element> {
   const appointments = await getTodaysAppointments(getAuthToken());
 
   return (
     <div
       className="relative overflow-hidden backdrop-blur-xl rounded-2xl shadow-sm p-5 will-change-transform"
-      style={{ background: 'radial-gradient(ellipse at 105% -5%, rgba(99,102,241,0.14) 0%, rgba(255,255,255,0.75) 50%)' }}
+      style={{
+        background:
+          'radial-gradient(ellipse at 105% -5%, rgba(99,102,241,0.14) 0%, rgba(255,255,255,0.75) 50%)',
+      }}
     >
-
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -90,9 +66,7 @@ export async function TodaysBookingCard() {
               <CalendarDays className="h-[18px] w-[18px] text-brand" />
               Turnos de Hoy
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Pacientes citados para la fecha actual
-            </p>
+            <p className="text-xs text-slate-400 mt-0.5">Pacientes citados para la fecha actual</p>
           </div>
           <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 bg-white/60 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm">
             <Clock className="h-3.5 w-3.5 text-slate-500" />
@@ -126,10 +100,7 @@ export async function TodaysBookingCard() {
                     {formatTime(appt.dateTime)}
                   </TableCell>
                   <TableCell>
-                    <Link
-                      href={`/patients/${appt.patient.id}`}
-                      className="group block"
-                    >
+                    <Link href={`/patients/${appt.patient.id}`} className="group block">
                       <div className="font-medium text-slate-900 group-hover:underline group-hover:text-brand transition-colors cursor-pointer">
                         {appt.patient.firstName} {appt.patient.lastName}
                       </div>
@@ -139,11 +110,12 @@ export async function TodaysBookingCard() {
                     </Link>
                   </TableCell>
                   <TableCell className="text-slate-500 text-xs">
-                    {formatGuardianDisplay(appt.patient.guardianFullName, appt.patient.guardianRelationship)}
+                    {formatGuardianDisplay(
+                      appt.patient.guardianFullName,
+                      appt.patient.guardianRelationship,
+                    )}
                   </TableCell>
-                  <TableCell className="text-slate-700 text-xs font-medium">
-                    {appt.type}
-                  </TableCell>
+                  <TableCell className="text-slate-700 text-xs font-medium">{appt.type}</TableCell>
                   <TableCell className="text-slate-500 text-xs">
                     Dr. {appt.doctor.fullName}
                   </TableCell>

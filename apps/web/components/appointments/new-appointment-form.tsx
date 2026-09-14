@@ -7,16 +7,15 @@ import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-
-import { DateTimePicker } from './DateTimePicker';
-import { DoctorSelect } from './DoctorSelect';
-import { errorClass, labelClass, triggerClass } from './form-styles';
-import { PatientSelect } from './PatientSelect';
-
 import { useAppointmentFormData } from '@/hooks/useAppointmentFormData';
 import { useSlotAvailability } from '@/hooks/useSlotAvailability';
 import { CLIENT_API_URL } from '@/lib/api';
 import { cn } from '@/lib/utils';
+
+import { DateTimePicker } from './date-time-picker';
+import { DoctorSelect } from './doctor-select';
+import { errorClass, labelClass, triggerClass } from './form-styles';
+import { PatientSelect } from './patient-select';
 
 // ── Schema ────────────────────────────────────────────────────────────────────
 
@@ -64,14 +63,11 @@ type ToastState = { type: 'success' | 'error'; message: string } | null;
  * sub-componentes. El orquestador no conoce detalles de slots, calendario
  * ni formato de slots — solo conecta los cables.
  */
-export function NewAppointmentForm({
-  onSuccess,
-}: NewAppointmentFormProps): React.JSX.Element {
+export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps): React.JSX.Element {
   const router = useRouter();
   const [toast, setToast] = useState<ToastState>(null);
 
-  const { patients, doctors, isLoading: isLoadingOptions } =
-    useAppointmentFormData();
+  const { patients, doctors, isLoading: isLoadingOptions } = useAppointmentFormData();
 
   const {
     register,
@@ -99,12 +95,12 @@ export function NewAppointmentForm({
   // Both patient AND doctor must be selected before date/time are accessible.
   const isDateTimeEnabled = Boolean(watchedPatientId) && Boolean(watchedDoctorId);
 
-  const { bookedTimes, isChecking: isCheckingAvailability } =
-    useSlotAvailability(watchedDoctorId, watchedDate);
+  const { bookedTimes, isChecking: isCheckingAvailability } = useSlotAvailability(
+    watchedDoctorId,
+    watchedDate,
+  );
 
-  const onSubmit = async (
-    data: NewAppointmentFormValues,
-  ): Promise<void> => {
+  const onSubmit = async (data: NewAppointmentFormValues): Promise<void> => {
     setToast(null);
 
     // Combine date + time into a single ISO DateTime string.
@@ -241,16 +237,13 @@ export function NewAppointmentForm({
           {...register('type')}
           className={cn(triggerClass(Boolean(errors.type)), 'placeholder:text-slate-300')}
         />
-        {errors.type?.message && (
-          <p className={errorClass}>{errors.type.message}</p>
-        )}
+        {errors.type?.message && <p className={errorClass}>{errors.type.message}</p>}
       </div>
 
       {/* ── Notas (opcional) ──────────────────────────────────────── */}
       <div className="flex flex-col gap-1">
         <label htmlFor="na-notes" className={labelClass}>
-          Notas{' '}
-          <span className="text-slate-300 font-normal normal-case">(opcional)</span>
+          Notas <span className="text-slate-300 font-normal normal-case">(opcional)</span>
         </label>
         <textarea
           id="na-notes"

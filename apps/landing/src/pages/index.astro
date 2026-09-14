@@ -1,19 +1,44 @@
 ---
-import { AboutDoctorSection } from '../components/AboutDoctorSection';
-import { ContactoSection } from '../components/ContactoSection';
-import { FaqSection } from '../components/FaqSection';
-import { HeroSection } from '../components/HeroSection';
-import { JourneySection } from '../components/JourneySection';
-import { LandingFooter } from '../components/LandingFooter';
-import { LandingNavbar } from '../components/LandingNavbar';
-import { TestimonialsSection } from '../components/TestimonialsSection';
-import { TurnosSection } from '../components/TurnosSection';
+import { AboutDoctorSection } from '../components/about-doctor-section';
+import { ContactoSection } from '../components/contacto-section';
+import { FaqSection } from '../components/faq-section';
+import { HeroSection } from '../components/hero-section';
+import { InstitutionalBand } from '../components/institutional-band';
+import { JourneySection } from '../components/journey-section';
+import { LandingFooter } from '../components/landing-footer';
+import { LandingNavbar } from '../components/landing-navbar';
+import { TestimonialsSection } from '../components/testimonials-section';
+import { TurnosSection } from '../components/turnos-section';
+import { WhatsAppFloat } from '../components/whatsapp-float';
 import '../styles/global.css';
 
 const SITE_URL = 'https://ipedierp.com.ar';
-const TITLE = 'iPediERP — Dra. Martinangelio | Pediatra en Pueblo Esther';
+const TITLE = 'Dra. Martinangelio — Pediatra particular en Pueblo Esther';
 const DESCRIPTION =
-  'Consultorio pediátrico de la Dra. Martinangelio en Pueblo Esther. Jefa del Servicio de Pediatría del Hospital Eva Perón. Atención personalizada y seguimiento integral.';
+  'Pediatra en Pueblo Esther. La misma médica de la preconcepción a la adolescencia. Jefa de Pediatría del Hospital Eva Perón. Sacá turno online.';
+
+// ── Datos estructurados (schema.org/Physician) ──────────────────────
+// Los placeholders [DIRECCIÓN] / [NÚMERO] se reemplazan cuando Agus
+// confirme los datos reales (mismos placeholders que src/config.ts).
+const PHYSICIAN_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'Physician',
+  name: 'Dra. Martinangelio — Consultorio Pediátrico',
+  description: DESCRIPTION,
+  url: SITE_URL,
+  image: `${SITE_URL}/hero-doctor.jpg`,
+  medicalSpecialty: 'Pediatric',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '[DIRECCIÓN]',
+    addressLocality: 'Pueblo Esther',
+    addressRegion: 'Santa Fe',
+    addressCountry: 'AR',
+  },
+  areaServed: { '@type': 'City', name: 'Pueblo Esther' },
+  // TODO (Agus): reemplazar [NÚMERO] por el WhatsApp real (formato +549...)
+  telephone: '[NÚMERO]',
+};
 ---
 
 <!doctype html>
@@ -25,22 +50,25 @@ const DESCRIPTION =
     <meta name="description" content={DESCRIPTION} />
     <meta
       name="keywords"
-      content="clínica pediátrica, pediatra, turno pediátrico, salud infantil, pediatría argentina"
+      content="pediatra Pueblo Esther, pediatra particular Rosario, pediatra zona sur, consultorio pediátrico, salud infantil, pediatría argentina"
     />
     <meta name="robots" content="index, follow, max-image-preview:large" />
-    <meta name="author" content="iPediERP" />
-    <meta name="theme-color" content="#EAF6F0" />
+    <meta name="author" content="Consultorio Martinangelio" />
+    <meta name="theme-color" content="#F4EEDF" />
     <link rel="canonical" href={SITE_URL} />
 
     <!-- OpenGraph -->
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="iPediERP" />
+    <meta property="og:site_name" content="Consultorio Martinangelio" />
     <meta property="og:locale" content="es_AR" />
     <meta property="og:title" content={TITLE} />
     <meta property="og:description" content={DESCRIPTION} />
     <meta property="og:url" content={SITE_URL} />
     <meta property="og:image" content={`${SITE_URL}/hero-doctor.jpg`} />
-    <meta property="og:image:alt" content="Dra. Martinangelio — Pediatra Jefe de iPediERP" />
+    <!-- TODO (Agus): reemplazar por una imagen OG dedicada de 1200x630 -->
+    <meta property="og:image:width" content="896" />
+    <meta property="og:image:height" content="1200" />
+    <meta property="og:image:alt" content="Dra. Martinangelio — Pediatra en Pueblo Esther" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -50,28 +78,34 @@ const DESCRIPTION =
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="32x32" />
+    <!-- TODO (Agus): agregar apple-touch-icon.png (180x180) en /public y linkearlo acá -->
 
-    <!-- Fonts: Bricolage Grotesque (display) + Plus Jakarta Sans (sans) -->
+    <!-- Datos estructurados (Physician) para rich snippets de búsqueda local -->
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(PHYSICIAN_JSON_LD)} />
+
+    <!-- Fonts: Fraunces (heading serif chunky) + Pacifico (script) + Nunito Sans (body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:wght@400..800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700;800&family=Pacifico&family=Nunito+Sans:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
 
     <style is:global>
       :root {
-        --font-bricolage: 'Bricolage Grotesque', system-ui, sans-serif;
-        --font-jakarta: 'Plus Jakarta Sans', system-ui, sans-serif;
+        --font-heading: 'Fraunces', Georgia, 'Times New Roman', serif;
+        --font-body: 'Nunito Sans', system-ui, sans-serif;
+        --font-script: 'Pacifico', cursive;
       }
       html {
         scroll-behavior: smooth;
       }
     </style>
   </head>
-  <body class="font-sans antialiased bg-paper text-ink-700">
+  <body class="font-sans antialiased bg-paper text-choco">
     <!--
-      Hero wrapper: fondo menta #EAF6F0, posición relativa para el wave superpuesto.
+      Hero wrapper: fondo crema #F4EEDF, posición relativa para el wave superpuesto.
       min-h-[100dvh] asegura altura mínima de viewport sin depender del navbar
       (que ahora es fixed y no ocupa espacio en el flujo).
     -->
@@ -81,39 +115,21 @@ const DESCRIPTION =
       el fondo menta y el fondo oscuro de AboutDoctorSection.
       h-[100dvh]: el hero ocupa exactamente un viewport, nunca más.
     -->
-    <div class="font-sans h-[100dvh] w-full flex flex-col relative" style="background-color: #EAF6F0; overflow: visible;">
+    <div class="font-sans h-[100dvh] w-full flex flex-col relative" style="background-color: #F4EEDF; overflow: visible;">
       <LandingNavbar client:load />
       <HeroSection />
     </div>
 
     <AboutDoctorSection />
+    <InstitutionalBand />
 
-    <!--
-      Wave divider: transición del bloque oscuro (#16192a) de vuelta a menta (#EAF6F0).
-      El wave va en el borde inferior de AboutDoctorSection.
-      Solo 2 waves en toda la página: este y el de arriba — no más.
-    -->
-    <div style="background-color: #16192a; line-height: 0;">
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 1440 56"
-        preserveAspectRatio="none"
-        xmlns="http://www.w3.org/2000/svg"
-        style="display:block; width:100%; height:56px;"
-      >
-        <path
-          d="M0,28 C240,56 480,56 720,28 C960,0 1200,0 1440,28 L1440,56 L0,56 Z"
-          fill="#EAF6F0"
-        />
-      </svg>
-    </div>
-
-    <JourneySection />
+    <JourneySection client:visible />
     <FaqSection />
     <TestimonialsSection />
     <TurnosSection />
     <ContactoSection />
     <LandingFooter />
+    <WhatsAppFloat />
     <script is:inline>
       (function () {
         document.documentElement.classList.add('js');

@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import PDFDocument from 'pdfkit';
-import type { Prisma } from '@pediatric-erp/db';
+
 import { SettingsService } from '../settings/settings.service.js';
+
+import type { Prisma } from '@pediatric-erp/db';
 
 export type PrescriptionWithRelations = Prisma.PrescriptionGetPayload<{
   include: {
@@ -32,28 +34,29 @@ export class PdfGeneratorService {
    * @param prescription - Prescription object with full patient and doctor details
    * @returns Promise resolving to the PDF Buffer
    */
-  async generatePrescriptionPdf(
-    prescription: PrescriptionWithRelations,
-  ): Promise<Buffer> {
+  async generatePrescriptionPdf(prescription: PrescriptionWithRelations): Promise<Buffer> {
     // Fetch clinic settings; fall back to safe defaults if not yet configured
     const settings = await this.settingsService.getSettings();
-    const clinicName = settings?.clinicName || 'iPediERP';
+    const clinicName = settings?.clinicName ?? 'iPediERP';
     const clinicSubtitle = settings?.clinicName
       ? `${settings.clinicName} — Sistema de Gestión Pediátrica`
       : 'Clínica Pediátrica & Especialidades Infanto-Juveniles';
-    const doctorFullName = settings?.fullName || prescription.doctor.fullName;
-    const doctorSpecialty =
-      settings?.specialty || prescription.doctor.specialty || 'Pediatra';
+    const doctorFullName = settings?.fullName ?? prescription.doctor.fullName;
+    const doctorSpecialty = settings?.specialty ?? prescription.doctor.specialty ?? 'Pediatra';
     const doctorLicense =
-      settings?.licenseNumber || prescription.doctor.medicalLicense || 'Mat. N/D';
+      settings?.licenseNumber ?? prescription.doctor.medicalLicense ?? 'Mat. N/D';
 
     return new Promise((resolve, reject) => {
       const doc = new PDFDocument({ size: 'A4', margin: 50 });
 
       const buffers: Buffer[] = [];
       doc.on('data', (chunk: Buffer) => buffers.push(chunk));
-      doc.on('end', () => resolve(Buffer.concat(buffers)));
-      doc.on('error', (err: Error) => reject(err));
+      doc.on('end', () => {
+        resolve(Buffer.concat(buffers));
+      });
+      doc.on('error', (err: Error) => {
+        reject(err);
+      });
 
       const { patient } = prescription;
 
@@ -64,17 +67,9 @@ export class PdfGeneratorService {
       const lightBg = '#F8FAFC';
 
       // ── Header: Clinic Branding ───────────────────────────────────────────
-      doc
-        .fillColor(primaryColor)
-        .fontSize(22)
-        .font('Helvetica-Bold')
-        .text(clinicName, 50, 50);
+      doc.fillColor(primaryColor).fontSize(22).font('Helvetica-Bold').text(clinicName, 50, 50);
 
-      doc
-        .fillColor(mutedColor)
-        .fontSize(10)
-        .font('Helvetica')
-        .text(clinicSubtitle, 50, 75);
+      doc.fillColor(mutedColor).fontSize(10).font('Helvetica').text(clinicSubtitle, 50, 75);
 
       // Header right: date & prescription ID
       const dateStr = new Date(prescription.createdAt).toLocaleDateString('es-AR', {
@@ -95,12 +90,7 @@ export class PdfGeneratorService {
         });
 
       // Divider Line
-      doc
-        .moveTo(50, 100)
-        .lineTo(545, 100)
-        .strokeColor('#E2E8F0')
-        .lineWidth(1)
-        .stroke();
+      doc.moveTo(50, 100).lineTo(545, 100).strokeColor('#E2E8F0').lineWidth(1).stroke();
 
       // ── Title ─────────────────────────────────────────────────────────────
       doc
@@ -138,10 +128,9 @@ export class PdfGeneratorService {
       const now = new Date();
       const birth = new Date(patient.dateOfBirth);
       const months =
-        (now.getFullYear() - birth.getFullYear()) * 12 +
-        (now.getMonth() - birth.getMonth());
+        (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth());
       const ageStr =
-        months < 24 ? `${months} meses` : `${Math.floor(months / 12)} años`;
+        months < 24 ? `${String(months)} meses` : `${String(Math.floor(months / 12))} años`;
 
       doc
         .fillColor(mutedColor)
@@ -152,11 +141,7 @@ export class PdfGeneratorService {
         .text(ageStr, 420, 157);
 
       // ── Prescription RP Section ───────────────────────────────────────────
-      doc
-        .fillColor(primaryColor)
-        .fontSize(20)
-        .font('Helvetica-Bold')
-        .text('Rp /', 50, 235);
+      doc.fillColor(primaryColor).fontSize(20).font('Helvetica-Bold').text('Rp /', 50, 235);
 
       // Medication & Dosage Box
       doc.rect(50, 265, 495, 200).fillAndStroke('#FFFFFF', '#CBD5E1');
@@ -198,12 +183,7 @@ export class PdfGeneratorService {
       // ── Doctor Signature Block ─────────────────────────────────────────────
       const sigY = 540;
 
-      doc
-        .moveTo(350, sigY)
-        .lineTo(520, sigY)
-        .strokeColor('#94A3B8')
-        .lineWidth(1)
-        .stroke();
+      doc.moveTo(350, sigY).lineTo(520, sigY).strokeColor('#94A3B8').lineWidth(1).stroke();
 
       doc
         .fillColor(textColor)

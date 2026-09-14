@@ -1,5 +1,6 @@
+import { ClipboardList, Pill, Activity, Stethoscope, type LucideIcon } from 'lucide-react';
+
 import type { MedicalRecordResponse } from '@/lib/api';
-import { ClipboardList, Pill, Activity, Stethoscope } from 'lucide-react';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -19,8 +20,6 @@ function formatDateTime(date: Date): { date: string; time: string } {
   };
 }
 
-import type { LucideIcon } from 'lucide-react';
-
 // ── Section block inside a record card ───────────────────────────────────────
 
 function RecordSection({
@@ -33,7 +32,7 @@ function RecordSection({
   title: string;
   content: string;
   accent: string;
-}) {
+}): React.JSX.Element {
   return (
     <div className={`rounded-xl border p-3 ${accent}`}>
       <div className="flex items-center gap-1.5 mb-1.5">
@@ -47,7 +46,7 @@ function RecordSection({
 
 // ── Empty State ───────────────────────────────────────────────────────────────
 
-function EmptyTimeline() {
+function EmptyTimeline(): React.JSX.Element {
   return (
     <div className="flex flex-col items-center justify-center py-14 gap-3 text-slate-400 bg-white/40 backdrop-blur-sm rounded-2xl border border-dashed border-slate-200">
       <ClipboardList className="h-10 w-10 text-slate-300" strokeWidth={1.5} />
@@ -61,11 +60,13 @@ function EmptyTimeline() {
 
 // ── Main Component ────────────────────────────────────────────────────────────
 
-interface MedicalRecordsTimelineProps {
+type MedicalRecordsTimelineProps = {
   records: MedicalRecordResponse[];
-}
+};
 
-export function MedicalRecordsTimeline({ records }: MedicalRecordsTimelineProps) {
+export function MedicalRecordsTimeline({
+  records,
+}: MedicalRecordsTimelineProps): React.JSX.Element {
   if (records.length === 0) return <EmptyTimeline />;
 
   return (
@@ -87,9 +88,7 @@ export function MedicalRecordsTimeline({ records }: MedicalRecordsTimelineProps)
                   : 'bg-white border-2 border-slate-200'
               }`}
             >
-              <Stethoscope
-                className={`h-4 w-4 ${isFirst ? 'text-white' : 'text-slate-400'}`}
-              />
+              <Stethoscope className={`h-4 w-4 ${isFirst ? 'text-white' : 'text-slate-400'}`} />
             </div>
 
             {/* Card */}
@@ -102,13 +101,9 @@ export function MedicalRecordsTimeline({ records }: MedicalRecordsTimelineProps)
                 </div>
                 {/* Doctor signature */}
                 <div className="shrink-0 text-right">
-                  <p className="text-xs font-semibold text-brand">
-                    Dr. {record.doctor.fullName}
-                  </p>
+                  <p className="text-xs font-semibold text-brand">Dr. {record.doctor.fullName}</p>
                   {record.doctor.medicalLicense && (
-                    <p className="text-[10px] text-slate-400">
-                      {record.doctor.medicalLicense}
-                    </p>
+                    <p className="text-[10px] text-slate-400">{record.doctor.medicalLicense}</p>
                   )}
                 </div>
               </div>

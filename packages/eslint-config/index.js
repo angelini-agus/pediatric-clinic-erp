@@ -7,14 +7,7 @@ const prettierConfig = require('eslint-config-prettier');
 /** @type {import('eslint').Linter.Config[]} */
 const baseConfig = [
   {
-    ignores: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/.next/**',
-      '**/*.js',
-      '**/*.mjs',
-      '**/*.cjs',
-    ],
+    ignores: ['**/node_modules/**', '**/dist/**', '**/.next/**', '**/*.js', '**/*.mjs', '**/*.cjs'],
   },
   {
     files: ['**/*.ts', '**/*.tsx'],
@@ -66,15 +59,7 @@ const baseConfig = [
       'import/order': [
         'error',
         {
-          groups: [
-            'builtin',
-            'external',
-            'internal',
-            'parent',
-            'sibling',
-            'index',
-            'type',
-          ],
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'type'],
           'newlines-between': 'always',
           alphabetize: { order: 'asc', caseInsensitive: true },
         },

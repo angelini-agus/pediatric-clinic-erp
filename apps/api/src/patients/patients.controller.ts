@@ -20,7 +20,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-
 import { Roles } from '../common/decorators/roles.decorator.js';
 
 import { CreatePatientDto } from './dto/create-patient.dto.js';
@@ -177,4 +176,3 @@ export class PatientsController {
     await this.patientsService.softDelete(id, request.user.sub);
   }
 }
-

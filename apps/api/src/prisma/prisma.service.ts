@@ -1,6 +1,6 @@
 import { Injectable, type OnModuleInit } from '@nestjs/common';
-
 import { prisma } from '@pediatric-erp/db';
+
 import type { PrismaClient } from '@pediatric-erp/db';
 
 /**
@@ -24,4 +24,3 @@ export class PrismaService implements OnModuleInit {
     await this.client.$connect();
   }
 }
-

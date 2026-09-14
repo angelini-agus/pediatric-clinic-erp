@@ -29,7 +29,8 @@ export class DoctorsController {
   @Get()
   @ApiOperation({
     summary: 'List active doctors',
-    description: 'Returns all active (deletedAt: null) users with role DOCTOR, ordered by fullName.',
+    description:
+      'Returns all active (deletedAt: null) users with role DOCTOR, ordered by fullName.',
   })
   @ApiOkResponse({ description: 'List of active doctors.' })
   findAll(): Promise<DoctorListItem[]> {

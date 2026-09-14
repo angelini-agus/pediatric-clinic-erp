@@ -4,9 +4,6 @@ import { Check, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import type { AppointmentStatus } from '@pediatric-erp/schemas';
-import type { VariantProps } from 'class-variance-authority';
-
 import { Badge, type badgeVariants } from '@/components/ui/badge';
 import {
   DropdownMenu,
@@ -17,6 +14,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { CLIENT_API_URL } from '@/lib/api';
 import { cn } from '@/lib/utils';
+
+import type { AppointmentStatus } from '@pediatric-erp/schemas';
+import type { VariantProps } from 'class-variance-authority';
 
 type BadgeVariant = VariantProps<typeof badgeVariants>['variant'];
 
@@ -78,8 +78,7 @@ export function AppointmentStatusSelector({
   currentStatus,
 }: AppointmentStatusSelectorProps): React.JSX.Element {
   const router = useRouter();
-  const [selectedStatus, setSelectedStatus] =
-    useState<AppointmentStatus>(currentStatus);
+  const [selectedStatus, setSelectedStatus] = useState<AppointmentStatus>(currentStatus);
   const [isUpdating, setIsUpdating] = useState(false);
 
   // Keep local state in sync with the prop when it changes upstream
@@ -88,9 +87,7 @@ export function AppointmentStatusSelector({
     setSelectedStatus(currentStatus);
   }, [currentStatus]);
 
-  const handleStatusChange = async (
-    newStatus: AppointmentStatus,
-  ): Promise<void> => {
+  const handleStatusChange = async (newStatus: AppointmentStatus): Promise<void> => {
     if (newStatus === selectedStatus || isUpdating) return;
 
     const previousStatus = selectedStatus;
@@ -98,19 +95,14 @@ export function AppointmentStatusSelector({
     setIsUpdating(true);
 
     try {
-      const res = await fetch(
-        `${CLIENT_API_URL}/appointments/${appointmentId}/status`,
-        {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: newStatus }),
-        },
-      );
+      const res = await fetch(`${CLIENT_API_URL}/appointments/${appointmentId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
 
       if (!res.ok) {
-        console.error(
-          `[status-selector] PATCH failed: ${String(res.status)}`,
-        );
+        console.error(`[status-selector] PATCH failed: ${String(res.status)}`);
         setSelectedStatus(previousStatus); // Revert
         return;
       }
@@ -128,11 +120,7 @@ export function AppointmentStatusSelector({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger
-        asChild
-        disabled={isUpdating}
-        aria-label={triggerLabel}
-      >
+      <DropdownMenuTrigger asChild disabled={isUpdating} aria-label={triggerLabel}>
         <button
           type="button"
           className={cn(
@@ -145,9 +133,7 @@ export function AppointmentStatusSelector({
             className="cursor-pointer hover:shadow-xs flex items-center gap-1 py-1 px-3 text-xs"
           >
             <span>{STATUS_LABELS[selectedStatus]}</span>
-            {isUpdating ? (
-              <Loader2 className="h-3 w-3 animate-spin text-current" />
-            ) : null}
+            {isUpdating ? <Loader2 className="h-3 w-3 animate-spin text-current" /> : null}
           </Badge>
         </button>
       </DropdownMenuTrigger>

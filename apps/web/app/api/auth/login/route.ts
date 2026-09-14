@@ -3,7 +3,6 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-
 /**
  * POST /api/auth/login
  *
@@ -65,10 +64,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   } catch (error) {
     // ECONNREFUSED / DNS failure / timeout — el backend NestJS está caído
     // o el NEXT_PUBLIC_API_URL apunta a un host inalcanzable.
-    console.error(
-      `[auth/login] upstream unreachable at ${API_BASE_URL}/auth/login:`,
-      error,
-    );
+    console.error(`[auth/login] upstream unreachable at ${API_BASE_URL}/auth/login:`, error);
     return NextResponse.json(
       {
         error: 'UPSTREAM_UNREACHABLE',
@@ -96,9 +92,15 @@ export async function POST(request: Request): Promise<NextResponse> {
   const validation = loginResponseSchema.safeParse(rawJson);
 
   if (!validation.success) {
-    console.error('[auth/login] upstream response failed schema validation:', validation.error.flatten());
+    console.error(
+      '[auth/login] upstream response failed schema validation:',
+      validation.error.flatten(),
+    );
     return NextResponse.json(
-      { error: 'UPSTREAM_INVALID_RESPONSE', message: 'Respuesta inesperada del servicio de autenticación.' },
+      {
+        error: 'UPSTREAM_INVALID_RESPONSE',
+        message: 'Respuesta inesperada del servicio de autenticación.',
+      },
       { status: 502 },
     );
   }

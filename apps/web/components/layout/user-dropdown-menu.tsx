@@ -5,8 +5,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import type { AuthUser } from '@pediatric-erp/schemas';
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +14,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { getUserInitials } from '@/lib/utils';
+
+import type { AuthUser } from '@pediatric-erp/schemas';
 
 type UserDropdownMenuProps = {
   variant?: 'sidebar' | 'header';
@@ -75,14 +75,8 @@ export function UserDropdownMenu({
               {initials}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-xs font-semibold text-slate-900 truncate">
-                {fullName}
-              </div>
-              {roleLabel && (
-                <div className="text-[10px] text-slate-500 truncate">
-                  {roleLabel}
-                </div>
-              )}
+              <div className="text-xs font-semibold text-slate-900 truncate">{fullName}</div>
+              {roleLabel && <div className="text-[10px] text-slate-500 truncate">{roleLabel}</div>}
             </div>
           </button>
         ) : (
@@ -106,14 +100,10 @@ export function UserDropdownMenu({
         <DropdownMenuLabel className="px-3 py-2">
           <div className="font-semibold text-xs text-slate-900">{fullName}</div>
           {email && (
-            <div className="text-[10px] font-normal text-slate-500 lowercase truncate">
-              {email}
-            </div>
+            <div className="text-[10px] font-normal text-slate-500 lowercase truncate">{email}</div>
           )}
           {roleLabel && (
-            <div className="text-[10px] font-normal text-slate-400 mt-0.5">
-              {roleLabel}
-            </div>
+            <div className="text-[10px] font-normal text-slate-400 mt-0.5">{roleLabel}</div>
           )}
         </DropdownMenuLabel>
 

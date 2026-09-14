@@ -20,7 +20,6 @@ import { TOKEN_COOKIE_NAME } from './api';
 
 import type { AuthUser } from '@pediatric-erp/schemas';
 
-
 /**
  * Decoded JWT payload as exported by the NestJS auth endpoint.
  * Fields are optional because we don't trust the runtime shape strictly —
@@ -115,4 +114,3 @@ export function decodeAuthPayload(): AuthUser | null {
 
   return { id, email, fullName, role };
 }
-

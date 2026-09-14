@@ -35,7 +35,10 @@ export const runtime = 'nodejs';
 
 const TOKEN_COOKIE_NAME = 'token';
 
-const BACKEND_BASE_URL = (process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001').replace(/\/+$/, '');
+const BACKEND_BASE_URL = (process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001').replace(
+  /\/+$/,
+  '',
+);
 
 /**
  * Headers que NO deben reenviarse al upstream ni al cliente.

@@ -5,14 +5,8 @@ import { es } from 'date-fns/locale';
 import { CalendarIcon, Clock } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-import { errorClass, labelClass, triggerClass } from './form-styles';
-
 import { Calendar } from '@/components/ui/calendar';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -21,6 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+import { errorClass, labelClass, triggerClass } from './form-styles';
 
 type TimeSlot = { value: string; label: string };
 
@@ -73,15 +68,9 @@ const TIME_SLOTS: TimeSlot[] = ((): TimeSlot[] => {
  */
 export function getCalendarDefaultMonth(): Date {
   const today = new Date();
-  const daysInCurrentMonth = new Date(
-    today.getFullYear(),
-    today.getMonth() + 1,
-    0,
-  ).getDate();
+  const daysInCurrentMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
   const daysRemaining = daysInCurrentMonth - today.getDate();
-  return daysRemaining < 7
-    ? new Date(today.getFullYear(), today.getMonth() + 1, 1)
-    : today;
+  return daysRemaining < 7 ? new Date(today.getFullYear(), today.getMonth() + 1, 1) : today;
 }
 
 /**

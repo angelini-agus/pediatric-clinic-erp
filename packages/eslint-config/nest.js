@@ -17,10 +17,7 @@ const nestConfig = [
       ],
 
       // Allow empty constructors (DI injection pattern)
-      '@typescript-eslint/no-empty-function': [
-        'error',
-        { allow: ['constructors'] },
-      ],
+      '@typescript-eslint/no-empty-function': ['error', { allow: ['constructors'] }],
 
       // NestJS modules use decorators that can look like "unused" class members
       '@typescript-eslint/no-extraneous-class': 'off',

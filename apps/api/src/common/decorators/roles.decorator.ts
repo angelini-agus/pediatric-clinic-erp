@@ -18,12 +18,7 @@ import { SetMetadata } from '@nestjs/common';
  * - SECRETARY:   Management of appointments and basic patient data
  * - PATIENT:     Read-only access to own data
  */
-export type AppRole =
-  | 'SUPER_ADMIN'
-  | 'ADMIN'
-  | 'DOCTOR'
-  | 'SECRETARY'
-  | 'PATIENT';
+export type AppRole = 'SUPER_ADMIN' | 'ADMIN' | 'DOCTOR' | 'SECRETARY' | 'PATIENT';
 
 export const ROLES_KEY = 'roles';
 
@@ -39,4 +34,3 @@ export const ROLES_KEY = 'roles';
  */
 export const Roles = (...roles: AppRole[]): MethodDecorator & ClassDecorator =>
   SetMetadata(ROLES_KEY, roles);
-

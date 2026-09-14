@@ -1,28 +1,25 @@
-import type { Metadata } from 'next';
-
 import { SettingsForm } from '@/components/settings/settings-form';
 import { getClinicSettings } from '@/lib/api';
 import { getAuthToken } from '@/lib/auth';
 
+import type { Metadata } from 'next';
+
 export const metadata: Metadata = {
   title: 'Configuración | iPediERP',
-  description:
-    'Configuración del perfil médico y datos de la clínica para la emisión de recetas.',
+  description: 'Configuración del perfil médico y datos de la clínica para la emisión de recetas.',
 };
 
-export default async function SettingsPage() {
+export default async function SettingsPage(): Promise<React.JSX.Element> {
   const settings = await getClinicSettings(getAuthToken());
 
   return (
     <div className="space-y-8">
       {/* Page Header */}
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
-          Configuración
-        </h1>
+        <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Configuración</h1>
         <p className="text-sm text-slate-500">
-          Administrá los datos del médico y la clínica. Esta información
-          aparecerá en las recetas PDF generadas.
+          Administrá los datos del médico y la clínica. Esta información aparecerá en las recetas
+          PDF generadas.
         </p>
       </div>
 
@@ -42,9 +39,8 @@ export default async function SettingsPage() {
           />
         </svg>
         <p className="text-sm text-indigo-700">
-          Los cambios se reflejarán en las{' '}
-          <strong>próximas recetas PDF</strong> emitidas. Las recetas ya
-          generadas no se modificarán.
+          Los cambios se reflejarán en las <strong>próximas recetas PDF</strong> emitidas. Las
+          recetas ya generadas no se modificarán.
         </p>
       </div>
 

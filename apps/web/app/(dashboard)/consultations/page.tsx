@@ -47,14 +47,11 @@ export default function ConsultationsPage(): React.JSX.Element {
           </div>
 
           <div className="space-y-2">
-            <h2 className="text-lg font-bold text-slate-900">
-              Módulo en construcción
-            </h2>
+            <h2 className="text-lg font-bold text-slate-900">Módulo en construcción</h2>
             <p className="text-sm text-slate-500 leading-relaxed">
-              El flujo completo de consultas, evoluciones y firma de
-              historias clínicas está siendo desarrollado. Mientras
-              tanto, podés acceder a las evoluciones de cada paciente
-              desde su historia clínica individual.
+              El flujo completo de consultas, evoluciones y firma de historias clínicas está siendo
+              desarrollado. Mientras tanto, podés acceder a las evoluciones de cada paciente desde
+              su historia clínica individual.
             </p>
           </div>
 

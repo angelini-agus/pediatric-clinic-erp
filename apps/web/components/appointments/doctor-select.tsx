@@ -2,40 +2,38 @@
 
 import { errorClass, labelClass, triggerClass } from './form-styles';
 
-import type { PatientResponse } from '@/lib/api';
+import type { DoctorOption } from '@/lib/api';
 
-
-type PatientSelectProps = {
+type DoctorSelectProps = {
   id: string;
   /** Stable selector for E2E tests (anti-fragile UI automation). */
   testId: string;
   value: string;
   onChange: (value: string) => void;
-  patients: PatientResponse[];
+  doctors: DoctorOption[];
   isLoading: boolean;
   errorMessage?: string | undefined;
 };
 
 /**
- * PatientSelect — native `<select>` bound to react-hook-form.
+ * DoctorSelect — native `<select>` for active doctors.
  *
- * Kept as a presentational component so the parent form stays focused on
- * orchestration (schema, submit, toast) — this component only renders UI
- * and forwards the change upward.
+ * Renders `fullName — specialty` when the specialty is set, otherwise
+ * just `fullName`. Disabled while the dropdown options are loading.
  */
-export function PatientSelect({
+export function DoctorSelect({
   id,
   testId,
   value,
   onChange,
-  patients,
+  doctors,
   isLoading,
   errorMessage,
-}: PatientSelectProps): React.JSX.Element {
+}: DoctorSelectProps): React.JSX.Element {
   return (
     <div className="flex flex-col gap-1">
       <label htmlFor={id} className={labelClass}>
-        Paciente <span className="text-rose-500">*</span>
+        Médico <span className="text-rose-500">*</span>
       </label>
       <select
         id={id}
@@ -47,12 +45,11 @@ export function PatientSelect({
         disabled={isLoading}
         className={`${triggerClass(Boolean(errorMessage))} disabled:opacity-50 disabled:cursor-wait`}
       >
-        <option value="">
-          {isLoading ? 'Cargando pacientes...' : 'Seleccioná un paciente'}
-        </option>
-        {patients.map((p) => (
-          <option key={p.id} value={p.id}>
-            {p.firstName} {p.lastName}
+        <option value="">{isLoading ? 'Cargando médicos...' : 'Seleccioná un médico'}</option>
+        {doctors.map((d) => (
+          <option key={d.id} value={d.id}>
+            {d.fullName}
+            {d.specialty ? ` — ${d.specialty}` : ''}
           </option>
         ))}
       </select>

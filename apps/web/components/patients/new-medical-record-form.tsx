@@ -17,10 +17,7 @@ const formSchema = z.object({
     .trim()
     .min(1, 'El diagnóstico es obligatorio')
     .max(500, 'El diagnóstico no puede superar los 500 caracteres'),
-  notes: z
-    .string()
-    .trim()
-    .min(1, 'Las notas clínicas son obligatorias'),
+  notes: z.string().trim().min(1, 'Las notas clínicas son obligatorias'),
   treatment: z.string().trim().optional(),
   prescription: z.string().trim().optional(),
 });
@@ -31,13 +28,13 @@ type FormValues = z.infer<typeof formSchema>;
 type NewMedicalRecordFormProps = {
   patientId: string;
   doctorId: string;
-}
+};
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export function NewMedicalRecordForm({
   patientId,
   doctorId,
-}: NewMedicalRecordFormProps) {
+}: NewMedicalRecordFormProps): React.JSX.Element {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
@@ -46,9 +43,11 @@ export function NewMedicalRecordForm({
     type: 'success' | 'error';
   } | null>(null);
 
-  const showToast = (message: string, type: 'success' | 'error') => {
+  const showToast = (message: string, type: 'success' | 'error'): void => {
     setToast({ message, type });
-    setTimeout(() => setToast(null), 3500);
+    setTimeout(() => {
+      setToast(null);
+    }, 3500);
   };
 
   const {
@@ -66,7 +65,7 @@ export function NewMedicalRecordForm({
     },
   });
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: FormValues): Promise<void> => {
     setApiError(null);
     try {
       await createMedicalRecord(patientId, {
@@ -82,8 +81,7 @@ export function NewMedicalRecordForm({
       showToast('Historia clínica firmada y guardada correctamente', 'success');
       router.refresh();
     } catch (err) {
-      const errorMsg =
-        err instanceof Error ? err.message : 'Error al guardar la evolución médica.';
+      const errorMsg = err instanceof Error ? err.message : 'Error al guardar la evolución médica.';
       setApiError(errorMsg);
       showToast('Error al firmar la historia clínica', 'error');
     }
@@ -115,7 +113,9 @@ export function NewMedicalRecordForm({
         {/* Header — toggleable button */}
         <button
           type="button"
-          onClick={() => { setIsOpen((prev) => !prev); }}
+          onClick={() => {
+            setIsOpen((prev) => !prev);
+          }}
           className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/40 transition-colors"
           aria-expanded={isOpen}
         >
@@ -141,7 +141,7 @@ export function NewMedicalRecordForm({
         {/* Form — expanded state */}
         {isOpen && (
           <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={(e) => void handleSubmit(onSubmit)(e)}
             className="px-5 pb-5 pt-1 border-t border-slate-100 flex flex-col gap-4"
             noValidate
           >
@@ -188,9 +188,7 @@ export function NewMedicalRecordForm({
                   errors.notes ? 'border-rose-300 focus:ring-rose-200' : 'border-slate-200',
                 )}
               />
-              {errors.notes && (
-                <p className="text-xs text-rose-500">{errors.notes.message}</p>
-              )}
+              {errors.notes && <p className="text-xs text-rose-500">{errors.notes.message}</p>}
             </div>
 
             {/* Treatment (optional) */}
@@ -199,7 +197,8 @@ export function NewMedicalRecordForm({
                 htmlFor="treatment"
                 className="text-xs font-semibold text-slate-600 uppercase tracking-wider"
               >
-                Tratamiento <span className="text-slate-300 font-normal normal-case">(opcional)</span>
+                Tratamiento{' '}
+                <span className="text-slate-300 font-normal normal-case">(opcional)</span>
               </label>
               <textarea
                 id="treatment"
@@ -216,7 +215,8 @@ export function NewMedicalRecordForm({
                 htmlFor="prescription"
                 className="text-xs font-semibold text-slate-600 uppercase tracking-wider"
               >
-                Prescripción <span className="text-slate-300 font-normal normal-case">(opcional)</span>
+                Prescripción{' '}
+                <span className="text-slate-300 font-normal normal-case">(opcional)</span>
               </label>
               <textarea
                 id="prescription"
@@ -238,7 +238,11 @@ export function NewMedicalRecordForm({
             <div className="flex items-center justify-end gap-2 pt-1">
               <button
                 type="button"
-                onClick={() => { reset(); setIsOpen(false); setApiError(null); }}
+                onClick={() => {
+                  reset();
+                  setIsOpen(false);
+                  setApiError(null);
+                }}
                 className="px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors rounded-xl hover:bg-slate-100"
               >
                 Cancelar

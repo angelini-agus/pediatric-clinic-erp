@@ -5,6 +5,7 @@
 **Goal:** Build the full Agenda page at `/appointments` with a glassmorphism table of upcoming appointments and a "+ Nuevo Turno" modal with patient-select combobox, datetime picker, and doctor select.
 
 **Architecture:** 4 tasks, all sequential (each task depends on the previous):
+
 1. **API: `GET /api/v1/appointments/upcoming`** — new NestJS endpoint + `lib/api.ts` fetcher
 2. **API: `GET /api/v1/doctors`** — new NestJS endpoint to list users with role DOCTOR for the form's doctor dropdown
 3. **Web: `AppointmentsPage`** — Server Component with glassmorphism table reusing existing `Badge`, `Table`, and `AppointmentStatusSelector`
@@ -57,11 +58,13 @@ apps/web/components/appointments/
 ## Task 1: API — `GET /api/v1/appointments/upcoming` endpoint
 
 **Files:**
+
 - Modify: `apps/api/src/appointments/appointments.service.ts`
 - Modify: `apps/api/src/appointments/appointments.controller.ts`
 - Modify: `apps/web/lib/api.ts`
 
 **Interfaces:**
+
 - Produces:
   - `AppointmentsService.findUpcoming(): Promise<AppointmentWithDetails[]>` — returns appointments with `dateTime >= now`, ordered ASC, `deletedAt: null`, includes patient + doctor
   - `GET /api/v1/appointments/upcoming` → `200 AppointmentWithDetails[]`
@@ -167,6 +170,7 @@ export async function getUpcomingAppointments(): Promise<AppointmentResponse[]> 
 ```bash
 cd apps/api && npx tsc --noEmit 2>&1 | head -40
 ```
+
 Expected: no output.
 
 - [ ] **Step 5: Commit**
@@ -181,6 +185,7 @@ git commit -m "feat(api,web): add GET /appointments/upcoming endpoint and getUpc
 ## Task 2: API — `GET /api/v1/doctors` endpoint + `getDoctors()` fetcher
 
 **Files:**
+
 - Create: `apps/api/src/doctors/doctors.module.ts`
 - Create: `apps/api/src/doctors/doctors.controller.ts`
 - Create: `apps/api/src/doctors/doctors.service.ts`
@@ -188,6 +193,7 @@ git commit -m "feat(api,web): add GET /appointments/upcoming endpoint and getUpc
 - Modify: `apps/web/lib/api.ts`
 
 **Interfaces:**
+
 - Produces:
   - `DoctorsService.findAll(): Promise<{ id: string; fullName: string; specialty: string | null; medicalLicense: string | null }[]>`
   - `GET /api/v1/doctors` → `200` array of doctor objects (subset of User fields)
@@ -262,7 +268,8 @@ export class DoctorsController {
   @Get()
   @ApiOperation({
     summary: 'List active doctors',
-    description: 'Returns all active (deletedAt: null) users with role DOCTOR, ordered by fullName.',
+    description:
+      'Returns all active (deletedAt: null) users with role DOCTOR, ordered by fullName.',
   })
   @ApiOkResponse({ description: 'List of active doctors.' })
   findAll(): Promise<DoctorListItem[]> {
@@ -352,6 +359,7 @@ export async function getDoctors(): Promise<DoctorOption[]> {
 cd apps/api && npx tsc --noEmit 2>&1 | head -40
 cd apps/web && npx tsc --noEmit 2>&1 | head -40
 ```
+
 Expected: no output from either.
 
 - [ ] **Step 7: Commit**
@@ -366,9 +374,11 @@ git commit -m "feat(api,web): add GET /doctors endpoint with DoctorsModule and g
 ## Task 3: Web — `AgendaPage` Server Component
 
 **Files:**
+
 - Create: `apps/web/app/(dashboard)/appointments/page.tsx`
 
 **Interfaces:**
+
 - Consumes:
   - `getUpcomingAppointments()` from `@/lib/api` (Task 1)
   - `AppointmentStatusSelector` from `@/components/dashboard/appointment-status-selector`
@@ -449,9 +459,7 @@ function EmptyState() {
     <div className="flex flex-col items-center justify-center py-16 gap-3 text-slate-400">
       <CalendarOff className="h-10 w-10 text-slate-300" strokeWidth={1.5} />
       <p className="text-sm font-medium text-slate-500">No hay turnos próximos</p>
-      <p className="text-xs text-slate-400">
-        Los turnos agendados desde hoy aparecerán aquí.
-      </p>
+      <p className="text-xs text-slate-400">Los turnos agendados desde hoy aparecerán aquí.</p>
     </div>
   );
 }
@@ -477,16 +485,13 @@ export default async function AgendaPage() {
             <CalendarDays className="h-5 w-5 text-brand" />
             Agenda de Turnos
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Turnos próximos agendados en la clínica
-          </p>
+          <p className="text-xs text-slate-400 mt-0.5">Turnos próximos agendados en la clínica</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 bg-white/60 backdrop-blur-sm px-3.5 py-2 rounded-full shadow-sm">
             <Clock className="h-3.5 w-3.5 text-slate-500" />
             <span>
-              {appointments.length}{' '}
-              {appointments.length === 1 ? 'Turno' : 'Turnos'}
+              {appointments.length} {appointments.length === 1 ? 'Turno' : 'Turnos'}
             </span>
           </div>
           <NewAppointmentDialog />
@@ -527,9 +532,7 @@ export default async function AgendaPage() {
                       <TableCell className="text-slate-600 text-xs font-medium capitalize">
                         {date}
                       </TableCell>
-                      <TableCell className="font-semibold text-slate-700">
-                        {time}
-                      </TableCell>
+                      <TableCell className="font-semibold text-slate-700">{time}</TableCell>
                       <TableCell>
                         <Link href={`/patients/${appt.patient.id}`} className="group block">
                           <div className="font-medium text-slate-900 group-hover:underline group-hover:text-brand transition-colors cursor-pointer">
@@ -571,6 +574,7 @@ export default async function AgendaPage() {
 ```bash
 cd apps/web && npx tsc --noEmit 2>&1 | grep -v "new-appointment-dialog" | head -40
 ```
+
 Expected: no output except possibly the missing import from Task 4 (which will be fixed then).
 
 - [ ] **Step 3: Commit**
@@ -585,10 +589,12 @@ git commit -m "feat(web): add AgendaPage Server Component with glassmorphism tab
 ## Task 4: Web — `NewAppointmentForm` + `NewAppointmentDialog` Client Components
 
 **Files:**
+
 - Create: `apps/web/components/appointments/new-appointment-form.tsx`
 - Create: `apps/web/components/appointments/new-appointment-dialog.tsx`
 
 **Interfaces:**
+
 - Consumes:
   - `getDoctors`, `type DoctorOption` from `@/lib/api` (Task 2)
   - `getPatients`, `type PatientResponse` from `@/lib/api` (already exists)
@@ -597,6 +603,7 @@ git commit -m "feat(web): add AgendaPage Server Component with glassmorphism tab
   - `export function NewAppointmentDialog()` — self-contained, no props
 
 **Form fields:**
+
 - `patientId` — `<select>` populated via `fetch('/api/v1/patients')` in a `useEffect` on mount
 - `doctorId` — `<select>` populated via `fetch('/api/v1/doctors')` in the same `useEffect`
 - `dateTime` — `<input type="datetime-local">` (combines date + time, no external library needed)
@@ -604,6 +611,7 @@ git commit -m "feat(web): add AgendaPage Server Component with glassmorphism tab
 - `notes` — `<textarea>` (optional)
 
 **POST payload:**
+
 ```json
 {
   "patientId": "<string>",
@@ -686,8 +694,7 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
     },
   });
 
-  const API_URL =
-    process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001/api/v1';
+  const API_URL = process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001/api/v1';
 
   // Load patients and doctors in parallel on mount
   useEffect(() => {
@@ -713,7 +720,9 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
       }
     };
     void load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [API_URL]);
 
   const onSubmit = async (data: NewAppointmentFormValues) => {
@@ -734,8 +743,7 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        const msg =
-          (err as { message?: string }).message ?? 'Error al agendar el turno.';
+        const msg = (err as { message?: string }).message ?? 'Error al agendar el turno.';
         setToast({ type: 'error', message: msg });
         return;
       }
@@ -760,8 +768,7 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
       hasError ? 'border-rose-300 focus:ring-rose-200' : 'border-slate-200',
     );
 
-  const labelClass =
-    'text-xs font-semibold text-slate-600 uppercase tracking-wider';
+  const labelClass = 'text-xs font-semibold text-slate-600 uppercase tracking-wider';
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
@@ -785,9 +792,7 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
             </option>
           ))}
         </select>
-        {errors.patientId && (
-          <p className="text-xs text-rose-500">{errors.patientId.message}</p>
-        )}
+        {errors.patientId && <p className="text-xs text-rose-500">{errors.patientId.message}</p>}
       </div>
 
       {/* Médico */}
@@ -806,13 +811,12 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
           </option>
           {doctors.map((d) => (
             <option key={d.id} value={d.id}>
-              {d.fullName}{d.specialty ? ` — ${d.specialty}` : ''}
+              {d.fullName}
+              {d.specialty ? ` — ${d.specialty}` : ''}
             </option>
           ))}
         </select>
-        {errors.doctorId && (
-          <p className="text-xs text-rose-500">{errors.doctorId.message}</p>
-        )}
+        {errors.doctorId && <p className="text-xs text-rose-500">{errors.doctorId.message}</p>}
       </div>
 
       {/* Fecha y Hora */}
@@ -826,9 +830,7 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
           {...register('dateTime')}
           className={inputClass(!!errors.dateTime)}
         />
-        {errors.dateTime && (
-          <p className="text-xs text-rose-500">{errors.dateTime.message}</p>
-        )}
+        {errors.dateTime && <p className="text-xs text-rose-500">{errors.dateTime.message}</p>}
       </div>
 
       {/* Motivo del Turno */}
@@ -843,16 +845,13 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
           {...register('type')}
           className={cn(inputClass(!!errors.type), 'placeholder:text-slate-300')}
         />
-        {errors.type && (
-          <p className="text-xs text-rose-500">{errors.type.message}</p>
-        )}
+        {errors.type && <p className="text-xs text-rose-500">{errors.type.message}</p>}
       </div>
 
       {/* Notas (opcional) */}
       <div className="flex flex-col gap-1">
         <label htmlFor="na-notes" className={labelClass}>
-          Notas{' '}
-          <span className="text-slate-300 font-normal normal-case">(opcional)</span>
+          Notas <span className="text-slate-300 font-normal normal-case">(opcional)</span>
         </label>
         <textarea
           id="na-notes"
@@ -886,7 +885,11 @@ export function NewAppointmentForm({ onSuccess }: NewAppointmentFormProps) {
       <div className="flex items-center justify-end gap-2 pt-1">
         <button
           type="button"
-          onClick={() => { reset(); setToast(null); onSuccess(); }}
+          onClick={() => {
+            reset();
+            setToast(null);
+            onSuccess();
+          }}
           className="px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors rounded-xl hover:bg-slate-100"
         >
           Cancelar
@@ -980,15 +983,10 @@ export function NewAppointmentDialog() {
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0">
               <div>
-                <h2
-                  id="na-dialog-title"
-                  className="text-base font-bold text-slate-900"
-                >
+                <h2 id="na-dialog-title" className="text-base font-bold text-slate-900">
                   Nuevo Turno
                 </h2>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Agendá un turno médico pediátrico
-                </p>
+                <p className="text-xs text-slate-400 mt-0.5">Agendá un turno médico pediátrico</p>
               </div>
               <button
                 type="button"
@@ -1018,6 +1016,7 @@ export function NewAppointmentDialog() {
 ```bash
 cd apps/web && npx tsc --noEmit 2>&1 | head -40
 ```
+
 Expected: no output.
 
 - [ ] **Step 4: Run a Next.js build to catch module/import errors**
@@ -1025,6 +1024,7 @@ Expected: no output.
 ```bash
 cd apps/web && npx next build 2>&1 | tail -25
 ```
+
 Expected: build succeeds with `/appointments` in the route table. No red error lines.
 
 - [ ] **Step 5: Commit**

@@ -67,9 +67,7 @@ export function HeaderSearch({
     }
 
     debounceTimerRef.current = setTimeout(() => {
-      const target = trimmed
-        ? `${SEARCH_PATH}?q=${encodeURIComponent(trimmed)}`
-        : SEARCH_PATH;
+      const target = trimmed ? `${SEARCH_PATH}?q=${encodeURIComponent(trimmed)}` : SEARCH_PATH;
       router.replace(target);
     }, debounceMs);
 
@@ -87,9 +85,7 @@ export function HeaderSearch({
       clearTimeout(debounceTimerRef.current);
     }
     const trimmed = query.trim();
-    const target = trimmed
-      ? `${SEARCH_PATH}?q=${encodeURIComponent(trimmed)}`
-      : SEARCH_PATH;
+    const target = trimmed ? `${SEARCH_PATH}?q=${encodeURIComponent(trimmed)}` : SEARCH_PATH;
     router.push(target);
   };
 

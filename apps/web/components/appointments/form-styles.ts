@@ -8,8 +8,7 @@
 
 import { cn } from '@/lib/utils';
 
-export const labelClass =
-  'text-xs font-semibold text-slate-600 uppercase tracking-wider';
+export const labelClass = 'text-xs font-semibold text-slate-600 uppercase tracking-wider';
 
 export const triggerClass = (hasError: boolean): string =>
   cn(

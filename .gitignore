@@ -43,6 +43,8 @@ Thumbs.db
 # Agent skills
 .agents/
 .superpowers/
+.atl/
+.opencode/
 skills-lock.json
 
 # Testing

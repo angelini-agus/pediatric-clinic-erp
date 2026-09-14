@@ -2,13 +2,12 @@
 
 import { useState } from 'react';
 
-import type { AuthUser } from '@pediatric-erp/schemas';
-import type { ReactNode } from 'react';
-
-
 import { Header } from '@/components/layout/header';
 import { MobileSidebarDrawer } from '@/components/layout/mobile-sidebar-drawer';
 import { Sidebar } from '@/components/layout/sidebar';
+
+import type { AuthUser } from '@pediatric-erp/schemas';
+import type { ReactNode } from 'react';
 
 type DashboardShellProps = {
   readonly children: ReactNode;

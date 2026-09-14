@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FileText, Loader2, Pill, Printer, PlusCircle } from 'lucide-react';
+import { Loader2, Pill, Printer, PlusCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -22,10 +22,7 @@ const formSchema = z.object({
     .trim()
     .min(1, 'La dosis y posología son obligatorias')
     .max(200, 'La dosis no puede superar los 200 caracteres'),
-  instructions: z
-    .string()
-    .trim()
-    .min(1, 'Las indicaciones son obligatorias'),
+  instructions: z.string().trim().min(1, 'Las indicaciones son obligatorias'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -35,14 +32,14 @@ type FormValues = z.infer<typeof formSchema>;
 type PrescriptionFormProps = {
   patientId: string;
   doctorId: string;
-}
+};
 
 // ── Main Component ────────────────────────────────────────────────────────────
 
 export function PrescriptionForm({
   patientId,
   doctorId,
-}: PrescriptionFormProps) {
+}: PrescriptionFormProps): React.JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
@@ -60,27 +57,24 @@ export function PrescriptionForm({
     },
   });
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: FormValues): Promise<void> => {
     setApiError(null);
     try {
       // Va por el proxy interno: el navegador adjunta la cookie httpOnly
       // automáticamente y el Route Handler inyecta `Authorization: Bearer`.
       // La respuesta es un PDF (binary blob) que el proxy streamea sin buffering.
-      const response = await fetch(
-        `${CLIENT_API_URL}/patients/${patientId}/prescriptions`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            doctorId,
-            medication: data.medication,
-            dosage: data.dosage,
-            instructions: data.instructions,
-          }),
+      const response = await fetch(`${CLIENT_API_URL}/patients/${patientId}/prescriptions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          doctorId,
+          medication: data.medication,
+          dosage: data.dosage,
+          instructions: data.instructions,
+        }),
+      });
 
       if (!response.ok) {
         const errText = await response.text().catch(() => '');
@@ -108,7 +102,9 @@ export function PrescriptionForm({
       {/* Header — Collapsible toggle */}
       <button
         type="button"
-        onClick={() => { setIsOpen((prev) => !prev); }}
+        onClick={() => {
+          setIsOpen((prev) => !prev);
+        }}
         className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/40 transition-colors"
         aria-expanded={isOpen}
       >
@@ -134,7 +130,7 @@ export function PrescriptionForm({
       {/* Form — Collapsed / Expanded */}
       {isOpen && (
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={(e) => void handleSubmit(onSubmit)(e)}
           className="px-5 pb-5 pt-1 border-t border-slate-100 flex flex-col gap-4"
           noValidate
         >
@@ -181,9 +177,7 @@ export function PrescriptionForm({
                 errors.dosage ? 'border-rose-300 focus:ring-rose-200' : 'border-slate-200',
               )}
             />
-            {errors.dosage && (
-              <p className="text-xs text-rose-500">{errors.dosage.message}</p>
-            )}
+            {errors.dosage && <p className="text-xs text-rose-500">{errors.dosage.message}</p>}
           </div>
 
           {/* Instructions */}

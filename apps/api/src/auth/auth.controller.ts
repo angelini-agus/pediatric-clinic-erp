@@ -1,10 +1,4 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import {
   ApiConflictResponse,
   ApiCreatedResponse,
@@ -13,7 +7,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-
 
 import { Public } from '../common/decorators/public.decorator.js';
 
@@ -71,6 +64,7 @@ export class AuthController {
    * Throws 409 if the email is already taken.
    */
   @Public()
+  @Throttle({ default: { ttl: 60_000, limit: 5 } })
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({

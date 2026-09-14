@@ -1,6 +1,5 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Patch } from '@nestjs/common';
 
-
 import { Roles } from '../common/decorators/roles.decorator.js';
 
 import { UpdateSettingsDto } from './dto/update-settings.dto.js';

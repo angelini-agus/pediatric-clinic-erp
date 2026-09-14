@@ -14,14 +14,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import type { PatientResponse } from '@/lib/api';
-
 import {
   formatAge,
   formatBiologicalSex,
   formatGuardianRelationship,
   getInitials,
 } from '@/lib/patient-utils';
+
+import type { PatientResponse } from '@/lib/api';
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
@@ -142,16 +142,13 @@ export function PatientsGrid({
             <strong className="font-semibold text-slate-700">
               {pageStart + 1}–{pageEnd}
             </strong>{' '}
-            de{' '}
-            <strong className="font-semibold text-slate-700">
-              {totalCount}
-            </strong>{' '}
+            de <strong className="font-semibold text-slate-700">{totalCount}</strong>{' '}
             {totalCount === 1 ? 'paciente' : 'pacientes'}
           </span>
           {totalPages > 1 && (
             <span>
-              Página <strong className="font-semibold text-slate-700">{safePage}</strong>{' '}
-              de <strong className="font-semibold text-slate-700">{totalPages}</strong>
+              Página <strong className="font-semibold text-slate-700">{safePage}</strong> de{' '}
+              <strong className="font-semibold text-slate-700">{totalPages}</strong>
             </span>
           )}
         </div>
@@ -161,9 +158,7 @@ export function PatientsGrid({
       {initialPatients.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 gap-3 text-slate-400 bg-white/40 backdrop-blur-sm rounded-2xl border border-dashed border-slate-200">
           <UserX className="h-10 w-10 text-slate-300" strokeWidth={1.5} />
-          <p className="text-sm font-medium text-slate-500">
-            No se encontraron pacientes
-          </p>
+          <p className="text-sm font-medium text-slate-500">No se encontraron pacientes</p>
           <p className="text-xs text-slate-400">
             {search
               ? 'Intenta con otro término de búsqueda.'
@@ -175,9 +170,7 @@ export function PatientsGrid({
           {initialPatients.map((patient) => {
             const age = formatAge(patient.dateOfBirth);
             const initials = getInitials(patient.firstName, patient.lastName);
-            const guardianRel = formatGuardianRelationship(
-              patient.guardianRelationship,
-            );
+            const guardianRel = formatGuardianRelationship(patient.guardianRelationship);
 
             return (
               <div
@@ -236,9 +229,7 @@ export function PatientsGrid({
                           title={`${patient.healthInsurance}${patient.healthInsurancePlan ? ` (${patient.healthInsurancePlan})` : ''}`}
                         >
                           {patient.healthInsurance}{' '}
-                          {patient.healthInsurancePlan
-                            ? `(${patient.healthInsurancePlan})`
-                            : ''}
+                          {patient.healthInsurancePlan ? `(${patient.healthInsurancePlan})` : ''}
                         </span>
                       </div>
                     )}
@@ -337,10 +328,7 @@ export function PatientsGrid({
  * Example output for currentPage=5, totalPages=20:
  *   [1, '…', 4, 5, 6, '…', 20]
  */
-function buildPageWindow(
-  currentPage: number,
-  totalPages: number,
-): (number | '…')[] {
+function buildPageWindow(currentPage: number, totalPages: number): (number | '…')[] {
   if (totalPages <= 7) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);
   }

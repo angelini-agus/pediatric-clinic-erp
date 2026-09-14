@@ -1,8 +1,9 @@
 'use client';
 
-import * as React from 'react';
 import * as SelectPrimitive from '@radix-ui/react-select';
 import { Check, ChevronDown, ChevronUp } from 'lucide-react';
+import * as React from 'react';
+
 import { cn } from '@/lib/utils';
 
 const Select = SelectPrimitive.Root;
@@ -87,8 +88,7 @@ const SelectContent = React.forwardRef<
         'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
         'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
         'data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2',
-        position === 'popper' &&
-          'data-[side=bottom]:translate-y-1 data-[side=top]:-translate-y-1',
+        position === 'popper' && 'data-[side=bottom]:translate-y-1 data-[side=top]:-translate-y-1',
         className,
       )}
       position={position}
@@ -118,7 +118,10 @@ const SelectLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.Label
     ref={ref}
-    className={cn('px-2.5 py-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wider', className)}
+    className={cn(
+      'px-2.5 py-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wider',
+      className,
+    )}
     {...props}
   />
 ));
@@ -156,7 +159,6 @@ const SelectItem = React.forwardRef<
   </SelectPrimitive.Item>
 ));
 SelectItem.displayName = SelectPrimitive.Item.displayName;
-
 
 // ── Separator ─────────────────────────────────────────────────────────────────
 

@@ -32,10 +32,7 @@ type DateDisplayProps = {
  * El usuario nunca ve un "flash" porque el efecto corre en el mismo tick
  * que el commit.
  */
-export function DateDisplay({
-  locale = 'es-AR',
-  className,
-}: DateDisplayProps): React.JSX.Element {
+export function DateDisplay({ locale = 'es-AR', className }: DateDisplayProps): React.JSX.Element {
   const [dateText, setDateText] = useState<string>('');
 
   useEffect(() => {
@@ -45,19 +42,14 @@ export function DateDisplay({
       month: 'long',
       day: 'numeric',
     }).format(new Date());
-    const capitalized =
-      formatted.charAt(0).toUpperCase() + formatted.slice(1);
+    const capitalized = formatted.charAt(0).toUpperCase() + formatted.slice(1);
     setDateText(capitalized);
   }, [locale]);
 
   // `suppressHydrationWarning` aquí es seguro: el contenido del <time>
   // se rellena client-side y sabemos que difiere del server (vacío).
   return (
-    <time
-      dateTime={new Date().toISOString()}
-      suppressHydrationWarning
-      className={cn(className)}
-    >
+    <time dateTime={new Date().toISOString()} suppressHydrationWarning className={cn(className)}>
       {dateText || '\u00A0'}
     </time>
   );

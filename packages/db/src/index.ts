@@ -13,7 +13,6 @@ import { PrismaClient } from '@prisma/client';
  */
 
 declare global {
-  // eslint-disable-next-line no-var
   var __prisma: PrismaClient | undefined;
 }
 
@@ -56,4 +55,3 @@ export type { PrismaClient, ClinicSettings } from '@prisma/client';
 // Re-export Prisma namespace for type utilities
 // Usage: Prisma.<Model>GetPayload<{ include: { ... } }>
 export { Prisma } from '@prisma/client';
-

@@ -1,9 +1,8 @@
-import { Test, type TestingModule } from '@nestjs/testing';
-import { type INestApplication } from '@nestjs/common';
-import { TerminusModule } from '@nestjs/terminus';
-import { HealthController } from './health.controller.js';
-
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
+import { TerminusModule } from '@nestjs/terminus';
+import { Test, type TestingModule } from '@nestjs/testing';
+
+import { HealthController } from './health.controller.js';
 
 describe('HealthController', () => {
   let app: NestFastifyApplication;
@@ -14,9 +13,7 @@ describe('HealthController', () => {
       controllers: [HealthController],
     }).compile();
 
-    app = moduleFixture.createNestApplication<NestFastifyApplication>(
-      new FastifyAdapter(),
-    );
+    app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
   });
@@ -33,9 +30,9 @@ describe('HealthController', () => {
       expect(result.status).toBe('ok');
       expect(result.details).toBeDefined();
       expect(result.details['memory_heap']).toBeDefined();
-      expect(result.details['memory_heap']!.status).toBe('up');
+      expect(result.details['memory_heap']?.status).toBe('up');
       expect(result.details['memory_rss']).toBeDefined();
-      expect(result.details['memory_rss']!.status).toBe('up');
+      expect(result.details['memory_rss']?.status).toBe('up');
     });
 
     it('should include info property in the health check result', async () => {
@@ -43,8 +40,8 @@ describe('HealthController', () => {
       const result = await controller.check();
 
       expect(result.info).toBeDefined();
-      expect(result.info!['memory_heap']).toEqual({ status: 'up' });
-      expect(result.info!['memory_rss']).toEqual({ status: 'up' });
+      expect(result.info?.['memory_heap']).toEqual({ status: 'up' });
+      expect(result.info?.['memory_rss']).toEqual({ status: 'up' });
     });
 
     it('should include empty error property when healthy', async () => {

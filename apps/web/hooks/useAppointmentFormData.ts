@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 
-import type { DoctorOption, PatientResponse } from '@/lib/api';
-
 import { CLIENT_API_URL } from '@/lib/api';
+
+import type { DoctorOption, PatientResponse } from '@/lib/api';
 
 type UseAppointmentFormDataResult = {
   patients: PatientResponse[];
@@ -53,18 +53,15 @@ export function useAppointmentFormData(): UseAppointmentFormDataResult {
           typeof patientsJson === 'object' &&
           patientsJson !== null &&
           'data' in patientsJson &&
-          Array.isArray(
-            (patientsJson as { data: unknown }).data,
-          )
-            ? ((patientsJson as { data: PatientResponse[] }).data)
+          Array.isArray(patientsJson.data)
+            ? (patientsJson as { data: PatientResponse[] }).data
             : null;
 
-        setPatients(paginatedPatients ?? (Array.isArray(patientsJson) ? (patientsJson as PatientResponse[]) : []));
-        setDoctors(
-          Array.isArray(doctorsJson)
-            ? (doctorsJson as DoctorOption[])
-            : [],
+        setPatients(
+          paginatedPatients ??
+            (Array.isArray(patientsJson) ? (patientsJson as PatientResponse[]) : []),
         );
+        setDoctors(Array.isArray(doctorsJson) ? (doctorsJson as DoctorOption[]) : []);
       } catch {
         // Network failure: leave arrays empty; the selects still render.
       } finally {

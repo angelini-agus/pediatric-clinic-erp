@@ -16,4 +16,3 @@ import { PatientsService } from './patients.service.js';
   providers: [PatientsService],
 })
 export class PatientsModule {}
-

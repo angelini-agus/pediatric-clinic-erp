@@ -1,15 +1,15 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { clinicSettingsUpdateSchema, type ClinicSettingsUpdate } from '@pediatric-erp/schemas';
 import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { clinicSettingsUpdateSchema, type ClinicSettingsUpdate } from '@pediatric-erp/schemas';
-
-import type { ClinicSettingsResponse } from '@/lib/api';
 
 import { updateClinicSettings } from '@/lib/api';
+
+import type { ClinicSettingsResponse } from '@/lib/api';
 
 type SettingsFormValues = ClinicSettingsUpdate;
 
@@ -51,7 +51,9 @@ export function SettingsForm({ defaultValues }: SettingsFormProps): React.JSX.El
 
   const showToast = (message: string, type: 'success' | 'error'): void => {
     setToast({ message, type });
-    setTimeout(() => { setToast(null); }, 3500);
+    setTimeout(() => {
+      setToast(null);
+    }, 3500);
   };
 
   const onValid = async (values: SettingsFormValues): Promise<void> => {
@@ -71,9 +73,7 @@ export function SettingsForm({ defaultValues }: SettingsFormProps): React.JSX.El
         <div
           role="alert"
           className={`fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-4 rounded-2xl shadow-lg text-sm font-medium transition-all duration-300 backdrop-blur-sm ${
-            toast.type === 'success'
-              ? 'bg-emerald-500/90 text-white'
-              : 'bg-red-500/90 text-white'
+            toast.type === 'success' ? 'bg-emerald-500/90 text-white' : 'bg-red-500/90 text-white'
           }`}
         >
           {toast.type === 'success' ? (
@@ -96,10 +96,7 @@ export function SettingsForm({ defaultValues }: SettingsFormProps): React.JSX.El
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Nombre Completo */}
             <div className="flex flex-col gap-2">
-              <label
-                htmlFor="fullName"
-                className="text-sm font-semibold text-slate-700"
-              >
+              <label htmlFor="fullName" className="text-sm font-semibold text-slate-700">
                 Nombre Completo del Médico
               </label>
               <input
@@ -120,10 +117,7 @@ export function SettingsForm({ defaultValues }: SettingsFormProps): React.JSX.El
 
             {/* Matrícula */}
             <div className="flex flex-col gap-2">
-              <label
-                htmlFor="licenseNumber"
-                className="text-sm font-semibold text-slate-700"
-              >
+              <label htmlFor="licenseNumber" className="text-sm font-semibold text-slate-700">
                 Matrícula Profesional
               </label>
               <input
@@ -144,10 +138,7 @@ export function SettingsForm({ defaultValues }: SettingsFormProps): React.JSX.El
 
             {/* Especialidad */}
             <div className="flex flex-col gap-2">
-              <label
-                htmlFor="specialty"
-                className="text-sm font-semibold text-slate-700"
-              >
+              <label htmlFor="specialty" className="text-sm font-semibold text-slate-700">
                 Especialidad
               </label>
               <input
@@ -168,10 +159,7 @@ export function SettingsForm({ defaultValues }: SettingsFormProps): React.JSX.El
 
             {/* Nombre de la Clínica */}
             <div className="flex flex-col gap-2">
-              <label
-                htmlFor="clinicName"
-                className="text-sm font-semibold text-slate-700"
-              >
+              <label htmlFor="clinicName" className="text-sm font-semibold text-slate-700">
                 Nombre de la Clínica
               </label>
               <input

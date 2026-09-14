@@ -19,14 +19,8 @@ export const prescriptionCreateSchema = z.object({
     .trim()
     .min(1, { message: 'Dosage is required' })
     .max(200, { message: 'Dosage cannot exceed 200 characters' }),
-  instructions: z
-    .string()
-    .trim()
-    .min(1, { message: 'Instructions are required' }),
-  doctorId: z
-    .string()
-    .trim()
-    .min(1, { message: 'Doctor ID is required' }),
+  instructions: z.string().trim().min(1, { message: 'Instructions are required' }),
+  doctorId: z.string().trim().min(1, { message: 'Doctor ID is required' }),
 });
 
 export type PrescriptionCreate = z.infer<typeof prescriptionCreateSchema>;

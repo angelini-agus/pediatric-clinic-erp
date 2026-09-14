@@ -9,8 +9,6 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 
-import type { PatientResponse } from '@/lib/api';
-
 import {
   formatAge,
   formatBiologicalSex,
@@ -18,6 +16,8 @@ import {
   getInitials,
   formatDate,
 } from '@/lib/patient-utils';
+
+import type { PatientResponse } from '@/lib/api';
 
 // ── Data Row ──────────────────────────────────────────────────────────────────
 
@@ -50,7 +50,7 @@ function DataRow({
 
 type PatientProfileCardProps = {
   patient: PatientResponse;
-}
+};
 
 export function PatientProfileCard({ patient }: PatientProfileCardProps): React.JSX.Element {
   const age = formatAge(patient.dateOfBirth);
@@ -69,7 +69,9 @@ export function PatientProfileCard({ patient }: PatientProfileCardProps): React.
           <h1 className="text-xl font-bold text-slate-900 leading-tight">
             {patient.firstName} {patient.lastName}
           </h1>
-          <p className="text-sm text-slate-500 mt-0.5">{age} · {sexLabel}</p>
+          <p className="text-sm text-slate-500 mt-0.5">
+            {age} · {sexLabel}
+          </p>
         </div>
         {patient.bloodGroup && (
           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-full">
@@ -84,7 +86,11 @@ export function PatientProfileCard({ patient }: PatientProfileCardProps): React.
         <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
           Datos del Paciente
         </p>
-        <DataRow icon={FileText} label="DNI" value={`${patient.documentType} ${patient.documentNumber}`} />
+        <DataRow
+          icon={FileText}
+          label="DNI"
+          value={`${patient.documentType} ${patient.documentNumber}`}
+        />
         <DataRow icon={Baby} label="Fecha de Nacimiento" value={formatDate(patient.dateOfBirth)} />
         {patient.gestationalWeeks && (
           <DataRow
@@ -100,9 +106,7 @@ export function PatientProfileCard({ patient }: PatientProfileCardProps): React.
             value={`${(patient.birthWeightGrams / 1000).toFixed(2)} kg`}
           />
         )}
-        {patient.apgarScore && (
-          <DataRow icon={Heart} label="Apgar" value={patient.apgarScore} />
-        )}
+        {patient.apgarScore && <DataRow icon={Heart} label="Apgar" value={patient.apgarScore} />}
       </div>
 
       {/* Obra social */}
@@ -126,11 +130,7 @@ export function PatientProfileCard({ patient }: PatientProfileCardProps): React.
         <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
           Tutor Responsable
         </p>
-        <DataRow
-          icon={User}
-          label={guardianRel}
-          value={patient.guardianFullName}
-        />
+        <DataRow icon={User} label={guardianRel} value={patient.guardianFullName} />
         <DataRow icon={Phone} label="Teléfono" value={patient.guardianPhone} />
         {patient.guardianEmail && (
           <DataRow icon={Phone} label="Email" value={patient.guardianEmail} />

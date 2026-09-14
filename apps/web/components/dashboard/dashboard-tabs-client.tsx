@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  LayoutGrid,
-  Calendar,
-  DollarSign,
-  Package,
-  Users,
-} from 'lucide-react';
+import { LayoutGrid, Calendar, DollarSign, Package, Users } from 'lucide-react';
 import { useState } from 'react';
 
 import { cn } from '@/lib/utils';
@@ -63,7 +57,9 @@ export function DashboardTabsClient(): React.JSX.Element {
                 'border-transparent text-slate-400 hover:text-slate-600 hover:border-slate-200',
             )}
           >
-            <Icon className={cn('h-4 w-4', isActive && !isDisabled ? 'text-brand' : 'text-slate-400')} />
+            <Icon
+              className={cn('h-4 w-4', isActive && !isDisabled ? 'text-brand' : 'text-slate-400')}
+            />
             {tab.label}
           </button>
         );

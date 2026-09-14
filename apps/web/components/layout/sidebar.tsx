@@ -1,6 +1,5 @@
 import { Activity } from 'lucide-react';
 
-
 import { SidebarNav } from './sidebar-nav';
 import { UserDropdownMenu } from './user-dropdown-menu';
 
@@ -34,4 +33,3 @@ export function Sidebar({ user }: SidebarProps): React.JSX.Element {
     </aside>
   );
 }
-
