@@ -60,7 +60,13 @@ export function LandingFooter(): React.JSX.Element {
               <li className="flex items-start gap-2.5">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-white/40" aria-hidden="true" />
                 <span>
-                  {CLINIC_INFO.address} — {CLINIC_INFO.location}
+                  {CLINIC_INFO.location} ·{' '}
+                  <a
+                    href={`${ENV_URL_ERP}/register`}
+                    className="underline decoration-white/30 transition-colors hover:text-white"
+                  >
+                    Dirección exacta con registro
+                  </a>
                 </span>
               </li>
               <li className="flex items-start gap-2.5">

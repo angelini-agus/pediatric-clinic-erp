@@ -23,8 +23,8 @@ export const CLINIC_INFO = {
   pediatricSince: 2014,
   title: 'Pediatra',
   location: 'Pueblo Esther, Santa Fe',
-  // TODO (Agus): reemplazar [DIRECCIÓN] por la dirección real del consultorio
-  address: '[DIRECCIÓN]',
+  address: 'Pueblo Esther, Santa Fe',
+  addressNote: 'Registrate en el portal para acceder a la ubicación exacta.',
   // La atención no tiene horarios fijos: la disponibilidad real y actualizada
   // se consulta en el portal del paciente (agenda variable).
   hours:

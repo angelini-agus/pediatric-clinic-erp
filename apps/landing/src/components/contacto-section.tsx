@@ -1,4 +1,4 @@
-﻿import { ArrowRight, Clock, MapPin, MessageCircle } from 'lucide-react';
+import { ArrowRight, Clock, MapPin, MessageCircle } from 'lucide-react';
 
 import { CLINIC_INFO, ENV_URL_ERP, WHATSAPP_LINK } from '../config';
 
@@ -54,10 +54,18 @@ export function ContactoSection(): React.JSX.Element {
               />
             </div>
             <div>
-              <h3 className="heading-h3 text-[#241D15]">Dirección</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-[#241D15]">
-                {CLINIC_INFO.address} — {CLINIC_INFO.location}
+              <h3 className="heading-h3 text-[#241D15]">Ubicación</h3>
+              <p className="mt-1.5 text-sm font-medium text-[#241D15]">{CLINIC_INFO.location}</p>
+              <p className="mt-1 text-xs leading-relaxed text-[#241D15]/85">
+                Por privacidad, la dirección exacta está disponible para familias registradas.
               </p>
+              <a
+                href={`${ENV_URL_ERP}/register`}
+                className="mt-2.5 inline-flex items-center gap-1.5 text-sm font-semibold text-[#241D15] underline decoration-[#241D15]/40 underline-offset-2 transition-opacity hover:opacity-80"
+              >
+                Registrate para ver la dirección exacta
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </a>
             </div>
           </div>
 
@@ -92,7 +100,6 @@ export function ContactoSection(): React.JSX.Element {
         </div>
 
         {/* ── Mapa ── */}
-        {/* TODO (Agus): reemplazar la búsqueda por la dirección exacta del consultorio */}
         <div
           className="mx-auto mt-12 max-w-4xl overflow-hidden rounded-card shadow-xl reveal"
           style={{ border: '1px solid rgba(36,29,21,0.08)', animationDelay: '150ms' }}
@@ -107,6 +114,19 @@ export function ContactoSection(): React.JSX.Element {
             className="block h-[360px] w-full border-0"
           />
         </div>
+        <p
+          className="mt-3 text-center text-xs text-[#6B5F52] reveal"
+          style={{ animationDelay: '200ms' }}
+        >
+          * La dirección exacta y las indicaciones de llegada se brindan a través del{' '}
+          <a
+            href={`${ENV_URL_ERP}/register`}
+            className="font-semibold text-[#241D15] underline decoration-[#241D15]/30 hover:opacity-80"
+          >
+            portal del paciente
+          </a>{' '}
+          al registrarte.
+        </p>
       </div>
     </section>
   );

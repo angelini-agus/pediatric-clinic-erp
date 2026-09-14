@@ -19,8 +19,6 @@ const DESCRIPTION =
   'Pediatra en Pueblo Esther. La misma médica de la preconcepción a la adolescencia. Recibida en 2014, con experiencia en guardia de urgencias y recepción de recién nacidos. Sacá turno online.';
 
 // ── Datos estructurados (schema.org/Physician) ──────────────────────
-// El placeholder [DIRECCIÓN] se reemplaza cuando Agus confirme la
-// dirección real (mismo placeholder que src/config.ts).
 const PHYSICIAN_JSON_LD = {
   '@context': 'https://schema.org',
   '@type': 'Physician',
@@ -32,7 +30,7 @@ const PHYSICIAN_JSON_LD = {
   medicalSpecialty: 'Pediatric',
   address: {
     '@type': 'PostalAddress',
-    streetAddress: '[DIRECCIÓN]',
+    streetAddress: 'Pueblo Esther',
     addressLocality: 'Pueblo Esther',
     addressRegion: 'Santa Fe',
     addressCountry: 'AR',
