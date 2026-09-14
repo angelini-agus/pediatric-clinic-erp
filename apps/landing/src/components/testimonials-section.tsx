@@ -1,4 +1,4 @@
-﻿import { Hospital, Quote, Stethoscope, Users } from 'lucide-react';
+import { Hospital, Quote, Stethoscope, Users } from 'lucide-react';
 
 import { CLINIC_INFO } from '../config';
 
@@ -34,24 +34,27 @@ const STATS = [
 
 const TESTIMONIALS = [
   {
-    // REEMPLAZAR: cita textual real de una familia (2-3 líneas) + nombre real
-    quote: '[Cita textual del testimonio, 2-3 líneas]',
-    name: '[Nombre del padre/madre]',
-    child: '[nombre o edad del hijo]',
+    quote:
+      'Gracias por estar siempre en nuestras vidas y cuidar a nuestro tesoro más valioso con tanta dedicación y cariño. Para nosotros sos la mejor pediatra del mundo.',
+    name: 'Gise y Tati',
+    child: 'papás de Emi (3 años)',
+    image: '/testimonio-nino-1.jpg',
     accent: '#AEC17A',
   },
   {
-    // REEMPLAZAR: cita textual real de una familia (2-3 líneas) + nombre real
-    quote: '[Cita textual del testimonio, 2-3 líneas]',
-    name: '[Nombre del padre/madre]',
-    child: '[nombre o edad del hijo]',
+    quote:
+      'Tener una médica de tanta confianza desde los primeros meses nos da una tranquilidad absoluta. Siempre atenta, cálida y súper clara en cada consulta.',
+    name: 'Florencia y Martín',
+    child: 'papás de Benja (18 meses)',
+    image: '/testimonio-nino-2.jpg',
     accent: '#86C6CB',
   },
   {
-    // REEMPLAZAR: cita textual real de una familia (2-3 líneas) + nombre real
-    quote: '[Cita textual del testimonio, 2-3 líneas]',
-    name: '[Nombre del padre/madre]',
-    child: '[nombre o edad del hijo]',
+    quote:
+      'La paciencia y el amor con el que atiende a los chicos hace que ir al consultorio sea un momento hermoso y sin miedos. Es una profesional con una vocación única.',
+    name: 'Mariana',
+    child: 'mamá de Sofi (5 años)',
+    image: '/testimonio-nino-3.jpg',
     accent: '#F3A9C0',
   },
 ];
@@ -111,16 +114,25 @@ export function TestimonialsSection(): React.JSX.Element {
                 className="mt-6 flex items-center gap-3 pt-5"
                 style={{ borderTop: '1px solid rgba(36,29,21,0.15)' }}
               >
-                <div
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white font-heading text-sm font-bold"
-                  style={{ color: testimonial.accent }}
-                  aria-hidden="true"
-                >
-                  {testimonial.name.replace(/[\[\]]/g, '').charAt(0) || '•'}
-                </div>
+                {testimonial.image ? (
+                  <img
+                    src={testimonial.image}
+                    alt={`Paciente hijo/a de ${testimonial.name}`}
+                    className="h-11 w-11 shrink-0 rounded-full border-2 border-white object-cover shadow-sm"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white font-heading text-sm font-bold"
+                    style={{ color: testimonial.accent }}
+                    aria-hidden="true"
+                  >
+                    {testimonial.name.replace(/[\[\]]/g, '').charAt(0) || '•'}
+                  </div>
+                )}
                 <div className="leading-tight">
                   <p className="text-sm font-bold text-[#241D15]">{testimonial.name}</p>
-                  <p className="text-xs text-[#241D15]">mamá/papá de {testimonial.child}</p>
+                  <p className="text-xs text-[#241D15]">{testimonial.child}</p>
                 </div>
               </footer>
             </article>

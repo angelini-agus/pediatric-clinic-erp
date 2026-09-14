@@ -65,7 +65,7 @@ function DoodleBook(): React.JSX.Element {
     <svg
       aria-hidden="true"
       viewBox="0 0 90 64"
-      className="absolute left-7 top-9 w-16 md:w-20"
+      className="absolute -left-1 top-3 w-22 md:left-1 md:top-4 md:w-28"
       fill="none"
     >
       <path
@@ -242,8 +242,11 @@ export function HeroSection(): React.JSX.Element {
               overflow: 'visible',
             }}
           >
-            <DoodleBook />
-            <DoodleCloud />
+            {/* Contenedor con overflow-hidden para que los doodles se recorten por la curva de la píldora */}
+            <div className="absolute inset-0 overflow-hidden rounded-full pointer-events-none">
+              <DoodleBook />
+              <DoodleCloud />
+            </div>
             {/* Foto de la Dra. dentro del óvalo de la píldora.
                 WebP optimizado (900px, ~68 KB) generado con sharp desde
                 public/doctora_landing.PNG (el original se conserva). */}
