@@ -11,7 +11,7 @@ export function TurnosSection(): React.JSX.Element {
     >
       <div className="mx-auto max-w-[1400px] px-6">
         <div
-          className="relative overflow-hidden rounded-[999px] px-8 py-12 text-center lg:px-16 lg:py-16"
+          className="relative overflow-hidden rounded-[28px] sm:rounded-[36px] lg:rounded-[44px] px-6 py-12 text-center sm:px-10 lg:px-16 lg:py-16"
           style={{
             backgroundColor: '#E96B3A',
             boxShadow: '0 24px 70px -28px rgba(233,107,58,0.65)',
