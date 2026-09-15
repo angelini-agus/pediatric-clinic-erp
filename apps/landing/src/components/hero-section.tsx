@@ -19,6 +19,10 @@ type PhotoPillProps = {
   photoOffsetX?: string;
   /** Ancho de la foto respecto de la píldora (default 108%). */
   photoWidth?: string;
+  /** Variantes responsivas (srcset) para que el browser baje la más chica. */
+  srcSet?: string;
+  /** Tamaño renderizado por breakpoint (requerido con srcset). */
+  sizes?: string;
   children?: React.ReactNode;
 };
 
@@ -34,6 +38,8 @@ function PhotoPill({
   photoOverflow = false,
   photoOffsetX = '-50%',
   photoWidth = '108%',
+  srcSet,
+  sizes,
   children,
 }: PhotoPillProps): React.JSX.Element {
   return (
@@ -49,6 +55,8 @@ function PhotoPill({
     >
       <img
         src={photo}
+        srcSet={srcSet}
+        sizes={sizes}
         alt={alt}
         className="absolute bottom-0 left-1/2 max-w-none"
         style={{ width: photoWidth, transform: `translateX(${photoOffsetX})` }}
@@ -252,6 +260,8 @@ export function HeroSection(): React.JSX.Element {
                 fetchpriority=high: es el elemento LCP del hero. */}
             <img
               src="/doctora-landing.webp"
+              srcSet="/doctora-landing-360.webp 360w, /doctora-landing-600.webp 600w, /doctora-landing.webp 800w"
+              sizes="(min-width: 1462px) 357px, (max-width: 1024px) 226px, 24vw"
               alt={`${CLINIC_INFO.doctorFullName} con guardapolvo y estetoscopio`}
               className="absolute left-1/2 top-1/2 z-10 object-cover"
               style={{
@@ -272,6 +282,8 @@ export function HeroSection(): React.JSX.Element {
           <PhotoPill
             color="#8CD7F2"
             photo="/nino-1.webp"
+            srcSet="/nino-1-240.webp 240w, /nino-1-420.webp 420w, /nino-1.webp 600w"
+            sizes="(max-width: 1024px) 162px, 227px"
             alt="Nene saltando con los brazos abiertos"
             photoOverflow
             className=""
@@ -291,6 +303,8 @@ export function HeroSection(): React.JSX.Element {
           <PhotoPill
             color="#E96B3A"
             photo="/nino-2.webp"
+            srcSet="/nino-2-240.webp 240w, /nino-2-420.webp 420w, /nino-2.webp 600w"
+            sizes="(max-width: 1024px) 144px, 207px"
             alt="Nene caminando con un globo amarillo"
             photoOverflow
             photoOffsetX="-31.4%"

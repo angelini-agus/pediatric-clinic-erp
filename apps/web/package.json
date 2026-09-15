@@ -3,6 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "description": "Next.js web application — Pediatric Clinic ERP",
+  "browserslist": [
+    "chrome >= 100",
+    "edge >= 100",
+    "firefox >= 100",
+    "safari >= 15"
+  ],
   "scripts": {
     "build": "next build",
     "dev": "next dev --port 3000",

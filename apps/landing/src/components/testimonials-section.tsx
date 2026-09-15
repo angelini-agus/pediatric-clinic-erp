@@ -2,10 +2,10 @@ import { Hospital, Quote, Stethoscope, Users } from 'lucide-react';
 
 import { CLINIC_INFO } from '../config';
 
-/* â”€â”€â”€ SecciÃ³n "Familias que ya confÃ­an" â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/* ─── Sección "Familias que ya confían" ──────────────────────────────
    Cifras arriba + cards de testimonios, todo con color de acento
-   SÃ“LIDO (mismo lenguaje que AcompaÃ±amiento): Ã­conos, cifras y textos
-   en oscuro; avatar invertido (cÃ­rculo blanco + inicial en el acento). â”€â”€ */
+   SÓLIDO (mismo lenguaje que Acompañamiento): íconos, cifras y textos
+   en oscuro; avatar invertido (círculo blanco + inicial en el acento). ── */
 
 const CARD_SHADOW = '0 20px 50px -24px rgba(36,29,21,0.35)';
 
@@ -15,7 +15,7 @@ const STATS = [
   {
     icon: Stethoscope,
     value: `${String(YEARS_OF_PRACTICE)}+`,
-    label: 'AÃ±os ejerciendo pediatrÃ­a',
+    label: 'Años ejerciendo pediatría',
     accent: '#E96B3A',
   },
   {
@@ -35,25 +35,25 @@ const STATS = [
 const TESTIMONIALS = [
   {
     quote:
-      'Gracias por estar siempre en nuestras vidas y cuidar a nuestro tesoro mÃ¡s valioso con tanta dedicaciÃ³n y cariÃ±o. Para nosotros sos la mejor pediatra del mundo.',
+      'Gracias por estar siempre en nuestras vidas y cuidar a nuestro tesoro más valioso con tanta dedicación y cariño. Para nosotros sos la mejor pediatra del mundo.',
     name: 'Gise y Tati',
-    child: 'papÃ¡s de Emi (3 aÃ±os)',
+    child: 'papás de Emi (3 años)',
     image: '/testimonio-nino-1.webp',
     accent: '#AEC17A',
   },
   {
     quote:
-      'Tener una mÃ©dica de tanta confianza desde los primeros meses nos da una tranquilidad absoluta. Siempre atenta, cÃ¡lida y sÃºper clara en cada consulta.',
-    name: 'Florencia y MartÃ­n',
-    child: 'papÃ¡s de Benja (18 meses)',
+      'Tener una médica de tanta confianza desde los primeros meses nos da una tranquilidad absoluta. Siempre atenta, cálida y súper clara en cada consulta.',
+    name: 'Florencia y Martín',
+    child: 'papás de Benja (18 meses)',
     image: '/testimonio-nino-2.webp',
     accent: '#86C6CB',
   },
   {
     quote:
-      'La paciencia y el amor con el que atiende a los chicos hace que ir al consultorio sea un momento hermoso y sin miedos. Es una profesional con una vocaciÃ³n Ãºnica.',
+      'La paciencia y el amor con el que atiende a los chicos hace que ir al consultorio sea un momento hermoso y sin miedos. Es una profesional con una vocación única.',
     name: 'Mariana',
-    child: 'mamÃ¡ de Sofi (5 aÃ±os)',
+    child: 'mamá de Sofi (5 años)',
     image: '/testimonio-nino-3.webp',
     accent: '#F3A9C0',
   },
@@ -68,12 +68,12 @@ export function TestimonialsSection(): React.JSX.Element {
       aria-label="Testimonios"
     >
       <div className="relative z-10 mx-auto max-w-[1400px] px-6">
-        {/* â”€â”€ Header â”€â”€ */}
+        {/* ── Header ── */}
         <div className="mx-auto max-w-[640px] text-center">
-          <h2 className="heading-h2 text-[#3A2A1B] reveal">Familias que ya confÃ­an</h2>
+          <h2 className="heading-h2 text-[#3A2A1B] reveal">Familias que ya confían</h2>
         </div>
 
-        {/* â”€â”€ Cifras â”€â”€ */}
+        {/* ── Cifras ── */}
         <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3 lg:mt-14">
           {STATS.map((stat) => (
             <div
@@ -93,7 +93,7 @@ export function TestimonialsSection(): React.JSX.Element {
           ))}
         </div>
 
-        {/* â”€â”€ Testimonios â”€â”€ */}
+        {/* ── Testimonios ── */}
         <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3 lg:mt-14">
           {TESTIMONIALS.map((testimonial) => (
             <article
@@ -127,7 +127,7 @@ export function TestimonialsSection(): React.JSX.Element {
                     style={{ color: testimonial.accent }}
                     aria-hidden="true"
                   >
-                    {testimonial.name.replace(/[\[\]]/g, '').charAt(0) || 'â€¢'}
+                    {testimonial.name.replace(/[\[\]]/g, '').charAt(0) || '•'}
                   </div>
                 )}
                 <div className="leading-tight">
