@@ -64,9 +64,8 @@ const PHYSICIAN_JSON_LD = {
     <meta property="og:description" content={DESCRIPTION} />
     <meta property="og:url" content={SITE_URL} />
     <meta property="og:image" content={`${SITE_URL}/hero-doctor.jpg`} />
-    <!-- TODO (Agus): reemplazar por una imagen OG dedicada de 1200x630 -->
-    <meta property="og:image:width" content="896" />
-    <meta property="og:image:height" content="1200" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
       content={`${CLINIC_INFO.doctorFullName} — Pediatra en Pueblo Esther`}
@@ -86,12 +85,22 @@ const PHYSICIAN_JSON_LD = {
     <!-- Datos estructurados (Physician) para rich snippets de búsqueda local -->
     <script is:inline type="application/ld+json" set:html={JSON.stringify(PHYSICIAN_JSON_LD)} />
 
-    <!-- Fonts: Fraunces (heading serif chunky) + Pacifico (script) + Nunito Sans (body) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Fonts self-hosted (woff2 subset latin, ver global.css): preload de
+         las críticas — Fraunces renderiza los headings (LCP) y Nunito Sans
+         el body. Pacifico es decorativa y carga cuando se usa. -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700;800&family=Pacifico&family=Nunito+Sans:wght@400;500;600&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/fraunces-latin.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/nunito-sans-latin.woff2"
+      crossorigin
     />
 
     <style is:global>

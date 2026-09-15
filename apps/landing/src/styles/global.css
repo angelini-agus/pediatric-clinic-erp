@@ -1,3 +1,32 @@
+/* ── Fuentes self-hosted (woff2, subset latin) ──────────────────────
+   Antes se cargaban desde fonts.googleapis.com: su CSS bloqueaba el
+   primer render ~880ms (medido con Lighthouse). Self-hosteadas: sin
+   round-trip a un tercero, sin bloqueo y con cache inmutable.
+   Fraunces y Nunito Sans son variables: un archivo cubre todos los pesos. */
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 600 800;
+  font-display: swap;
+  src: url('/fonts/fraunces-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Nunito Sans';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('/fonts/nunito-sans-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Pacifico';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/pacifico-latin.woff2') format('woff2');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,7 +34,7 @@
 /* ── Design tokens ──────────────────────────────────────────────────
    Sistema de diseño "Miradas — Consultorios de Pediatría Integral".
    Fuentes: Fraunces (heading serif) + Nunito Sans (body) + Pacifico (script),
-   importadas en index.astro. */
+   self-hosteadas en /public/fonts (ver @font-face arriba). */
 :root {
   /* Paleta */
   --color-bg: #f4eedf;

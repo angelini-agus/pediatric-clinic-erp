@@ -1,13 +1,13 @@
 import { CLINIC_INFO } from '../config';
 
-/* ─── Sección "Sobre la Dra. Martinangelio" ─────────────────────────
-   Referencia Meelo: trío de cards casi cuadradas — las laterales con
-   foto full-bleed y una "mancha" orgánica (borde superior ondulado de
+/* â”€â”€â”€ SecciÃ³n "Sobre la Dra. Martinangelio" â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   Referencia Meelo: trÃ­o de cards casi cuadradas â€” las laterales con
+   foto full-bleed y una "mancha" orgÃ¡nica (borde superior ondulado de
    dos lomas, no elipse) pegada abajo con el texto; la del medio en
-   coral sólido con manchas orgánicas de fondo y headline serif+script
-   centrada. ── */
+   coral sÃ³lido con manchas orgÃ¡nicas de fondo y headline serif+script
+   centrada. â”€â”€ */
 
-/* ── Mancha orgánica reutilizable con dos variantes de curvatura ──
+/* â”€â”€ Mancha orgÃ¡nica reutilizable con dos variantes de curvatura â”€â”€
    viewBox 600x300: curvas onduladas pronunciadas e irregulares. */
 type ManchaProps = {
   fill: string;
@@ -40,7 +40,7 @@ function Mancha({
   );
 }
 
-/* ── Mancha / ameba orgánica flotante (400x400) para fondos y acentos ── */
+/* â”€â”€ Mancha / ameba orgÃ¡nica flotante (400x400) para fondos y acentos â”€â”€ */
 function OrganicBlob({
   fill = '#D8552B',
   className,
@@ -85,7 +85,7 @@ function StoryPhotoCard({
       style={{ border: '1px solid rgba(36,29,21,0.06)' }}
       aria-label={title}
     >
-      {/* ── Foto full-bleed superior con sutil zoom en hover ── */}
+      {/* â”€â”€ Foto full-bleed superior con sutil zoom en hover â”€â”€ */}
       {imageSrc ? (
         <img
           src={imageSrc}
@@ -113,20 +113,20 @@ function StoryPhotoCard({
         </div>
       )}
 
-      {/* ── Base sólida inferior contra filtraciones ── */}
+      {/* â”€â”€ Base sÃ³lida inferior contra filtraciones â”€â”€ */}
       <div
         className="absolute -bottom-1 inset-x-0 h-[28%] pointer-events-none"
         style={{ backgroundColor: accent }}
       />
 
-      {/* ── Mancha orgánica sólida con animación al hover ── */}
+      {/* â”€â”€ Mancha orgÃ¡nica sÃ³lida con animaciÃ³n al hover â”€â”€ */}
       <Mancha
         fill={accent}
         variant={waveVariant}
         className="absolute -bottom-1 -inset-x-0.5 h-[64%] w-[calc(100%+4px)] pointer-events-none transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-2 group-hover:scale-y-107 group-hover:scale-x-[1.01]"
       />
 
-      {/* ── Texto sobre la mancha ── */}
+      {/* â”€â”€ Texto sobre la mancha â”€â”€ */}
       <div className="absolute inset-x-0 bottom-0 px-5 pb-5 pt-6 sm:px-6 sm:pb-6 sm:pt-10 lg:px-7 lg:pb-7 transition-transform duration-500 group-hover:-translate-y-1">
         <h3 className="heading-h3 text-[#241D15]">{title}</h3>
         <p className="mt-2 text-[13px] leading-relaxed text-[#241D15]/85 sm:text-sm">{text}</p>
@@ -140,9 +140,9 @@ function StoryCoralCard(): React.JSX.Element {
     <article
       className="group relative flex h-full min-h-[300px] flex-col items-center justify-center overflow-hidden rounded-card px-8 py-12 text-center sm:min-h-0 sm:px-10 cursor-pointer transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl"
       style={{ backgroundColor: '#E96B3A' }}
-      aria-label="Pública y Privada"
+      aria-label="PÃºblica y Privada"
     >
-      {/* ── Manchas orgánicas de fondo animadas al hover ── */}
+      {/* â”€â”€ Manchas orgÃ¡nicas de fondo animadas al hover â”€â”€ */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
         <OrganicBlob
           fill="#D8552B"
@@ -163,14 +163,14 @@ function StoryCoralCard(): React.JSX.Element {
 
       <div className="relative z-10 flex flex-col items-center transition-transform duration-500 group-hover:scale-[1.02]">
         <p className="heading-h3 text-[2rem] leading-tight text-[#241D15]">
-          Pública{' '}
+          PÃºblica{' '}
           <span className="font-script text-[1.6em]" style={{ color: '#F4C43F' }}>
             y
           </span>{' '}
           Privada
         </p>
         <p className="mt-3 max-w-[240px] text-sm leading-relaxed text-[#241D15]">
-          Se formó y trabajó en el sistema público y privado. Hoy atiende en su consultorio
+          Se formÃ³ y trabajÃ³ en el sistema pÃºblico y privado. Hoy atiende en su consultorio
           particular en Pueblo Esther.
         </p>
       </div>
@@ -189,7 +189,7 @@ export function AboutDoctorSection(): React.JSX.Element {
       aria-label={`Sobre ${CLINIC_INFO.doctorFullName}`}
     >
       <div className="relative z-10 mx-auto max-w-[1400px] px-6">
-        {/* ── Header de la sección ── */}
+        {/* â”€â”€ Header de la secciÃ³n â”€â”€ */}
         <div className="mx-auto max-w-[720px] text-center">
           <h2 className="heading-h2 text-[#3A2A1B] reveal">
             Una sola pediatra que ya conoce a tu hijo
@@ -198,20 +198,20 @@ export function AboutDoctorSection(): React.JSX.Element {
             className="mt-4 text-base leading-relaxed text-[#6B5F52] lg:text-lg reveal"
             style={{ animationDelay: '90ms' }}
           >
-            Cada consulta la da la Dra. Martinangelio — no un equipo rotativo.
+            Cada consulta la da la Dra. Martinangelio â€” no un equipo rotativo.
           </p>
         </div>
 
-        {/* ── Trío de cards ── */}
+        {/* â”€â”€ TrÃ­o de cards â”€â”€ */}
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3 lg:mt-16 lg:gap-7">
           <div className="reveal reveal-left" style={{ animationDelay: '120ms' }}>
             <StoryPhotoCard
               accent="#AEC17A"
               waveVariant="primary"
-              imageSrc="/dra-con-paciente.jpg"
+              imageSrc="/dra-con-paciente.webp"
               imageAlt={`${CLINIC_INFO.doctorFullName} sosteniendo a una paciente en consulta`}
               title="Experiencia hospitalaria"
-              text="Hospital Eva Perón, Sanatorio de Niños y Grupo Oroño: guardia de urgencias y recepción de recién nacidos."
+              text="Hospital Eva PerÃ³n, Sanatorio de NiÃ±os y Grupo OroÃ±o: guardia de urgencias y recepciÃ³n de reciÃ©n nacidos."
             />
           </div>
 
@@ -223,10 +223,10 @@ export function AboutDoctorSection(): React.JSX.Element {
             <StoryPhotoCard
               accent="#F3A9C0"
               waveVariant="secondary"
-              imageSrc="/dra-en-consulta.jpg"
-              imageAlt={`${CLINIC_INFO.doctorFullName} en consulta pediátrica`}
-              title={`${String(yearsOfPractice)}+ Años de Trayectoria`}
-              text={`Recibida de Médica Pediátrica en ${String(CLINIC_INFO.pediatricSince)}. Más de ${String(yearsOfPractice)} años dedicados exclusivamente a la pediatría.`}
+              imageSrc="/dra-en-consulta.webp"
+              imageAlt={`${CLINIC_INFO.doctorFullName} en consulta pediÃ¡trica`}
+              title={`${String(yearsOfPractice)}+ AÃ±os de Trayectoria`}
+              text={`Recibida de MÃ©dica PediÃ¡trica en ${String(CLINIC_INFO.pediatricSince)}. MÃ¡s de ${String(yearsOfPractice)} aÃ±os dedicados exclusivamente a la pediatrÃ­a.`}
             />
           </div>
         </div>
