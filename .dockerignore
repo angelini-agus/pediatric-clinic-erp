@@ -1,0 +1,58 @@
+# =============================================================================
+# Build context exclusions for the production image of @pediatric-erp/api.
+#
+# NEVER add patterns that exclude:
+#   - pnpm-lock.yaml            (frozen-lockfile install)
+#   - packages/db/prisma/**     (schema + migrations, required inside the image)
+#   - docker/entrypoint.sh      (container entrypoint)
+#   - any */package.json        (pnpm workspace + lockfile validation)
+# =============================================================================
+
+# ── Dependencies ─────────────────────────────────────────────────────────────
+**/node_modules
+.pnpm-store
+
+# ── Version control ──────────────────────────────────────────────────────────
+.git
+.gitignore
+.github
+
+# ── Build outputs & caches ───────────────────────────────────────────────────
+**/dist
+**/.next
+**/out
+**/build
+**/.turbo
+**/*.tsbuildinfo
+**/.astro
+**/coverage
+**/.nyc_output
+
+# ── Environment files (secrets must never enter the image) ───────────────────
+.env
+.env.*
+**/.env
+**/.env.*
+
+# ── Tests & test artifacts ───────────────────────────────────────────────────
+**/*.spec.ts
+**/*.test.ts
+**/test-results
+**/playwright-report
+**/blob-report
+**/e2e/.auth
+
+# ── Local tooling, docs & agent state ────────────────────────────────────────
+.vscode
+.idea
+.agents
+.superpowers
+.opencode
+skills-lock.json
+**/*.md
+
+# ── Local database data & compose tooling (not needed by the API image) ─────
+postgres-data
+docker-compose.yml
+docker-compose.*.yml
+docker/postgres
