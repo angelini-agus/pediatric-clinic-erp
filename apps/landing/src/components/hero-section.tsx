@@ -73,7 +73,7 @@ function DoodleBook(): React.JSX.Element {
     <svg
       aria-hidden="true"
       viewBox="0 0 90 64"
-      className="absolute -left-1 top-2 w-16 sm:w-20 md:left-1 md:top-4 md:w-28"
+      className="absolute -left-1 top-2 w-11 sm:w-16 md:w-20 lg:w-28"
       fill="none"
     >
       <path
@@ -99,7 +99,7 @@ function DoodleCloud(): React.JSX.Element {
     <svg
       aria-hidden="true"
       viewBox="0 0 120 56"
-      className="absolute right-4 top-8 w-10 sm:right-6 sm:top-12 sm:w-12 md:right-9 md:top-16 md:w-[88px]"
+      className="absolute right-3 top-5 w-7 sm:right-6 sm:top-12 sm:w-12 md:right-9 md:top-16 md:w-[88px]"
       fill="none"
     >
       <path
@@ -115,13 +115,13 @@ function DoodleCloud(): React.JSX.Element {
 /* ── Doodle: bloques ABC (outline, sobre el crema, a la izquierda de la píldora coral) ── */
 function DoodleBlocks(): React.JSX.Element {
   return (
-    <div aria-hidden="true" className="flex flex-col items-center gap-1 sm:gap-1.5">
+    <div aria-hidden="true" className="flex flex-col items-center gap-0.5 sm:gap-1.5">
       {['A', 'B', 'C'].map((letter, i) => (
         <div
           key={letter}
-          className="flex h-7 w-7 sm:h-8 sm:w-8 lg:h-9 lg:w-9 items-center justify-center rounded-md sm:rounded-lg font-heading text-xs sm:text-sm font-bold"
+          className="flex h-5 w-5 sm:h-7 sm:w-7 lg:h-9 lg:w-9 items-center justify-center rounded sm:rounded-lg font-heading text-[10px] sm:text-xs lg:text-sm font-bold"
           style={{
-            border: '2px solid rgba(58,42,27,0.55)',
+            border: '1.5px solid rgba(58,42,27,0.55)',
             color: 'rgba(58,42,27,0.75)',
             transform: `rotate(${String(i === 0 ? -4 : i === 2 ? 4 : 2)}deg)`,
           }}
@@ -139,7 +139,7 @@ function DoodleZigzag(): React.JSX.Element {
     <svg
       aria-hidden="true"
       viewBox="0 0 120 60"
-      className="absolute bottom-6 right-3 w-12 sm:bottom-8 sm:right-4 sm:w-16 md:bottom-10 md:right-6 md:w-24"
+      className="absolute bottom-3 right-1.5 w-8 sm:bottom-8 sm:right-4 sm:w-16 md:bottom-10 md:right-6 md:w-24"
       fill="none"
     >
       <path
@@ -164,7 +164,7 @@ export function HeroSection(): React.JSX.Element {
   return (
     <main
       id="main-content"
-      className="flex-1 flex flex-col lg:flex-row w-full max-w-[1400px] mx-auto relative z-10 justify-center lg:justify-between items-center px-4 sm:px-6 lg:px-8 pt-4 pb-12 lg:py-0 overflow-x-clip"
+      className="flex-1 flex flex-row w-full max-w-[1400px] mx-auto relative z-10 items-center overflow-x-clip px-3 sm:px-6 lg:px-8 py-4 lg:py-0"
     >
       {/* ── Textura de puntitos del fondo crema ── */}
       <div
@@ -174,10 +174,10 @@ export function HeroSection(): React.JSX.Element {
       />
 
       {/* ── Columna izquierda — texto ── */}
-      <div className="relative z-20 w-full lg:w-[50%] flex items-center pt-2 pb-6 lg:py-0">
-        <div className="w-full px-2 sm:px-4 lg:pl-6 lg:pr-4 flex flex-col items-start text-left">
+      <div className="relative z-20 w-[48%] lg:w-1/2 flex items-center">
+        <div className="w-full pl-2 pr-1 sm:px-4 lg:pl-6 lg:pr-4 flex flex-col">
           <h1
-            className="heading-h1 text-[clamp(2.1rem,5vw,4.3rem)] text-[#241D15] load-rise"
+            className="heading-h1 text-[clamp(1.6rem,4vw,4.3rem)] text-[#241D15] load-rise"
             style={{ animationDelay: '50ms', letterSpacing: '-0.01em' }}
           >
             La misma pediatra,
@@ -186,7 +186,7 @@ export function HeroSection(): React.JSX.Element {
           </h1>
 
           <p
-            className="mt-4 max-w-[440px] text-base leading-relaxed lg:mt-6 load-rise"
+            className="mt-3 max-w-[420px] text-xs leading-relaxed sm:text-sm lg:mt-6 lg:text-base load-rise"
             style={{ animationDelay: '160ms', color: '#6B5F52' }}
           >
             Seguimiento pediátrico continuo desde la etapa de preconcepción hasta la adolescencia,
@@ -195,32 +195,32 @@ export function HeroSection(): React.JSX.Element {
           </p>
 
           <div
-            className="mt-6 flex flex-col sm:flex-row gap-3 lg:gap-4 lg:mt-8 load-rise w-full sm:w-auto"
+            className="mt-4 flex flex-col gap-2 sm:flex-row sm:gap-3 lg:gap-4 lg:mt-8 load-rise"
             style={{ animationDelay: '260ms' }}
           >
-            {/* CTA primario — pill mostaza con círculo oscuro (como "Schedule a Tour ⊙") */}
+            {/* CTA primario — pill mostaza con círculo oscuro */}
             <a
               href={`${ENV_URL_ERP}/register`}
               id="hero-cta-turno"
-              className="w-fit flex items-center gap-3 rounded-full py-2.5 pl-7 pr-2 text-base font-semibold lg:py-2 lg:pl-9 lg:pr-2.5 lg:text-lg transition-all text-[#241D15] hover:brightness-105 active:scale-[0.97]"
+              className="w-fit flex items-center gap-2 rounded-full py-1.5 pl-4 pr-1.5 text-xs font-semibold sm:text-sm sm:py-2 sm:pl-6 sm:pr-2 lg:pl-9 lg:pr-2.5 lg:text-lg transition-all text-[#241D15] hover:brightness-105 active:scale-[0.97]"
               style={{ backgroundColor: '#F4C43F' }}
             >
               Sacar turno
               <span
-                className="flex h-9 w-9 items-center justify-center rounded-full lg:h-10 lg:w-10"
+                className="flex h-7 w-7 items-center justify-center rounded-full sm:h-8 sm:w-8 lg:h-10 lg:w-10"
                 style={{ backgroundColor: '#241D15' }}
               >
                 <ArrowRight
-                  className="h-4 w-4 text-white lg:h-[18px] lg:w-[18px]"
+                  className="h-3.5 w-3.5 text-white lg:h-[18px] lg:w-[18px]"
                   aria-hidden="true"
                 />
               </span>
             </a>
-            {/* CTA secundario — pill coral sólido (como "Explore Programs") */}
+            {/* CTA secundario — pill coral sólido */}
             <a
               href="#doctora"
               id="hero-cta-doctora"
-              className="w-fit flex items-center justify-center rounded-full px-8 py-3 text-base font-semibold lg:px-10 lg:py-3.5 lg:text-lg transition-all text-[#241D15] hover:brightness-105 active:scale-[0.97]"
+              className="w-fit flex items-center justify-center rounded-full px-4 py-2 text-xs font-semibold sm:text-sm sm:px-6 sm:py-2.5 lg:px-10 lg:py-3.5 lg:text-lg transition-all text-[#241D15] hover:brightness-105 active:scale-[0.97]"
               style={{ backgroundColor: '#E96B3A' }}
             >
               Conocer a la Dra.
@@ -230,95 +230,83 @@ export function HeroSection(): React.JSX.Element {
       </div>
 
       {/* ── Columna derecha — collage 3 píldoras + doodles ── */}
-      <div
-        className="relative w-full lg:w-1/2 h-[370px] sm:h-[430px] lg:h-full flex items-center justify-center my-4 lg:my-0"
-        style={{ overflow: 'visible' }}
-      >
+      <div className="relative w-[52%] lg:w-1/2 h-[370px] sm:h-[460px] lg:h-full flex items-center justify-center overflow-visible">
         <div
-          className="relative w-full max-w-[340px] sm:max-w-[420px] lg:max-w-none h-full lg:absolute lg:inset-0 load-fade"
+          className="w-full h-full relative lg:absolute lg:inset-0 lg:-translate-y-[50px] load-fade"
           style={{ zIndex: 30, animationDelay: '220ms' }}
         >
-          <div className="w-full h-full relative lg:-translate-y-[50px]">
-            {/* Píldora mostaza grande — foto recortada que sobresale */}
-            <div
-              className="absolute rounded-full left-[40%] top-1/2 lg:left-[44%] lg:top-[53%] -translate-x-1/2 -translate-y-1/2 w-[180px] h-[285px] sm:w-[215px] sm:h-[335px] lg:w-[clamp(240px,26vw,380px)] lg:h-[clamp(390px,40vw,570px)]"
-              style={{
-                backgroundColor: '#F4C43F',
-                boxShadow: '0 30px 70px -24px rgba(36,29,21,0.3)',
-                overflow: 'visible',
-              }}
-            >
-              {/* Contenedor con overflow-hidden para que los doodles se recorten por la curva de la píldora */}
-              <div className="absolute inset-0 overflow-hidden rounded-full pointer-events-none">
-                <DoodleBook />
-                <DoodleCloud />
-              </div>
-              {/* Foto de la Dra. dentro del óvalo de la píldora.
-                  WebP optimizado (800px, ~47 KB) generado con sharp.
-                  fetchpriority=high: es el elemento LCP del hero. */}
-              <img
-                src="/doctora-landing.webp"
-                srcSet="/doctora-landing-360.webp 360w, /doctora-landing-600.webp 600w, /doctora-landing.webp 800w"
-                sizes="(min-width: 1462px) 357px, (max-width: 1024px) 226px, 24vw"
-                alt={`${CLINIC_INFO.doctorFullName} con guardapolvo y estetoscopio`}
-                className="absolute left-1/2 top-1/2 z-10 object-cover"
-                style={{
-                  width: '94%',
-                  height: '88%',
-                  transform: 'translate(-50%, -50%)',
-                  borderRadius: '48% 52% 50% 50% / 52% 48% 52% 48%',
-                }}
-                width={800}
-                height={1071}
-                decoding="async"
-                fetchPriority="high"
-              />
+          {/* Píldora mostaza grande — achicada y con más aire */}
+          <div
+            className="absolute rounded-full left-[35%] top-[53%] sm:left-[39%] lg:left-[44%] lg:top-[53%] -translate-x-1/2 -translate-y-1/2 w-[138px] h-[225px] sm:w-[185px] sm:h-[295px] lg:w-[clamp(240px,26vw,380px)] lg:h-[clamp(390px,40vw,570px)]"
+            style={{
+              backgroundColor: '#F4C43F',
+              boxShadow: '0 20px 50px -20px rgba(36,29,21,0.3)',
+              overflow: 'visible',
+            }}
+          >
+            {/* Contenedor con overflow-hidden para que los doodles se recorten por la curva de la píldora */}
+            <div className="absolute inset-0 overflow-hidden rounded-full pointer-events-none">
+              <DoodleBook />
+              <DoodleCloud />
             </div>
-
-            {/* Píldora celeste arriba-derecha — recorte de nene que nace desde
-                abajo; las manos se salen del fondo celeste (photoOverflow). */}
-            <PhotoPill
-              color="#8CD7F2"
-              photo="/nino-1.webp"
-              srcSet="/nino-1-240.webp 240w, /nino-1-420.webp 420w, /nino-1.webp 600w"
-              sizes="(max-width: 1024px) 162px, 227px"
-              alt="Nene saltando con los brazos abiertos"
-              photoOverflow
-              className="left-[78%] top-[24%] lg:left-[84%] lg:top-[26%] w-[105px] h-[145px] sm:w-[130px] sm:h-[180px] lg:w-[clamp(150px,13vw,210px)] lg:h-[clamp(210px,18vw,300px)]"
+            {/* Foto de la Dra. dentro del óvalo de la píldora */}
+            <img
+              src="/doctora-landing.webp"
+              srcSet="/doctora-landing-360.webp 360w, /doctora-landing-600.webp 600w, /doctora-landing.webp 800w"
+              sizes="(min-width: 1462px) 357px, (max-width: 1024px) 226px, 24vw"
+              alt={`${CLINIC_INFO.doctorFullName} con guardapolvo y estetoscopio`}
+              className="absolute left-1/2 top-1/2 z-10 object-cover"
               style={{
-                transform: 'translate(-50%, -50%) rotate(3deg)',
+                width: '94%',
+                height: '88%',
+                transform: 'translate(-50%, -50%)',
+                borderRadius: '48% 52% 50% 50% / 52% 48% 52% 48%',
               }}
+              width={800}
+              height={1071}
+              decoding="async"
+              fetchPriority="high"
             />
+          </div>
 
-            {/* Píldora coral abajo-derecha — nene con globo: centrado en la píldora,
-                la cabeza y el globo se salen por arriba y las piernas se cortan
-                con la curva inferior (corte horneado en el asset).
-                z-20: tapa los bloques ABC (que quedan por encima de la doctora). */}
-            <PhotoPill
-              color="#E96B3A"
-              photo="/nino-2.webp"
-              srcSet="/nino-2-240.webp 240w, /nino-2-420.webp 420w, /nino-2.webp 600w"
-              sizes="(max-width: 1024px) 144px, 207px"
-              alt="Nene caminando con un globo amarillo"
-              photoOverflow
-              photoOffsetX="-31.4%"
-              photoWidth="90%"
-              className="z-20 left-[76%] top-[76%] lg:left-[82%] lg:top-[84%] w-[110px] h-[155px] sm:w-[135px] sm:h-[190px] lg:w-[clamp(160px,14vw,230px)] lg:h-[clamp(230px,20vw,340px)]"
-              style={{
-                transform: 'translate(-50%, -50%) rotate(-3deg)',
-              }}
-            >
-              <DoodleZigzag />
-            </PhotoPill>
+          {/* Píldora celeste arriba-derecha — achicada y separada hacia la derecha */}
+          <PhotoPill
+            color="#8CD7F2"
+            photo="/nino-1.webp"
+            srcSet="/nino-1-240.webp 240w, /nino-1-420.webp 420w, /nino-1.webp 600w"
+            sizes="(max-width: 1024px) 162px, 227px"
+            alt="Nene saltando con los brazos abiertos"
+            photoOverflow
+            className="left-[80%] top-[20%] sm:left-[81%] sm:top-[22%] lg:left-[84%] lg:top-[26%] w-[78px] h-[110px] sm:w-[105px] sm:h-[148px] lg:w-[clamp(150px,13vw,210px)] lg:h-[clamp(210px,18vw,300px)]"
+            style={{
+              transform: 'translate(-50%, -50%) rotate(4deg)',
+            }}
+          />
 
-            {/* Bloques ABC — por encima de la doctora (z-10) pero por debajo de
-                la píldora coral (z-20), que los tapa donde se superponen. */}
-            <div
-              className="absolute left-[58%] top-[58%] lg:left-[63%] lg:top-[63%]"
-              style={{ transform: 'translate(-50%, -50%)', zIndex: 10 }}
-            >
-              <DoodleBlocks />
-            </div>
+          {/* Píldora coral abajo-derecha — achicada y separada hacia abajo-derecha */}
+          <PhotoPill
+            color="#E96B3A"
+            photo="/nino-2.webp"
+            srcSet="/nino-2-240.webp 240w, /nino-2-420.webp 420w, /nino-2.webp 600w"
+            sizes="(max-width: 1024px) 144px, 207px"
+            alt="Nene caminando con un globo amarillo"
+            photoOverflow
+            photoOffsetX="-31.4%"
+            photoWidth="90%"
+            className="z-20 left-[79%] top-[82%] sm:left-[80%] sm:top-[82%] lg:left-[82%] lg:top-[84%] w-[84px] h-[122px] sm:w-[112px] sm:h-[160px] lg:w-[clamp(160px,14vw,230px)] lg:h-[clamp(230px,20vw,340px)]"
+            style={{
+              transform: 'translate(-50%, -50%) rotate(-3deg)',
+            }}
+          >
+            <DoodleZigzag />
+          </PhotoPill>
+
+          {/* Bloques ABC */}
+          <div
+            className="absolute left-[56%] top-[62%] sm:left-[59%] lg:left-[63%] lg:top-[63%]"
+            style={{ transform: 'translate(-50%, -50%)', zIndex: 10 }}
+          >
+            <DoodleBlocks />
           </div>
         </div>
       </div>
