@@ -94,7 +94,7 @@ export function HeaderSearch({
       role="search"
       onSubmit={handleSubmit}
       className={cn(
-        'items-center gap-2 bg-white/70 backdrop-blur-sm rounded-full px-4 py-2 w-52 shadow-sm',
+        'flex items-center gap-2 bg-white/70 backdrop-blur-sm rounded-full px-4 py-2 w-52 shadow-sm',
         className,
       )}
     >
@@ -112,7 +112,7 @@ export function HeaderSearch({
         onChange={(e) => {
           setQuery(e.target.value);
         }}
-        className="bg-transparent text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none w-full"
+        className="w-full min-w-0 bg-transparent text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none"
       />
     </form>
   );
