@@ -1,4 +1,4 @@
-﻿import {
+import {
   Baby,
   ChevronLeft,
   ChevronRight,
@@ -137,14 +137,14 @@ export function JourneySection(): React.JSX.Element {
     const track = trackRef.current;
     if (!track) return;
     const card = track.querySelector<HTMLElement>('[data-stage-card]');
-    const step = card ? card.offsetWidth + 48 : 360;
+    const step = card ? card.offsetWidth + 24 : 300;
     track.scrollBy({ left: direction * step, behavior: 'smooth' });
   };
 
   return (
     <section
       id="acompanamiento"
-      className="bg-dots relative overflow-hidden py-20 lg:py-28 scroll-mt-16"
+      className="bg-dots relative overflow-hidden pt-20 pb-28 lg:pt-28 lg:pb-36 scroll-mt-16"
       style={{ backgroundColor: '#F4EEDF' }}
       aria-label="Acompañamiento en cada etapa"
     >
@@ -225,14 +225,14 @@ export function JourneySection(): React.JSX.Element {
 
           <div
             ref={trackRef}
-            className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory lg:snap-none scroll-smooth"
+            className="flex gap-6 overflow-x-auto pt-3 pb-12 px-2 -mx-2 snap-x snap-mandatory lg:snap-none scroll-smooth"
             style={{ scrollbarWidth: 'none' }}
           >
             {STAGES.map((stage) => (
               <article
                 key={stage.badge}
                 data-stage-card
-                className="relative flex w-[260px] snap-start flex-col items-center rounded-card px-6 pb-8 pt-9 text-center transition-transform duration-300 hover:-translate-y-1.5 sm:w-[300px]"
+                className="relative flex w-[270px] shrink-0 snap-start flex-col items-center rounded-card px-6 pb-8 pt-9 text-center transition-transform duration-300 hover:-translate-y-1.5 sm:w-[300px]"
                 style={{
                   backgroundColor: stage.accent,
                   boxShadow: '0 20px 50px -24px rgba(36,29,21,0.35)',
