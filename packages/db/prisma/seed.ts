@@ -3,13 +3,41 @@ import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
-// Default credentials (documented in README):
-//   Email:    admin@admin.com
-//   Password: admin123
-const DEFAULT_PASSWORD = 'admin123';
+/**
+ * ⚠️ DESTRUCTIVE DEV-ONLY SEED.
+ *
+ * This script wipes appointments, patients and users before inserting demo
+ * data. It must NEVER run against production: `assertSafeToRun()` aborts
+ * unless the environment is explicitly disposable.
+ *
+ * Credentials: admin@admin.com with the password from SEED_PASSWORD. The
+ * `admin123` fallback exists only for local development — the repository is
+ * public, so never use the default outside a local database.
+ */
+const DEFAULT_PASSWORD = process.env['SEED_PASSWORD'] ?? 'admin123';
 const BCRYPT_ROUNDS = 10;
 
-async function main() {
+function assertSafeToRun(): void {
+  const isProduction = process.env['NODE_ENV'] === 'production';
+  const explicitlyAllowed = process.env['ALLOW_DESTRUCTIVE_SEED'] === 'true';
+
+  if (isProduction && !explicitlyAllowed) {
+    throw new Error(
+      'Refusing to run the destructive seed with NODE_ENV=production. ' +
+        'Set ALLOW_DESTRUCTIVE_SEED=true only if this database is disposable.',
+    );
+  }
+
+  if (!process.env['SEED_PASSWORD']) {
+    console.warn(
+      '⚠️  SEED_PASSWORD not set — using the public dev default "admin123". ' +
+        'Never use this password outside a local database.',
+    );
+  }
+}
+
+async function main(): Promise<void> {
+  assertSafeToRun();
   console.log('🌱 Seeding database...');
 
   // Clean existing data for idempotency
@@ -20,7 +48,7 @@ async function main() {
   // Password is hashed ONCE and reused for every seed user (DRY).
   const hashedPassword = await bcrypt.hash(DEFAULT_PASSWORD, BCRYPT_ROUNDS);
 
-  // 1. Default Admin (owner) — credentials: admin@admin.com / admin123
+  // 1. Default Admin (owner) — credentials: admin@admin.com / <SEED_PASSWORD>
   const admin = await prisma.user.create({
     data: {
       email: 'admin@admin.com',
@@ -46,11 +74,10 @@ async function main() {
       phone: '+54 9 11 3456-7890',
     },
   });
-  console.log(`✅ Created doctor: ${doctor.fullName} (${doctor.medicalLicense})`);
+  console.log(`✅ Created doctor: ${doctor.fullName} (${doctor.medicalLicense ?? 'N/D'})`);
 
   // 2. Pediatric Patients with Guardians
   const now = new Date();
-  const todayStr = now.toISOString().split('T')[0];
 
   const patient1 = await prisma.patient.create({
     data: {
@@ -187,7 +214,7 @@ async function main() {
   console.log('✅ Created 6 pediatric patients with guardians');
 
   // Helper to set appointment time today
-  const createTodayDate = (hours: number, minutes: number) => {
+  const createTodayDate = (hours: number, minutes: number): Date => {
     const date = new Date();
     date.setHours(hours, minutes, 0, 0);
     return date;
@@ -254,7 +281,7 @@ async function main() {
 }
 
 main()
-  .catch((e) => {
+  .catch((e: unknown) => {
     console.error('❌ Seeding error:', e);
     process.exit(1);
   })
