@@ -27,7 +27,7 @@ export function DashboardShell({ children, user }: DashboardShellProps): React.J
   return (
     <div className="h-screen overflow-hidden bg-shell p-3 md:p-12">
       {/* Gran Tarjeta: halo radial en esquina inferior-izquierda con grises un 30% más claros */}
-      <div className="relative flex h-full rounded-[1.5rem] md:rounded-[2.5rem] shadow-card-shell overflow-hidden bg-[radial-gradient(ellipse_at_bottom_left,_#FFFFFF_0%,_#F8FAFC_35%,_#EAEFF5_65%,_#DFE4EE_100%)]">
+      <div className="relative flex h-full rounded-[1.5rem] md:rounded-[2.5rem] shadow-card-shell overflow-hidden bg-[radial-gradient(ellipse_at_bottom_left,_#FFFFFF_0%,_#F4F6FA_35%,_#E5EAF2_65%,_#D0D7E4_100%)]">
         {/* Blobs de luz suave ambiental (z-0) */}
         <div className="absolute bottom-0 left-0 w-[700px] h-[700px] bg-white/70 rounded-full blur-3xl pointer-events-none translate-y-1/3 -translate-x-1/4 z-0" />
         <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-100/30 rounded-full blur-3xl pointer-events-none -translate-y-1/4 translate-x-1/4 z-0" />

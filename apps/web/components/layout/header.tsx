@@ -51,8 +51,9 @@ export function Header({ onMenuClick, user }: HeaderProps): React.JSX.Element {
           </svg>
         </button>
 
-        {/* Avatar with user initials */}
-        <div className="w-11 h-11 rounded-full bg-gradient-to-br from-brand-400 to-violet-600 flex items-center justify-center text-white font-bold text-sm shadow-md shrink-0 ring-2 ring-white">
+        {/* Avatar with user initials — desktop only: en mobile se pisaba con
+            la barra de búsqueda (el espacio no alcanza). */}
+        <div className="hidden md:flex w-11 h-11 rounded-full bg-gradient-to-br from-brand-400 to-violet-600 items-center justify-center text-white font-bold text-sm shadow-md shrink-0 ring-2 ring-white">
           {user?.fullName ? getUserInitials(user.fullName) : '??'}
         </div>
         <div className="min-w-0">
