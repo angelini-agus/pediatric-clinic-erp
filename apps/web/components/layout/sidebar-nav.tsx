@@ -1,25 +1,42 @@
 'use client';
 
-import { LayoutDashboard, Users, Calendar, Stethoscope, Settings } from 'lucide-react';
+import { LayoutDashboard, Users, Calendar, Stethoscope, Settings, UserCog } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
 
-const navItems = [
+import type { AuthRole } from '@pediatric-erp/schemas';
+
+type NavItem = {
+  readonly name: string;
+  readonly href: string;
+  readonly icon: typeof LayoutDashboard;
+  /** Visible only for ADMIN / SUPER_ADMIN. */
+  readonly adminOnly?: boolean;
+};
+
+const navItems: NavItem[] = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Pacientes', href: '/patients', icon: Users },
   { name: 'Turnos', href: '/appointments', icon: Calendar },
   { name: 'Consultas', href: '/consultations', icon: Stethoscope },
+  { name: 'Profesionales', href: '/staff', icon: UserCog, adminOnly: true },
   { name: 'Configuración', href: '/settings', icon: Settings },
 ];
 
-export function SidebarNav(): React.JSX.Element {
+type SidebarNavProps = {
+  readonly role?: AuthRole | null;
+};
+
+export function SidebarNav({ role }: SidebarNavProps): React.JSX.Element {
   const pathname = usePathname();
+  const isAdmin = role === 'ADMIN' || role === 'SUPER_ADMIN';
+  const visibleItems = navItems.filter((item) => !item.adminOnly || isAdmin);
 
   return (
     <nav className="space-y-0.5">
-      {navItems.map((item) => {
+      {visibleItems.map((item) => {
         const Icon = item.icon;
         const isActive =
           pathname === item.href ||

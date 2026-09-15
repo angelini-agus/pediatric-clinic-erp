@@ -24,7 +24,7 @@ export function Sidebar({ user }: SidebarProps): React.JSX.Element {
       </div>
 
       <div className="flex-1 flex flex-col justify-center">
-        <SidebarNav />
+        <SidebarNav role={user?.role ?? null} />
       </div>
 
       <div className="px-2 pt-6">

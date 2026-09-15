@@ -98,7 +98,7 @@ export function MobileSidebarDrawer({
 
         {/* Drawer nav (misma SidebarNav del desktop) */}
         <div className="flex-1 overflow-y-auto px-4 pb-6 no-scrollbar">
-          <SidebarNav />
+          <SidebarNav role={user?.role ?? null} />
         </div>
 
         {/* Drawer footer (user dropdown) */}
