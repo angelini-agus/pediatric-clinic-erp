@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { AppointmentsModule } from '../appointments/appointments.module.js';
+import { AuditModule } from '../audit/audit.module.js';
 
 import { PortalController } from './portal.controller.js';
 import { PortalService } from './portal.service.js';
@@ -9,10 +10,11 @@ import { PortalService } from './portal.service.js';
  * PortalModule — patient-facing portal (role PATIENT).
  *
  * Imports AppointmentsModule to reuse the appointment creation flow
- * (slot validation + audit) for portal requests.
+ * (slot validation + audit) for portal requests, and AuditModule for the
+ * self-onboarding audit event.
  */
 @Module({
-  imports: [AppointmentsModule],
+  imports: [AppointmentsModule, AuditModule],
   controllers: [PortalController],
   providers: [PortalService],
 })

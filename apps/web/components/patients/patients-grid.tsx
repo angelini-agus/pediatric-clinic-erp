@@ -208,7 +208,7 @@ export function PatientsGrid({
                       <span>
                         DNI:{' '}
                         <strong className="font-semibold text-slate-700">
-                          {patient.documentNumber}
+                          {patient.documentNumber ?? '—'}
                         </strong>
                       </span>
                     </div>

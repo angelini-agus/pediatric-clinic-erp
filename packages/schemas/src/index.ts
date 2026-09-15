@@ -86,4 +86,6 @@ export {
   type LinkPatientAccount,
   portalAppointmentRequestSchema,
   type PortalAppointmentRequest,
+  portalPatientCreateSchema,
+  type PortalPatientCreate,
 } from './portal.schema.js';

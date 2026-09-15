@@ -82,7 +82,10 @@ export default async function PatientPage({
           Volver al Dashboard
         </Link>
         <span className="text-xs font-semibold text-slate-400 bg-white/60 backdrop-blur-sm px-3.5 py-2 rounded-xl shadow-sm">
-          Historia Clínica N° {patient.documentNumber}
+          Historia Clínica{' '}
+          {patient.documentNumber !== null && patient.documentNumber !== undefined
+            ? `N° ${patient.documentNumber}`
+            : '(sin DNI)'}
         </span>
       </div>
 

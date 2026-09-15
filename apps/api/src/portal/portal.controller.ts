@@ -1,5 +1,6 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
 import {
+  ApiConflictResponse,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiOkResponse,
@@ -10,6 +11,7 @@ import {
 import { Roles } from '../common/decorators/roles.decorator.js';
 
 import { PortalAppointmentRequestDto } from './dto/portal-appointment-request.dto.js';
+import { PortalPatientCreateDto } from './dto/portal-patient-create.dto.js';
 import { PortalService } from './portal.service.js';
 
 import type { PortalAppointment, PortalClinicInfo, PortalPatient } from './portal.service.js';
@@ -84,6 +86,27 @@ export class PortalController {
   @ApiOkResponse({ description: 'Clinic info.' })
   getClinic(): Promise<PortalClinicInfo> {
     return this.portalService.getClinic();
+  }
+
+  /**
+   * POST /api/v1/portal/patient
+   * Self-onboarding: creates the patient record from the portal data and
+   * links it to the authenticated account (no staff intervention).
+   */
+  @Post('patient')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Create the patient record (self-onboarding)',
+    description:
+      'Creates the patient record with the minimum data and links it to the authenticated account, so a newly registered user can request appointments immediately. The clinic completes the record later.',
+  })
+  @ApiCreatedResponse({ description: 'Patient record created and linked.' })
+  @ApiConflictResponse({ description: 'The account already has a linked patient record.' })
+  createPatient(
+    @Body() dto: PortalPatientCreateDto,
+    @Req() request: FastifyRequest & { user: JwtPayload },
+  ): Promise<PortalPatient> {
+    return this.portalService.createPatient(request.user.sub, dto);
   }
 
   /**

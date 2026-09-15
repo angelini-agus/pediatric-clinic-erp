@@ -26,7 +26,8 @@ export const patientResponseSchema = z.object({
   dateOfBirth: z.coerce.date(),
   biologicalSex: z.string(),
   documentType: z.string(),
-  documentNumber: z.string(),
+  /** Nullable: portal-created records may not have the DNI yet. */
+  documentNumber: z.string().nullish(),
   bloodGroup: z.string().nullish(),
   healthInsurance: z.string().nullish(),
   healthInsurancePlan: z.string().nullish(),

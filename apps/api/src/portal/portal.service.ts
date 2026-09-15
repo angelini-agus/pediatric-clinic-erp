@@ -1,9 +1,16 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 
 import { AppointmentsService } from '../appointments/appointments.service.js';
+import { AuditService } from '../audit/audit.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 
-import type { PortalAppointmentRequest } from '@pediatric-erp/schemas';
+import type { PortalAppointmentRequest, PortalPatientCreate } from '@pediatric-erp/schemas';
 
 /** Patient summary shown in the portal (own record only). */
 export type PortalPatient = {
@@ -45,7 +52,73 @@ export class PortalService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly appointments: AppointmentsService,
+    private readonly audit: AuditService,
   ) {}
+
+  /**
+   * Self-onboarding: creates the patient record from the portal and links it
+   * to the authenticated account in a single step, so a newly registered
+   * user can request appointments immediately (no staff intervention).
+   *
+   * The guardian email defaults to the account email. The clinic verifies
+   * and completes the record (DNI, obra social, etc.) during the first visit.
+   *
+   * @throws ConflictException when the account already has a linked record
+   * @throws UnauthorizedException when the account no longer exists
+   */
+  async createPatient(userId: string, dto: PortalPatientCreate): Promise<PortalPatient> {
+    const existing = await this.prisma.client.patient.findFirst({
+      where: { userId, deletedAt: null },
+      select: { id: true },
+    });
+
+    if (existing !== null) {
+      throw new ConflictException('Tu cuenta ya está vinculada a una ficha de paciente.');
+    }
+
+    const user = await this.prisma.client.user.findFirst({
+      where: { id: userId, deletedAt: null },
+      select: { email: true },
+    });
+
+    if (user === null) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const patient = await this.prisma.client.patient.create({
+      data: {
+        firstName: dto.firstName,
+        lastName: dto.lastName,
+        documentNumber: dto.documentNumber ?? null,
+        dateOfBirth: dto.dateOfBirth,
+        biologicalSex: dto.biologicalSex,
+        guardianFullName: dto.guardianFullName,
+        guardianPhone: dto.guardianPhone,
+        guardianEmail: user.email,
+        guardianRelationship: dto.guardianRelationship,
+        // Link immediately: the account IS the patient's portal account.
+        userId,
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        dateOfBirth: true,
+        guardianFullName: true,
+      },
+    });
+
+    await this.audit.log({
+      action: 'CREATE_PATIENT',
+      entityName: 'Patient',
+      entityId: patient.id,
+      userId,
+      patientId: patient.id,
+      payload: { source: 'PORTAL_SELF_ONBOARDING' },
+    });
+
+    return patient;
+  }
 
   /**
    * Own profile + link status. Returns `patient: null` when the account is

@@ -91,7 +91,10 @@ model Patient {
   firstName             String          @db.VarChar(100)
   lastName              String          @db.VarChar(100)
   documentType          String          @db.VarChar(10)   @default("DNI")
-  documentNumber        String          @db.VarChar(20)
+  /// Nullable: fichas created from the patient portal may not have the DNI
+  /// yet — the clinic completes it during the first visit. The staff
+  /// creation flow still requires it (patientCreateSchema).
+  documentNumber        String?         @db.VarChar(20)
   dateOfBirth           DateTime
   biologicalSex         String          @db.VarChar(10)
 

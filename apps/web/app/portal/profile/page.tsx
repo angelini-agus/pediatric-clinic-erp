@@ -62,8 +62,9 @@ export default async function PortalProfilePage(): Promise<React.JSX.Element> {
 
         {patient === null ? (
           <p className="mt-4 text-sm leading-relaxed text-slate-500">
-            Tu cuenta todavía no está vinculada a una ficha de paciente. Escribinos por WhatsApp
-            desde la sección <strong>Mis turnos</strong> para que el consultorio la vincule.
+            Tu cuenta todavía no está vinculada a una ficha de paciente. Entrá a{' '}
+            <strong>Mis turnos</strong> para completar la ficha (si es la primera vez) o para
+            pedirnos que la vinculemos (si ya te atendiste en el consultorio).
           </p>
         ) : (
           <dl className="mt-5 space-y-3 text-sm">

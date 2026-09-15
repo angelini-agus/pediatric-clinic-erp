@@ -1,9 +1,11 @@
-import { CalendarClock, CheckCircle2, Clock, MessageCircle } from 'lucide-react';
+import { CheckCircle2, Clock } from 'lucide-react';
 
+import { PortalOnboarding } from '@/components/portal/portal-onboarding';
 import { RequestAppointmentForm } from '@/components/portal/request-appointment-form';
 import { Badge } from '@/components/ui/badge';
 import { getPortalAppointments, getPortalMe } from '@/lib/api';
 import { getAuthToken } from '@/lib/auth';
+import { decodeAuthPayload } from '@/lib/jwt';
 
 import type { PortalAppointment } from '@/lib/api';
 import type { Metadata } from 'next';
@@ -34,10 +36,6 @@ const STATUS_VARIANTS: Record<
   COMPLETED: 'completed',
   CANCELED: 'canceled',
 };
-
-const WHATSAPP_LINK =
-  'https://wa.me/5493413464378?text=' +
-  encodeURIComponent('Hola, necesito vincular mi cuenta del portal.');
 
 function formatDateTime(date: Date): string {
   return new Intl.DateTimeFormat('es-AR', {
@@ -77,30 +75,10 @@ export default async function PortalPage(): Promise<React.JSX.Element> {
     getPortalAppointments(token),
   ]);
 
-  // ── Not linked yet ──────────────────────────────────────────────────────
+  // ── Not linked yet → onboarding (existing patient link / self-onboarding) ─
   if (patient === null) {
-    return (
-      <div className="mx-auto max-w-xl space-y-6 text-center">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-50 text-violet-600">
-          <CalendarClock className="h-7 w-7" />
-        </div>
-        <div className="space-y-2">
-          <h1 className="text-xl font-bold text-slate-800">Tu cuenta todavía no está vinculada</h1>
-          <p className="text-sm leading-relaxed text-slate-500">
-            Escribinos por WhatsApp para que el consultorio vincule tu cuenta con la ficha de tu
-            hijo/a. Una vez vinculada vas a poder ver los turnos, solicitar nuevos y acceder a la
-            ubicación exacta del consultorio.
-          </p>
-        </div>
-        <a
-          href={WHATSAPP_LINK}
-          className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-brand-700"
-        >
-          <MessageCircle className="h-4 w-4" />
-          Escribir por WhatsApp
-        </a>
-      </div>
-    );
+    const user = decodeAuthPayload();
+    return <PortalOnboarding defaultGuardianName={user?.fullName} />;
   }
 
   const now = new Date();

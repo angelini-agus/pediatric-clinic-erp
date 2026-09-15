@@ -1,8 +1,9 @@
-import { ForbiddenException } from '@nestjs/common';
+import { ConflictException, ForbiddenException } from '@nestjs/common';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { vi } from 'vitest';
 
 import { AppointmentsService } from '../appointments/appointments.service.js';
+import { AuditService } from '../audit/audit.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 
 import { PortalService } from './portal.service.js';
@@ -30,30 +31,33 @@ describe('PortalService', () => {
   let service: PortalService;
   let prisma: {
     client: {
-      patient: { findFirst: ReturnType<typeof vi.fn> };
+      patient: { findFirst: ReturnType<typeof vi.fn>; create: ReturnType<typeof vi.fn> };
       appointment: { findMany: ReturnType<typeof vi.fn> };
       user: { findFirst: ReturnType<typeof vi.fn> };
       clinicSettings: { findFirst: ReturnType<typeof vi.fn> };
     };
   };
   let appointments: { create: ReturnType<typeof vi.fn> };
+  let audit: { log: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
     prisma = {
       client: {
-        patient: { findFirst: vi.fn() },
+        patient: { findFirst: vi.fn(), create: vi.fn() },
         appointment: { findMany: vi.fn() },
         user: { findFirst: vi.fn() },
         clinicSettings: { findFirst: vi.fn() },
       },
     };
     appointments = { create: vi.fn() };
+    audit = { log: vi.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PortalService,
         { provide: PrismaService, useValue: prisma },
         { provide: AppointmentsService, useValue: appointments },
+        { provide: AuditService, useValue: audit },
       ],
     }).compile();
 
@@ -153,6 +157,64 @@ describe('PortalService', () => {
 
       expect(result.status).toBe('REQUESTED');
       expect(result.doctor.fullName).toBe('Dra. Patricia Martinangelio');
+    });
+  });
+
+  describe('createPatient (self-onboarding)', () => {
+    const patientInput = {
+      firstName: 'Mateo',
+      lastName: 'González',
+      dateOfBirth: new Date('2020-05-10'),
+      biologicalSex: 'MALE' as const,
+      guardianFullName: 'Ana González',
+      guardianPhone: '+5493410000000',
+      guardianRelationship: 'MOTHER' as const,
+    };
+
+    it('creates the record linked to the account with the account email as guardian email', async () => {
+      prisma.client.patient.findFirst.mockResolvedValue(null);
+      prisma.client.user.findFirst.mockResolvedValue({ email: 'ana@example.com' });
+      prisma.client.patient.create.mockResolvedValue({
+        id: 'pat_new',
+        firstName: 'Mateo',
+        lastName: 'González',
+        dateOfBirth: new Date('2020-05-10'),
+        guardianFullName: 'Ana González',
+      });
+
+      const result = await service.createPatient('usr_1', patientInput);
+
+      const createArgs = firstCallArgs(
+        prisma.client.patient.create.mock.calls as unknown as [
+          {
+            data: {
+              userId: string;
+              guardianEmail: string;
+              documentNumber: string | null;
+            };
+          },
+        ][],
+      );
+      expect(createArgs[0].data.userId).toBe('usr_1');
+      expect(createArgs[0].data.guardianEmail).toBe('ana@example.com');
+      expect(createArgs[0].data.documentNumber).toBeNull();
+
+      const auditArgs = firstCallArgs(
+        audit.log.mock.calls as unknown as [{ action: string; userId: string }][],
+      );
+      expect(auditArgs[0].action).toBe('CREATE_PATIENT');
+      expect(auditArgs[0].userId).toBe('usr_1');
+
+      expect(result.id).toBe('pat_new');
+    });
+
+    it('throws ConflictException when the account already has a linked record', async () => {
+      prisma.client.patient.findFirst.mockResolvedValue({ id: 'pat_1' });
+
+      await expect(service.createPatient('usr_1', patientInput)).rejects.toBeInstanceOf(
+        ConflictException,
+      );
+      expect(prisma.client.patient.create).not.toHaveBeenCalled();
     });
   });
 });

@@ -89,7 +89,11 @@ export function PatientProfileCard({ patient }: PatientProfileCardProps): React.
         <DataRow
           icon={FileText}
           label="DNI"
-          value={`${patient.documentType} ${patient.documentNumber}`}
+          value={
+            patient.documentNumber !== null && patient.documentNumber !== undefined
+              ? `${patient.documentType} ${patient.documentNumber}`
+              : 'Sin documento (completar)'
+          }
         />
         <DataRow icon={Baby} label="Fecha de Nacimiento" value={formatDate(patient.dateOfBirth)} />
         {patient.gestationalWeeks && (
