@@ -79,3 +79,11 @@ export {
   loginResponseSchema,
   type LoginResponse,
 } from './auth.schema.js';
+
+// Patient portal
+export {
+  linkPatientAccountSchema,
+  type LinkPatientAccount,
+  portalAppointmentRequestSchema,
+  type PortalAppointmentRequest,
+} from './portal.schema.js';

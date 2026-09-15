@@ -44,6 +44,8 @@ enum UserRole {
 }
 
 enum AppointmentStatus {
+  /// Requested by the patient from the portal — pending staff confirmation.
+  REQUESTED
   SCHEDULED
   IN_PROGRESS
   COMPLETED
@@ -68,6 +70,8 @@ model User {
   appointments   Appointment[]
   medicalRecords MedicalRecord[]
   prescriptions  Prescription[]
+  /// Portal account linked to this patient record (role PATIENT).
+  patient        Patient?
 
   // Standard timestamps (Global Architecture)
   createdAt      DateTime        @default(now())
@@ -114,6 +118,10 @@ model Patient {
   appointments          Appointment[]
   medicalRecords        MedicalRecord[]
   prescriptions         Prescription[]
+  /// Portal account linked to this record (role PATIENT). Unique: one
+  /// account per patient record. Null until staff links it.
+  userId                String?         @unique
+  user                  User?           @relation(fields: [userId], references: [id])
 
   // Standard timestamps (Global Architecture)
   createdAt             DateTime        @default(now())
@@ -221,6 +229,9 @@ model ClinicSettings {
   licenseNumber String    @db.VarChar(50)
   specialty     String    @db.VarChar(100)
   clinicName    String    @db.VarChar(200)
+  /// Exact address, shown to registered patients in the portal (the public
+  /// landing only publishes the city).
+  address       String?   @db.VarChar(300)
 
   // Standard timestamps (Global Architecture)
   createdAt     DateTime  @default(now())

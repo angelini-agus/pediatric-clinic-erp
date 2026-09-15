@@ -23,6 +23,7 @@ import {
 import { Roles } from '../common/decorators/roles.decorator.js';
 
 import { CreatePatientDto } from './dto/create-patient.dto.js';
+import { LinkAccountDto } from './dto/link-account.dto.js';
 import { PatientsService, type PatientsPage } from './patients.service.js';
 
 import type { JwtPayload } from '../auth/jwt.strategy.js';
@@ -174,5 +175,57 @@ export class PatientsController {
     @Req() request: FastifyRequest & { user: JwtPayload },
   ): Promise<void> {
     await this.patientsService.softDelete(id, request.user.sub);
+  }
+
+  /**
+   * POST /api/v1/patients/:id/account
+   * Links the patient record to a PATIENT user account (portal access),
+   * matched by email. Only staff with administrative scope can do it.
+   */
+  @Post(':id/account')
+  @Roles('SECRETARY', 'ADMIN', 'SUPER_ADMIN')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Link a portal account to a patient (by email)',
+    description:
+      'Links the patient record to an existing PATIENT user account. The account must exist, be active and have role PATIENT. One account per patient record.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Patient CUID ID',
+    example: 'clxxxxxxxxxxxxxxxxxxxxxxxx',
+  })
+  @ApiOkResponse({ description: 'Patient linked to the portal account.' })
+  linkAccount(
+    @Param('id') id: string,
+    @Body() dto: LinkAccountDto,
+    @Req() request: FastifyRequest & { user: JwtPayload },
+  ): Promise<Patient> {
+    return this.patientsService.linkAccount(id, dto, request.user.sub);
+  }
+
+  /**
+   * DELETE /api/v1/patients/:id/account
+   * Removes the portal account association (the user account is kept).
+   */
+  @Delete(':id/account')
+  @Roles('SECRETARY', 'ADMIN', 'SUPER_ADMIN')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Unlink the portal account from a patient',
+    description:
+      'Removes the association between the patient record and its portal account. The user account is not deleted.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Patient CUID ID',
+    example: 'clxxxxxxxxxxxxxxxxxxxxxxxx',
+  })
+  @ApiNoContentResponse({ description: 'Portal account unlinked.' })
+  async unlinkAccount(
+    @Param('id') id: string,
+    @Req() request: FastifyRequest & { user: JwtPayload },
+  ): Promise<void> {
+    await this.patientsService.unlinkAccount(id, request.user.sub);
   }
 }

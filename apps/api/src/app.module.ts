@@ -19,6 +19,7 @@ import { DoctorsModule } from './doctors/doctors.module.js';
 import { HealthModule } from './health/health.module.js';
 import { MedicalRecordsModule } from './medical-records/medical-records.module.js';
 import { PatientsModule } from './patients/patients.module.js';
+import { PortalModule } from './portal/portal.module.js';
 import { PrescriptionsModule } from './prescriptions/prescriptions.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { SettingsModule } from './settings/settings.module.js';
@@ -80,6 +81,7 @@ import { SettingsModule } from './settings/settings.module.js';
     DoctorsModule,
     AnalyticsModule,
     SettingsModule,
+    PortalModule,
   ],
 
   controllers: [AppController],
