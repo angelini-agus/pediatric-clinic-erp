@@ -91,7 +91,11 @@ export default async function PatientPage({
         {/* Left Column: Patient Profile Card (col-span-4) */}
         <div className="lg:col-span-4 flex flex-col gap-4">
           <PatientProfileCard patient={patient} />
-          <PortalAccountCard patientId={patient.id} linked={patient.userId != null} />
+          <PortalAccountCard
+            patientId={patient.id}
+            linked={patient.userId != null}
+            suggestedEmail={patient.guardianEmail ?? null}
+          />
         </div>
 
         {/* Right Column: Prescription Form + New Evolution Form + Timeline (col-span-8) */}

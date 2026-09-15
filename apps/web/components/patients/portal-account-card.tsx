@@ -9,21 +9,24 @@ import { cn } from '@/lib/utils';
 type PortalAccountCardProps = {
   patientId: string;
   linked: boolean;
+  /** Email del tutor registrado en la ficha — se usa como sugerencia. */
+  suggestedEmail?: string | null;
 };
 
 /**
  * PortalAccountCard — Client Component (staff side).
  *
- * Shows whether the patient record has a portal account linked and lets
- * the staff link one by email or remove the association. The actual
- * authorization (SECRETARY/ADMIN/SUPER_ADMIN) is enforced by the API.
+ * Links the patient record to the PORTAL ACCOUNT OF THE GUARDIAN/PATIENT
+ * (the email they used to register from the landing) — NOT the professional.
+ * The actual authorization (SECRETARY/ADMIN/SUPER_ADMIN) is enforced by the API.
  */
 export function PortalAccountCard({
   patientId,
   linked,
+  suggestedEmail,
 }: PortalAccountCardProps): React.JSX.Element {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(suggestedEmail ?? '');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -108,8 +111,8 @@ export function PortalAccountCard({
       {linked ? (
         <div className="mt-4 space-y-3">
           <p className="text-xs leading-relaxed text-slate-500">
-            El paciente ya puede ingresar al portal con su cuenta para ver sus turnos y la ubicación
-            exacta del consultorio.
+            El tutor ya puede ingresar al portal con su cuenta para ver los turnos del paciente y
+            solicitar nuevos.
           </p>
           <button
             type="button"
@@ -128,8 +131,9 @@ export function PortalAccountCard({
       ) : (
         <form onSubmit={(e) => void handleLink(e)} className="mt-4 space-y-3">
           <p className="text-xs leading-relaxed text-slate-500">
-            El paciente debe registrarse primero desde la landing (o el login) con su email. Después
-            vinculá esa cuenta acá para darle acceso a su portal.
+            Pegá el email con el que el <strong>tutor del paciente</strong> se registró en el portal
+            (desde la landing). Al vincular, esa cuenta va a poder ver los turnos y datos{' '}
+            <strong>de este paciente</strong>. No es el email del profesional.
           </p>
           <div className="flex gap-2">
             <input
@@ -139,7 +143,7 @@ export function PortalAccountCard({
               onChange={(e) => {
                 setEmail(e.target.value);
               }}
-              placeholder="email@delpaciente.com"
+              placeholder="email con el que se registró el tutor"
               className="w-full rounded-xl border border-slate-200 bg-white/80 px-3 py-2 text-xs text-slate-800 placeholder-slate-400 shadow-sm transition focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30"
             />
             <button
@@ -155,6 +159,11 @@ export function PortalAccountCard({
               Vincular
             </button>
           </div>
+          {suggestedEmail !== null && suggestedEmail !== undefined && suggestedEmail.length > 0 && (
+            <p className="text-xs text-slate-400">
+              Email del tutor en la ficha: <span className="font-medium">{suggestedEmail}</span>
+            </p>
+          )}
         </form>
       )}
     </div>
