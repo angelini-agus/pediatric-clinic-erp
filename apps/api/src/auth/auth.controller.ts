@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
 import {
   ApiConflictResponse,
   ApiCreatedResponse,
@@ -12,11 +12,14 @@ import { Public } from '../common/decorators/public.decorator.js';
 import { Roles } from '../common/decorators/roles.decorator.js';
 
 import { AuthService } from './auth.service.js';
+import { ChangePasswordDto } from './dto/change-password.dto.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RegisterDto } from './dto/register.dto.js';
 import { StaffCreateDto } from './dto/staff-create.dto.js';
 
+import type { JwtPayload } from './jwt.strategy.js';
 import type { LoginResponse } from '@pediatric-erp/schemas';
+import type { FastifyRequest } from 'fastify';
 
 /**
  * AuthController — authentication endpoints.
@@ -24,9 +27,10 @@ import type { LoginResponse } from '@pediatric-erp/schemas';
  * Base path: /api/v1/auth
  *
  * Endpoints:
- *  POST /api/v1/auth/login    - Authenticate a user and issue a JWT (public)
- *  POST /api/v1/auth/register - Patient self-registration (public, always PATIENT)
- *  POST /api/v1/auth/staff    - Staff creation (ADMIN/SUPER_ADMIN only)
+ *  POST /api/v1/auth/login           - Authenticate a user and issue a JWT (public)
+ *  POST /api/v1/auth/register        - Patient self-registration (public, always PATIENT)
+ *  POST /api/v1/auth/staff           - Staff creation (ADMIN/SUPER_ADMIN only)
+ *  POST /api/v1/auth/change-password - Change own password (any authenticated user)
  */
 @ApiTags('auth')
 @Controller({ path: 'auth', version: '1' })
@@ -115,5 +119,34 @@ export class AuthController {
   })
   createStaff(@Body() dto: StaffCreateDto): Promise<LoginResponse> {
     return this.authService.createStaff(dto);
+  }
+
+  /**
+   * POST /api/v1/auth/change-password
+   * Changes the password of the authenticated user.
+   *
+   * Requires a valid token (any role). The user must prove knowledge of the
+   * current password — the endpoint is rate-limited to mitigate brute-force
+   * attempts against a stolen session.
+   *
+   * Note: the JWT is stateless and remains valid until it expires (7d); this
+   * endpoint does not invalidate existing sessions.
+   */
+  @Post('change-password')
+  @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { ttl: 60_000, limit: 5 } })
+  @ApiOperation({
+    summary: 'Change own password',
+    description:
+      'Verifies the current password and replaces it with the new one. Requires an authenticated user.',
+  })
+  @ApiOkResponse({
+    description: 'Password updated.',
+  })
+  changePassword(
+    @Body() dto: ChangePasswordDto,
+    @Req() request: FastifyRequest & { user: JwtPayload },
+  ): Promise<{ message: string }> {
+    return this.authService.changePassword(request.user.sub, dto);
   }
 }

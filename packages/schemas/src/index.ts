@@ -72,6 +72,8 @@ export {
   STAFF_ROLES,
   staffCreateSchema,
   type StaffCreate,
+  changePasswordSchema,
+  type ChangePassword,
   authUserSchema,
   type AuthUser,
   loginResponseSchema,

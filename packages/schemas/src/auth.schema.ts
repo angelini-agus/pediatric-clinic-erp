@@ -74,16 +74,55 @@ export const STAFF_ROLES = ['ADMIN', 'DOCTOR', 'SECRETARY'] as const;
 /**
  * POST /api/v1/auth/staff request body — admin-only staff creation.
  *
- * Same fields as patient registration plus the role to assign. The role
- * is validated against STAFF_ROLES so PATIENT/SUPER_ADMIN can never be
- * created through this endpoint.
+ * Same fields as patient registration plus the role to assign and the
+ * optional professional data (specialty, medical license) shown in the
+ * doctor selects and printed on prescriptions.
+ *
+ * The role is validated against STAFF_ROLES so PATIENT/SUPER_ADMIN can
+ * never be created through this endpoint.
  */
 export const staffCreateSchema = registerFieldsSchema.extend({
   role: z.enum(STAFF_ROLES, {
     errorMap: () => ({ message: 'Rol inválido. Valores permitidos: ADMIN, DOCTOR, SECRETARY' }),
   }),
+  specialty: z
+    .string()
+    .trim()
+    .max(100, 'La especialidad no puede superar los 100 caracteres')
+    .optional(),
+  medicalLicense: z
+    .string()
+    .trim()
+    .max(50, 'La matrícula no puede superar los 50 caracteres')
+    .optional(),
 });
 export type StaffCreate = z.infer<typeof staffCreateSchema>;
+
+/**
+ * POST /api/v1/auth/change-password request body.
+ *
+ * The user must prove knowledge of the current password. The new password
+ * follows the same minimum length as registration (8 chars) and must be
+ * different from the current one.
+ */
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, 'Ingresá tu contraseña actual').max(200),
+    newPassword: z
+      .string()
+      .min(8, 'La contraseña debe tener al menos 8 caracteres')
+      .max(200, 'La contraseña no puede superar los 200 caracteres'),
+    confirmPassword: z.string().min(1, 'Confirmá tu nueva contraseña'),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: 'Las contraseñas no coinciden',
+    path: ['confirmPassword'],
+  })
+  .refine((data) => data.newPassword !== data.currentPassword, {
+    message: 'La nueva contraseña debe ser distinta a la actual',
+    path: ['newPassword'],
+  });
+export type ChangePassword = z.infer<typeof changePasswordSchema>;
 
 /**
  * Authenticated user returned to the client (never includes the password).

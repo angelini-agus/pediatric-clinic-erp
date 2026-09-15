@@ -5,7 +5,14 @@ import bcrypt from 'bcryptjs';
 import { PrismaService } from '../prisma/prisma.service.js';
 
 import type { JwtPayload } from './jwt.strategy.js';
-import type { AuthRole, Login, LoginResponse, Register, StaffCreate } from '@pediatric-erp/schemas';
+import type {
+  AuthRole,
+  ChangePassword,
+  Login,
+  LoginResponse,
+  Register,
+  StaffCreate,
+} from '@pediatric-erp/schemas';
 
 /**
  * AuthService — authentication business logic.
@@ -79,19 +86,63 @@ export class AuthService {
    * Throws `ConflictException` (HTTP 409) if the email is already taken.
    */
   async createStaff(dto: StaffCreate): Promise<LoginResponse> {
-    return this.createUserWithToken(dto, dto.role);
+    return this.createUserWithToken(dto, dto.role, {
+      specialty: dto.specialty ?? null,
+      medicalLicense: dto.medicalLicense ?? null,
+    });
+  }
+
+  /**
+   * Changes the password of the authenticated user.
+   *
+   * Steps:
+   *  1. Load the user (excluding soft-deleted records).
+   *  2. Verify the current password with bcrypt (proof of knowledge).
+   *  3. Hash and persist the new password (same cost factor as register).
+   *
+   * Throws `UnauthorizedException` (HTTP 401) when the current password
+   * is wrong — deliberately the same error class as a bad login so the
+   * endpoint does not leak which part failed.
+   */
+  async changePassword(userId: string, dto: ChangePassword): Promise<{ message: string }> {
+    const user = await this.prisma.client.user.findFirst({
+      where: { id: userId, deletedAt: null },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const isValid = await bcrypt.compare(dto.currentPassword, user.password);
+
+    if (!isValid) {
+      throw new UnauthorizedException('La contraseña actual es incorrecta');
+    }
+
+    const passwordHash = await bcrypt.hash(dto.newPassword, 10);
+
+    await this.prisma.client.user.update({
+      where: { id: user.id },
+      data: { password: passwordHash },
+    });
+
+    return { message: 'Contraseña actualizada' };
   }
 
   /**
    * Shared create-user flow:
    *  1. Verify email uniqueness (excluding soft-deleted records).
    *  2. Hash the password with bcrypt (cost factor 10 — matches the seed).
-   *  3. Persist the user with the given role.
+   *  3. Persist the user with the given role and optional professional data.
    *  4. Sign and return a JWT identical to the login flow.
    */
   private async createUserWithToken(
     dto: Pick<Register, 'fullName' | 'email' | 'password'>,
     role: AuthRole,
+    professionalData: { specialty: string | null; medicalLicense: string | null } = {
+      specialty: null,
+      medicalLicense: null,
+    },
   ): Promise<LoginResponse> {
     const existing = await this.prisma.client.user.findFirst({
       where: { email: dto.email, deletedAt: null },
@@ -110,6 +161,8 @@ export class AuthService {
         password: passwordHash,
         fullName: dto.fullName,
         role,
+        specialty: professionalData.specialty,
+        medicalLicense: professionalData.medicalLicense,
       },
     });
 

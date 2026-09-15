@@ -23,11 +23,28 @@ const mockUser = {
   role: 'SUPER_ADMIN',
 };
 
+/**
+ * Returns the first element of a mock call list.
+ * Throws when the mock was never called — keeps the assertions below
+ * type-safe under `noUncheckedIndexedAccess`.
+ */
+function firstCallArgs<T>(calls: T[]): T {
+  const first = calls[0];
+  if (first === undefined) {
+    throw new Error('Mock was not called');
+  }
+  return first;
+}
+
 describe('AuthService', () => {
   let service: AuthService;
   let prisma: {
     client: {
-      user: { findFirst: ReturnType<typeof vi.fn>; create: ReturnType<typeof vi.fn> };
+      user: {
+        findFirst: ReturnType<typeof vi.fn>;
+        create: ReturnType<typeof vi.fn>;
+        update: ReturnType<typeof vi.fn>;
+      };
     };
   };
   let jwt: { signAsync: ReturnType<typeof vi.fn> };
@@ -43,6 +60,7 @@ describe('AuthService', () => {
         user: {
           findFirst: vi.fn(),
           create: vi.fn(),
+          update: vi.fn(),
         },
       },
     };
@@ -124,9 +142,11 @@ describe('AuthService', () => {
     it('always creates the user with role PATIENT (never staff)', async () => {
       const result = await service.register(patientInput);
 
-      const [createArgs] = prisma.client.user.create.mock.calls as unknown as [
-        { data: { email: string; password: string; fullName: string; role: string } },
-      ][];
+      const createArgs = firstCallArgs(
+        prisma.client.user.create.mock.calls as unknown as [
+          { data: { email: string; password: string; fullName: string; role: string } },
+        ][],
+      );
       expect(createArgs[0].data.email).toBe('ana@example.com');
       expect(createArgs[0].data.fullName).toBe('Ana Pérez');
       expect(createArgs[0].data.role).toBe('PATIENT');
@@ -169,9 +189,11 @@ describe('AuthService', () => {
     it('creates the user with the requested staff role', async () => {
       const result = await service.createStaff(staffInput);
 
-      const [createArgs] = prisma.client.user.create.mock.calls as unknown as [
-        { data: { email: string; password: string; fullName: string; role: string } },
-      ][];
+      const createArgs = firstCallArgs(
+        prisma.client.user.create.mock.calls as unknown as [
+          { data: { email: string; password: string; fullName: string; role: string } },
+        ][],
+      );
       expect(createArgs[0].data.email).toBe('house@clinic.com');
       expect(createArgs[0].data.fullName).toBe('Dr. Gregory House');
       expect(createArgs[0].data.role).toBe('DOCTOR');
@@ -195,6 +217,52 @@ describe('AuthService', () => {
 
       await expect(service.createStaff(staffInput)).rejects.toBeInstanceOf(ConflictException);
       expect(prisma.client.user.create).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('changePassword', () => {
+    const changeInput = {
+      currentPassword: PLAIN_PASSWORD,
+      newPassword: 'newPassword123',
+      confirmPassword: 'newPassword123',
+    };
+
+    it('replaces the hash when the current password is valid', async () => {
+      prisma.client.user.findFirst.mockResolvedValue(mockUser);
+      prisma.client.user.update.mockResolvedValue({ ...mockUser });
+
+      const result = await service.changePassword('usr_1', changeInput);
+
+      const updateArgs = firstCallArgs(
+        prisma.client.user.update.mock.calls as unknown as [
+          { where: { id: string }; data: { password: string } },
+        ][],
+      );
+      expect(updateArgs[0].where).toEqual({ id: 'usr_1' });
+      // The new password must be stored hashed, never in plaintext.
+      expect(updateArgs[0].data.password).not.toBe('newPassword123');
+      await expect(bcrypt.compare('newPassword123', updateArgs[0].data.password)).resolves.toBe(
+        true,
+      );
+      expect(result).toEqual({ message: 'Contraseña actualizada' });
+    });
+
+    it('throws UnauthorizedException and does not update when the current password is wrong', async () => {
+      prisma.client.user.findFirst.mockResolvedValue(mockUser);
+
+      await expect(
+        service.changePassword('usr_1', { ...changeInput, currentPassword: 'wrong-password' }),
+      ).rejects.toBeInstanceOf(UnauthorizedException);
+      expect(prisma.client.user.update).not.toHaveBeenCalled();
+    });
+
+    it('throws UnauthorizedException when the user does not exist', async () => {
+      prisma.client.user.findFirst.mockResolvedValue(null);
+
+      await expect(service.changePassword('usr_missing', changeInput)).rejects.toBeInstanceOf(
+        UnauthorizedException,
+      );
+      expect(prisma.client.user.update).not.toHaveBeenCalled();
     });
   });
 });
