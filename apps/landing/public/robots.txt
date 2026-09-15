@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 
 # Sitemap generado por @astrojs/sitemap en el build
-Sitemap: https://ipedierp.com.ar/sitemap-index.xml
+Sitemap: https://dramartinangelio.com/sitemap-index.xml

@@ -7,10 +7,10 @@ import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
-  // URL canónica del sitio: requerida por @astrojs/sitemap y por los
-  // links canonical/OG. Si cambia el dominio, actualizar acá y en
-  // src/pages/index.astro (SITE_URL).
-  site: 'https://ipedierp.com.ar',
+  // URL canónica del sitio: única fuente de verdad. La consumen
+  // @astrojs/sitemap, los links canonical/OG y los datos estructurados
+  // (vía Astro.site en src/pages/index.astro).
+  site: 'https://dramartinangelio.com',
   integrations: [
     react(),
     sitemap(),

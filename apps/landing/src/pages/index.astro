@@ -13,7 +13,7 @@ import { WhatsAppFloat } from '../components/whatsapp-float';
 import { CLINIC_INFO } from '../config';
 import '../styles/global.css';
 
-const SITE_URL = 'https://ipedierp.com.ar';
+const SITE_URL = Astro.site?.origin ?? 'https://dramartinangelio.com';
 const TITLE = `${CLINIC_INFO.brand} — ${CLINIC_INFO.descriptor} | ${CLINIC_INFO.doctorFullName}, Pediatra en Pueblo Esther`;
 const DESCRIPTION =
   'Pediatra en Pueblo Esther. La misma médica de la preconcepción a la adolescencia. Recibida en 2014, con experiencia en guardia de urgencias y recepción de recién nacidos. Sacá turno online.';
