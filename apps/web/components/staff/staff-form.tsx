@@ -49,6 +49,8 @@ export function StaffForm(): React.JSX.Element {
       password: '',
       confirmPassword: '',
       role: 'DOCTOR',
+      specialty: '',
+      medicalLicense: '',
     },
   });
 
@@ -175,6 +177,40 @@ export function StaffForm(): React.JSX.Element {
             ))}
           </select>
           {errors.role?.message && <p className="text-xs text-rose-500">{errors.role.message}</p>}
+        </div>
+
+        {/* Especialidad (opcional) */}
+        <div className="flex flex-col gap-2">
+          <label htmlFor="specialty" className="text-sm font-semibold text-slate-700">
+            Especialidad <span className="font-normal text-slate-400">(opcional)</span>
+          </label>
+          <input
+            id="specialty"
+            type="text"
+            placeholder="Pediatra"
+            {...register('specialty')}
+            className={inputClass(Boolean(errors.specialty))}
+          />
+          {errors.specialty?.message && (
+            <p className="text-xs text-rose-500">{errors.specialty.message}</p>
+          )}
+        </div>
+
+        {/* Matrícula (opcional) */}
+        <div className="flex flex-col gap-2">
+          <label htmlFor="medicalLicense" className="text-sm font-semibold text-slate-700">
+            Matrícula <span className="font-normal text-slate-400">(opcional)</span>
+          </label>
+          <input
+            id="medicalLicense"
+            type="text"
+            placeholder="Mat. 19693"
+            {...register('medicalLicense')}
+            className={inputClass(Boolean(errors.medicalLicense))}
+          />
+          {errors.medicalLicense?.message && (
+            <p className="text-xs text-rose-500">{errors.medicalLicense.message}</p>
+          )}
         </div>
 
         {/* Password */}

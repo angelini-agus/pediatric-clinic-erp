@@ -1,3 +1,4 @@
+import { ChangePasswordForm } from '@/components/settings/change-password-form';
 import { SettingsForm } from '@/components/settings/settings-form';
 import { getClinicSettings } from '@/lib/api';
 import { getAuthToken } from '@/lib/auth';
@@ -46,6 +47,17 @@ export default async function SettingsPage(): Promise<React.JSX.Element> {
 
       {/* Form Card */}
       <SettingsForm defaultValues={settings} />
+
+      {/* Password change */}
+      <div className="space-y-1">
+        <h2 className="text-lg font-bold text-slate-800 tracking-tight">Seguridad</h2>
+        <p className="text-sm text-slate-500">
+          Cambiá tu contraseña de acceso al ERP. La sesión actual sigue activa hasta que cierres
+          sesión.
+        </p>
+      </div>
+
+      <ChangePasswordForm />
     </div>
   );
 }
