@@ -1,0 +1,75 @@
+# =============================================================================
+# Database backup — Neon (Postgres) → Cloudflare R2
+#
+# Daily logical backup of the production database. Required for compliance
+# (Ley 25.326, patient data): Neon free has no managed backups beyond a 6h
+# restore window, so this workflow is the recovery path of record.
+#
+# REQUIRED SETUP (one time):
+#   1. Cloudflare R2: create a PRIVATE bucket (e.g. `pediatric-erp-backups`)
+#      and an API token with Object Read & Write limited to that bucket.
+#      R2 encrypts objects at rest (AES-256) — keep the bucket private.
+#   2. GitHub repo → Settings → Secrets and variables → Actions → add:
+#        DATABASE_URL          Neon DIRECT connection string (no -pooler)
+#        R2_ACCOUNT_ID         Cloudflare account ID
+#        R2_ACCESS_KEY_ID      R2 token access key
+#        R2_SECRET_ACCESS_KEY  R2 token secret
+#        R2_BUCKET             bucket name
+#   3. R2 bucket → Settings → Object lifecycle rules → delete `daily/`
+#      objects after 30 days (retention; adjust as needed).
+#
+# RESTORE (manual):
+#   aws s3 cp "s3://<bucket>/daily/<file>.sql.gz" . \
+#     --endpoint-url "https://<account>.r2.cloudflarestorage.com"
+#   gunzip -c <file>.sql.gz | psql "$DATABASE_URL"
+# =============================================================================
+
+name: DB backup (Neon → R2)
+
+on:
+  schedule:
+    # 06:00 UTC = 03:00 Argentina (UTC-3) — low-traffic window
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: db-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    name: pg_dump → R2
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Install PostgreSQL 17 client (PGDG)
+        run: |
+          sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client-17
+
+      - name: Dump database
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          set -euo pipefail
+          FILE="pediatric-erp-$(date -u +%Y%m%d-%H%M%S).sql.gz"
+          echo "BACKUP_FILE=$FILE" >> "$GITHUB_ENV"
+          pg_dump --no-owner --no-privileges "$DATABASE_URL" | gzip -9 > "$FILE"
+          ls -lh "$FILE"
+
+      - name: Upload to Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_ENDPOINT: https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          set -euo pipefail
+          aws s3 cp "$BACKUP_FILE" "s3://${R2_BUCKET}/daily/$BACKUP_FILE" --endpoint-url "$R2_ENDPOINT"
+
+      - name: Result summary
+        run: |
+          echo "✅ Backup uploaded: daily/$BACKUP_FILE" >> "$GITHUB_STEP_SUMMARY"
