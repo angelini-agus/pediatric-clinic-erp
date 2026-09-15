@@ -46,6 +46,7 @@ export function SettingsForm({ defaultValues }: SettingsFormProps): React.JSX.El
       licenseNumber: defaultValues?.licenseNumber ?? '',
       specialty: defaultValues?.specialty ?? '',
       clinicName: defaultValues?.clinicName ?? '',
+      address: defaultValues?.address ?? '',
     },
   });
 
@@ -176,6 +177,31 @@ export function SettingsForm({ defaultValues }: SettingsFormProps): React.JSX.El
               {errors.clinicName?.message && (
                 <p className="text-xs text-rose-500">{errors.clinicName.message}</p>
               )}
+            </div>
+
+            {/* Dirección exacta (portal del paciente) */}
+            <div className="flex flex-col gap-2 md:col-span-2">
+              <label htmlFor="address" className="text-sm font-semibold text-slate-700">
+                Dirección exacta del consultorio
+              </label>
+              <input
+                id="address"
+                type="text"
+                placeholder="Calle 123, Pueblo Esther, Santa Fe"
+                {...register('address')}
+                className={`w-full rounded-xl border bg-white/80 px-4 py-3 text-sm text-slate-800 placeholder-slate-400 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-brand/30 ${
+                  errors.address
+                    ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-200'
+                    : 'border-slate-200 focus:border-brand'
+                }`}
+              />
+              {errors.address?.message && (
+                <p className="text-xs text-rose-500">{errors.address.message}</p>
+              )}
+              <p className="text-xs text-slate-400">
+                Se muestra únicamente a los pacientes registrados en el portal (la landing pública
+                solo publica la ciudad).
+              </p>
             </div>
           </div>
 

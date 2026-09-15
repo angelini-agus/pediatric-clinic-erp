@@ -45,6 +45,7 @@ export class SettingsService {
         ...(dto.licenseNumber !== undefined && { licenseNumber: dto.licenseNumber }),
         ...(dto.specialty !== undefined && { specialty: dto.specialty }),
         ...(dto.clinicName !== undefined && { clinicName: dto.clinicName }),
+        ...(dto.address !== undefined && { address: dto.address }),
       },
       create: {
         id: SINGLETON_ID,
@@ -53,6 +54,7 @@ export class SettingsService {
         ...(dto.licenseNumber !== undefined && { licenseNumber: dto.licenseNumber }),
         ...(dto.specialty !== undefined && { specialty: dto.specialty }),
         ...(dto.clinicName !== undefined && { clinicName: dto.clinicName }),
+        ...(dto.address !== undefined && { address: dto.address }),
       },
     });
   }

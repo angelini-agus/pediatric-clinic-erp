@@ -27,6 +27,12 @@ export const clinicSettingsUpdateSchema = z.object({
     .trim()
     .max(200, { message: 'Clinic name cannot exceed 200 characters' })
     .optional(),
+  /// Exact address shown to registered patients in the portal.
+  address: z
+    .string()
+    .trim()
+    .max(300, { message: 'Address cannot exceed 300 characters' })
+    .optional(),
 });
 
 export type ClinicSettingsUpdate = z.infer<typeof clinicSettingsUpdateSchema>;
@@ -38,6 +44,7 @@ export const clinicSettingsResponseSchema = z.object({
   licenseNumber: z.string(),
   specialty: z.string(),
   clinicName: z.string(),
+  address: z.string().nullish(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
