@@ -1,7 +1,6 @@
-import { loginResponseSchema } from '@pediatric-erp/schemas';
+import { loginResponseSchema, registerSchema } from '@pediatric-erp/schemas';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { z } from 'zod';
 
 /**
  * POST /api/auth/register
@@ -11,16 +10,14 @@ import { z } from 'zod';
  * responde con un `accessToken`, lo guarda en una cookie **httpOnly +
  * secure + sameSite=lax**. El cliente nunca ve el JWT.
  *
+ * Validación: usa el MISMO `registerSchema` compartido que el backend
+ * (single source of truth) — incluido `confirmPassword`, que el backend
+ * exige y verifica server-side.
+ *
  * Diferencias con el login:
  *  - Devuelve 201 Created en éxito (NestJS usa HttpStatus.CREATED).
  *  - El email duplicado se traduce a 409 Conflict con mensaje local.
  */
-const registerBodySchema = z.object({
-  fullName: z.string().trim().min(1).max(200),
-  email: z.string().email().max(200),
-  password: z.string().min(8).max(200),
-  confirmPassword: z.string().min(1),
-});
 
 const API_BASE_URL =
   (process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001')
@@ -41,7 +38,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
-  const parsed = registerBodySchema.safeParse(body);
+  const parsed = registerSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
       {
@@ -53,16 +50,15 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
-  const { confirmPassword: _ignored, ...registerPayload } = parsed.data;
-  // `confirmPassword` es solo para validación client-side; el backend
-  // no lo espera. Lo descartamos antes de enviar.
-
+  // El backend NestJS valida el MISMO `registerSchema` compartido: exige
+  // `confirmPassword` y verifica que coincida con `password`. Reenviamos
+  // el payload completo ya normalizado (email en lowercase, trims, etc.).
   let upstreamResponse: Response;
   try {
     upstreamResponse = await fetch(`${API_BASE_URL}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(registerPayload),
+      body: JSON.stringify(parsed.data),
       cache: 'no-store',
     });
   } catch (error) {
