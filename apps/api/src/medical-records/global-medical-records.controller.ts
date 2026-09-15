@@ -46,16 +46,23 @@ export class GlobalMedicalRecordsController {
     description: 'Items per page (default 20, max 100).',
     example: '20',
   })
+  @ApiQuery({
+    name: 'q',
+    required: false,
+    description: 'Free-text search on the patient first name, last name or document number.',
+  })
   @ApiOkResponse({
     description: 'Paginated list of global clinical record evolutions.',
   })
   findAll(
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
+    @Query('q') q?: string,
   ): Promise<MedicalRecordsPage> {
     return this.medicalRecordsService.findAll(
       page !== undefined ? Number(page) : undefined,
       pageSize !== undefined ? Number(pageSize) : undefined,
+      q,
     );
   }
 }

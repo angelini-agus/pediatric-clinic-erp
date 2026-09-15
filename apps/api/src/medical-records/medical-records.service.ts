@@ -76,17 +76,36 @@ export class MedicalRecordsService {
    * @param pageSize - Items per page (default 20, max 100)
    * @returns { data, total } page of medical records with doctor and patient metadata
    */
-  async findAll(page = 1, pageSize = DEFAULT_PAGE_SIZE): Promise<MedicalRecordsPage> {
+  async findAll(
+    page = 1,
+    pageSize = DEFAULT_PAGE_SIZE,
+    query?: string,
+  ): Promise<MedicalRecordsPage> {
     const safePage = Number.isFinite(page) && page > 0 ? Math.floor(page) : 1;
     const safePageSize = Number.isFinite(pageSize)
       ? Math.min(MAX_PAGE_SIZE, Math.max(1, Math.floor(pageSize)))
       : DEFAULT_PAGE_SIZE;
 
+    // Optional free-text filter over the patient identity (name or DNI).
+    const trimmedQuery = query?.trim() ?? '';
+    const where: Prisma.MedicalRecordWhereInput = {
+      deletedAt: null,
+      ...(trimmedQuery.length > 0
+        ? {
+            patient: {
+              OR: [
+                { firstName: { contains: trimmedQuery, mode: 'insensitive' } },
+                { lastName: { contains: trimmedQuery, mode: 'insensitive' } },
+                { documentNumber: { contains: trimmedQuery } },
+              ],
+            },
+          }
+        : {}),
+    };
+
     const [data, total] = await this.prisma.client.$transaction([
       this.prisma.client.medicalRecord.findMany({
-        where: {
-          deletedAt: null,
-        },
+        where,
         include: {
           doctor: {
             select: {
@@ -112,9 +131,7 @@ export class MedicalRecordsService {
         skip: (safePage - 1) * safePageSize,
         take: safePageSize,
       }),
-      this.prisma.client.medicalRecord.count({
-        where: { deletedAt: null },
-      }),
+      this.prisma.client.medicalRecord.count({ where }),
     ]);
 
     return { data, total };

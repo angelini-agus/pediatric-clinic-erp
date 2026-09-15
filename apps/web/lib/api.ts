@@ -121,7 +121,7 @@ const patientSummarySchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   documentType: z.string().optional(),
-  documentNumber: z.string().optional(),
+  documentNumber: z.string().nullish(),
 });
 
 export const globalMedicalRecordResponseSchema = medicalRecordResponseSchema.extend({
@@ -484,36 +484,58 @@ export async function getMedicalRecords(
 }
 
 /**
- * Fetches all clinical histories globally across all patients.
- * GET /api/v1/medical-records
- * Returns empty array on error.
+ * Paginated response of the global clinical histories endpoint:
+ * `{ data: page items, total: total count }`.
+ */
+const paginatedMedicalRecordsSchema = z.object({
+  data: z.array(globalMedicalRecordResponseSchema),
+  total: z.number().int().nonnegative(),
+});
+
+export type PaginatedMedicalRecords = z.infer<typeof paginatedMedicalRecordsSchema>;
+
+/**
+ * Fetches a page of clinical histories globally across all patients.
+ * GET /api/v1/medical-records?page&pageSize&q
+ * Returns an empty page on error.
  */
 export async function getAllMedicalRecords(
+  params: { page?: number; pageSize?: number; query?: string } = {},
   accessToken?: string,
-): Promise<GlobalMedicalRecordResponse[]> {
+): Promise<PaginatedMedicalRecords> {
+  const emptyPage: PaginatedMedicalRecords = { data: [], total: 0 };
+
   try {
-    const res = await fetch(`${API_URL}/medical-records`, {
+    const qs = new URLSearchParams();
+    if (params.page !== undefined) qs.set('page', String(params.page));
+    if (params.pageSize !== undefined) qs.set('pageSize', String(params.pageSize));
+    if (params.query !== undefined && params.query.trim().length > 0) {
+      qs.set('q', params.query.trim());
+    }
+    const suffix = qs.toString().length > 0 ? `?${qs.toString()}` : '';
+
+    const res = await fetch(`${API_URL}/medical-records${suffix}`, {
       cache: 'no-store',
       headers: authHeaders(accessToken),
     });
 
     if (!res.ok) {
       console.error(`[api] GET /medical-records failed: ${String(res.status)}`);
-      return [];
+      return emptyPage;
     }
 
     const json: unknown = await res.json();
-    const parsed = z.array(globalMedicalRecordResponseSchema).safeParse(json);
+    const parsed = paginatedMedicalRecordsSchema.safeParse(json);
 
     if (!parsed.success) {
       console.error('[api] Global medical records validation failed:', parsed.error.flatten());
-      return [];
+      return emptyPage;
     }
 
     return parsed.data;
   } catch (error) {
     console.error('[api] Network error fetching global medical records:', error);
-    return [];
+    return emptyPage;
   }
 }
 
