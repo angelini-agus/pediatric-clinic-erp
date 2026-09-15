@@ -9,11 +9,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { getTodaysAppointments } from '@/lib/api';
-import { getAuthToken } from '@/lib/auth';
 import { formatAge, formatGuardianDisplay } from '@/lib/patient-utils';
 
 import { AppointmentStatusSelector } from './appointment-status-selector';
+
+import type { AppointmentResponse } from '@/lib/api';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -31,26 +31,36 @@ function formatTime(date: Date): string {
 
 // ── Empty State ───────────────────────────────────────────────────────────────
 
-function EmptyState(): React.JSX.Element {
+function EmptyState({ message }: { message: string }): React.JSX.Element {
   return (
     <div className="flex flex-col items-center justify-center py-14 gap-3 text-slate-400">
       <CalendarOff className="h-10 w-10 text-slate-300" strokeWidth={1.5} />
-      <p className="text-sm font-medium text-slate-500">No hay turnos para hoy</p>
-      <p className="text-xs text-slate-400">Los turnos agendados para hoy aparecerán aquí.</p>
+      <p className="text-sm font-medium text-slate-500">{message}</p>
+      <p className="text-xs text-slate-400">Los turnos aparecerán acá a medida que se agenden.</p>
     </div>
   );
 }
 
+// ── Props ─────────────────────────────────────────────────────────────────────
+
+type TodaysBookingCardProps = {
+  appointments: AppointmentResponse[];
+  /** Mensaje del estado vacío según la vista (default: sin turnos hoy). */
+  emptyMessage?: string;
+};
+
 // ── Main Component ────────────────────────────────────────────────────────────
 
 /**
- * TodaysBookingCard — Server Component.
- * Fetches today's active appointments from the NestJS API and renders them
- * in a table with dynamic status badges and real patient/doctor data.
+ * TodaysBookingCard — Server Component (presentacional).
+ *
+ * Recibe los turnos ya resueltos por la página (filtrados según la vista del
+ * día) y los renderiza en una tabla con badges de estado editables.
  */
-export async function TodaysBookingCard(): Promise<React.JSX.Element> {
-  const appointments = await getTodaysAppointments(getAuthToken());
-
+export function TodaysBookingCard({
+  appointments,
+  emptyMessage = 'No hay turnos para hoy',
+}: TodaysBookingCardProps): React.JSX.Element {
   return (
     <div
       className="relative overflow-hidden backdrop-blur-xl rounded-2xl shadow-sm p-5 will-change-transform"
@@ -77,7 +87,7 @@ export async function TodaysBookingCard(): Promise<React.JSX.Element> {
         </div>
 
         {appointments.length === 0 ? (
-          <EmptyState />
+          <EmptyState message={emptyMessage} />
         ) : (
           <Table data-testid="todays-bookings-table">
             <TableHeader>
