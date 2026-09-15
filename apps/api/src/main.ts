@@ -53,11 +53,15 @@ async function bootstrap(): Promise<void> {
   // ── CORS ─────────────────────────────────────────────────────
   // SECURITY RULE: hardcoded localhost origins are DEV-ONLY. In
   // production the CORS_ORIGIN env var is the single source of truth
-  // (e.g. https://erp.example.com) — no localhost is ever allowed.
+  // (e.g. https://erp.example.com). Accepts a comma-separated list to
+  // allow multiple frontends (e.g. web + landing).
   const isProduction = process.env['NODE_ENV'] === 'production';
-  const corsOrigin = process.env['CORS_ORIGIN'] ?? 'http://localhost:3000';
+  const configuredOrigins = (process.env['CORS_ORIGIN'] ?? 'http://localhost:3000')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter((origin) => origin.length > 0);
   const localDevOrigins = ['http://localhost:3000', 'http://127.0.0.1:3000'];
-  const origins = [...new Set([corsOrigin, ...(isProduction ? [] : localDevOrigins)])];
+  const origins = [...new Set([...configuredOrigins, ...(isProduction ? [] : localDevOrigins)])];
 
   app.enableCors({
     origin: origins,
