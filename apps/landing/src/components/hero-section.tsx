@@ -252,7 +252,7 @@ export function HeroSection(): React.JSX.Element {
             {/* Foto de la Dra. dentro del óvalo de la píldora */}
             <img
               src="/doctora-landing.webp"
-              srcSet="/doctora-landing-360.webp 360w, /doctora-landing-600.webp 600w, /doctora-landing.webp 800w"
+              srcSet="/doctora-landing-450.webp 450w, /doctora-landing-700.webp 700w, /doctora-landing.webp 900w"
               sizes="(min-width: 1462px) 357px, (max-width: 1024px) 226px, 24vw"
               alt={`${CLINIC_INFO.doctorFullName} con guardapolvo y estetoscopio`}
               className="absolute left-1/2 top-1/2 z-10 object-cover"
@@ -262,8 +262,8 @@ export function HeroSection(): React.JSX.Element {
                 transform: 'translate(-50%, -50%)',
                 borderRadius: '48% 52% 50% 50% / 52% 48% 52% 48%',
               }}
-              width={800}
-              height={1071}
+              width={900}
+              height={1205}
               decoding="async"
               fetchPriority="high"
             />
