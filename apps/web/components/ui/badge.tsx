@@ -13,6 +13,7 @@ const badgeVariants = cva(
         destructive: 'border-transparent bg-red-500 text-white shadow hover:bg-red-600',
         outline: 'text-slate-950 border-slate-200',
         // Variantes de estado de turnos (Tailwind tokens)
+        requested: 'border-violet-200 bg-violet-50 text-violet-700 hover:bg-violet-100',
         scheduled: 'border-sky-200 bg-sky-50 text-status-scheduled hover:bg-sky-100',
         canceled: 'border-red-200 bg-red-50 text-status-canceled hover:bg-red-100',
         inProgress: 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100',

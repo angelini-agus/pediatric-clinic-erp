@@ -69,9 +69,9 @@ export default function RegisterPage(): React.JSX.Element {
         return;
       }
 
-      // Token guardado server-side en cookie httpOnly. Redirigir al ERP
-      // hace que el middleware redirija correctamente si la sesión es válida.
-      router.push('/dashboard');
+      // Token guardado server-side en cookie httpOnly. Los pacientes van a
+      // su portal (el registro público siempre crea cuentas PATIENT).
+      router.push('/portal');
       router.refresh();
     } catch {
       setState({

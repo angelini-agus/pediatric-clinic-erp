@@ -23,6 +23,7 @@ type BadgeVariant = VariantProps<typeof badgeVariants>['variant'];
 // ── Mappings ──────────────────────────────────────────────────────────────────
 
 const STATUS_TO_VARIANT: Record<AppointmentStatus, BadgeVariant> = {
+  REQUESTED: 'requested',
   SCHEDULED: 'scheduled',
   IN_PROGRESS: 'inProgress',
   COMPLETED: 'completed',
@@ -34,6 +35,7 @@ const STATUS_OPTIONS: readonly {
   label: string;
   dotColor: string;
 }[] = [
+  { value: 'REQUESTED', label: 'Solicitado', dotColor: 'bg-violet-500' },
   { value: 'SCHEDULED', label: 'Programado', dotColor: 'bg-sky-500' },
   { value: 'IN_PROGRESS', label: 'En Curso', dotColor: 'bg-amber-500' },
   { value: 'COMPLETED', label: 'Completado', dotColor: 'bg-emerald-500' },
@@ -41,6 +43,7 @@ const STATUS_OPTIONS: readonly {
 ];
 
 const STATUS_LABELS: Record<AppointmentStatus, string> = {
+  REQUESTED: 'Solicitado',
   SCHEDULED: 'Programado',
   IN_PROGRESS: 'En Curso',
   COMPLETED: 'Completado',

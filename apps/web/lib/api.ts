@@ -41,6 +41,8 @@ export const patientResponseSchema = z.object({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   deletedAt: z.coerce.date().nullish(),
+  /** Portal account linked to this record (role PATIENT), if any. */
+  userId: z.string().nullish(),
 });
 
 export type PatientResponse = z.infer<typeof patientResponseSchema>;
@@ -696,4 +698,129 @@ export async function updateClinicSettings(data: {
   }
 
   return parsed.data;
+}
+
+// ── Patient portal ────────────────────────────────────────────────────────────
+
+export const portalPatientSchema = z.object({
+  id: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  dateOfBirth: z.coerce.date(),
+  guardianFullName: z.string(),
+});
+
+export type PortalPatient = z.infer<typeof portalPatientSchema>;
+
+export const portalAppointmentSchema = z.object({
+  id: z.string(),
+  dateTime: z.coerce.date(),
+  type: z.string(),
+  notes: z.string().nullish(),
+  status: z.string(),
+  doctor: z.object({
+    fullName: z.string(),
+    specialty: z.string().nullish(),
+  }),
+});
+
+export type PortalAppointment = z.infer<typeof portalAppointmentSchema>;
+
+export const portalClinicSchema = z.object({
+  clinicName: z.string(),
+  address: z.string().nullish(),
+  professionalName: z.string().nullish(),
+  specialty: z.string().nullish(),
+  licenseNumber: z.string().nullish(),
+});
+
+export type PortalClinic = z.infer<typeof portalClinicSchema>;
+
+/**
+ * Own portal profile + link status (`patient: null` when not linked).
+ * Server-side only: uses the JWT from the httpOnly cookie.
+ */
+export async function getPortalMe(
+  accessToken?: string,
+): Promise<{ patient: PortalPatient | null }> {
+  try {
+    const res = await fetch(`${API_URL}/portal/me`, {
+      cache: 'no-store',
+      headers: authHeaders(accessToken),
+    });
+
+    if (!res.ok) {
+      console.error(`[api] GET /portal/me failed: ${String(res.status)}`);
+      return { patient: null };
+    }
+
+    const json: unknown = await res.json();
+    const parsed = z.object({ patient: portalPatientSchema.nullable() }).safeParse(json);
+
+    if (!parsed.success) {
+      console.error('[api] Portal me validation failed:', parsed.error.flatten());
+      return { patient: null };
+    }
+
+    return parsed.data;
+  } catch (error) {
+    console.error('[api] Network error fetching portal me:', error);
+    return { patient: null };
+  }
+}
+
+/** Own appointments (linked patient only). Empty array on error. */
+export async function getPortalAppointments(accessToken?: string): Promise<PortalAppointment[]> {
+  try {
+    const res = await fetch(`${API_URL}/portal/appointments`, {
+      cache: 'no-store',
+      headers: authHeaders(accessToken),
+    });
+
+    if (!res.ok) {
+      console.error(`[api] GET /portal/appointments failed: ${String(res.status)}`);
+      return [];
+    }
+
+    const json: unknown = await res.json();
+    const parsed = z.array(portalAppointmentSchema).safeParse(json);
+
+    if (!parsed.success) {
+      console.error('[api] Portal appointments validation failed:', parsed.error.flatten());
+      return [];
+    }
+
+    return parsed.data;
+  } catch (error) {
+    console.error('[api] Network error fetching portal appointments:', error);
+    return [];
+  }
+}
+
+/** Clinic info including the exact address (behind login). Null on error. */
+export async function getPortalClinic(accessToken?: string): Promise<PortalClinic | null> {
+  try {
+    const res = await fetch(`${API_URL}/portal/clinic`, {
+      cache: 'no-store',
+      headers: authHeaders(accessToken),
+    });
+
+    if (!res.ok) {
+      console.error(`[api] GET /portal/clinic failed: ${String(res.status)}`);
+      return null;
+    }
+
+    const json: unknown = await res.json();
+    const parsed = portalClinicSchema.safeParse(json);
+
+    if (!parsed.success) {
+      console.error('[api] Portal clinic validation failed:', parsed.error.flatten());
+      return null;
+    }
+
+    return parsed.data;
+  } catch (error) {
+    console.error('[api] Network error fetching portal clinic:', error);
+    return null;
+  }
 }

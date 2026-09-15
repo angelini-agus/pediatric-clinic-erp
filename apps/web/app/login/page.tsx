@@ -77,11 +77,14 @@ export default function LoginPage(): React.JSX.Element {
         return;
       }
 
-      // El token queda en una cookie httpOnly; aquí solo validamos que
-      // la respuesta es JSON y descartamos el payload.
-      await response.json().catch(() => null);
+      // El token queda en una cookie httpOnly; usamos el user de la
+      // respuesta solo para elegir el home según el rol.
+      const data = (await response.json().catch(() => null)) as {
+        user?: { role?: string };
+      } | null;
+      const isPatient = data?.user?.role === 'PATIENT';
 
-      router.push('/dashboard');
+      router.push(isPatient ? '/portal' : '/dashboard');
       router.refresh();
     } catch {
       setState({

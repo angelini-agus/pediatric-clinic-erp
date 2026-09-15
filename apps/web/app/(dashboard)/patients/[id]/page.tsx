@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { MedicalRecordsTimeline } from '@/components/patients/medical-records-timeline';
 import { NewMedicalRecordForm } from '@/components/patients/new-medical-record-form';
 import { PatientProfileCard } from '@/components/patients/patient-profile-card';
+import { PortalAccountCard } from '@/components/patients/portal-account-card';
 import { PrescriptionForm } from '@/components/patients/prescription-form';
 import { getPatient, getMedicalRecords, getTodaysAppointments } from '@/lib/api';
 import { getAuthToken } from '@/lib/auth';
@@ -88,8 +89,9 @@ export default async function PatientPage({
       {/* Grid Layout (4 cols left / 8 cols right) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Patient Profile Card (col-span-4) */}
-        <div className="lg:col-span-4">
+        <div className="lg:col-span-4 flex flex-col gap-4">
           <PatientProfileCard patient={patient} />
+          <PortalAccountCard patientId={patient.id} linked={patient.userId != null} />
         </div>
 
         {/* Right Column: Prescription Form + New Evolution Form + Timeline (col-span-8) */}
