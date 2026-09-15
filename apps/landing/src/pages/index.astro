@@ -26,7 +26,8 @@ const PHYSICIAN_JSON_LD = {
   alternateName: `${CLINIC_INFO.doctorFullName} — Pediatra en Pueblo Esther`,
   description: DESCRIPTION,
   url: SITE_URL,
-  image: `${SITE_URL}/hero-doctor.jpg`,
+  image: `${SITE_URL}/og-banner.jpg`,
+  logo: `${SITE_URL}/apple-touch-icon.png`,
   medicalSpecialty: 'Pediatric',
   address: {
     '@type': 'PostalAddress',
@@ -53,7 +54,7 @@ const PHYSICIAN_JSON_LD = {
     />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="author" content={`${CLINIC_INFO.brand} — ${CLINIC_INFO.descriptor}`} />
-    <meta name="theme-color" content="#F4EEDF" />
+    <meta name="theme-color" content="#E96B3A" />
     <link rel="canonical" href={SITE_URL} />
 
     <!-- OpenGraph -->
@@ -63,24 +64,31 @@ const PHYSICIAN_JSON_LD = {
     <meta property="og:title" content={TITLE} />
     <meta property="og:description" content={DESCRIPTION} />
     <meta property="og:url" content={SITE_URL} />
-    <meta property="og:image" content={`${SITE_URL}/hero-doctor.jpg`} />
+    <meta property="og:image" content={`${SITE_URL}/og-banner.jpg`} />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
-      content={`${CLINIC_INFO.doctorFullName} — Pediatra en Pueblo Esther`}
+      content={`${CLINIC_INFO.brand} — ${CLINIC_INFO.descriptor} | ${CLINIC_INFO.doctorFullName}`}
     />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={TITLE} />
     <meta name="twitter:description" content={DESCRIPTION} />
-    <meta name="twitter:image" content={`${SITE_URL}/hero-doctor.jpg`} />
+    <meta name="twitter:image" content={`${SITE_URL}/og-banner.jpg`} />
+    <meta
+      name="twitter:image:alt"
+      content={`${CLINIC_INFO.brand} — ${CLINIC_INFO.descriptor} | ${CLINIC_INFO.doctorFullName}`}
+    />
 
-    <!-- Favicon -->
+    <!-- Favicon & Icons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="32x32" />
-    <!-- TODO (Agus): agregar apple-touch-icon.png (180x180) en /public y linkearlo acá -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <!-- Datos estructurados (Physician) para rich snippets de búsqueda local -->
     <script is:inline type="application/ld+json" set:html={JSON.stringify(PHYSICIAN_JSON_LD)} />

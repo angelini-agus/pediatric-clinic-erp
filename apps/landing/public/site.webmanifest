@@ -1,0 +1,26 @@
+{
+  "name": "Miradas — Consultorios de Pediatría Integral",
+  "short_name": "Miradas",
+  "description": "Pediatra en Pueblo Esther. Dra. Martinangelio. Seguimiento pediátrico continuo de la preconcepción a la adolescencia.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F4EEDF",
+  "theme_color": "#E96B3A",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
