@@ -15,8 +15,9 @@ const TOKEN_COOKIE_NAME = 'token';
 // Routes accessible without authentication.
 // '/' → public landing page
 // '/login' → auth page
+// '/register' → patient self-registration (staff is created by an admin)
 // '/turnos' → future public patient portal
-const PUBLIC_ROUTES = ['/', '/login', '/turnos'];
+const PUBLIC_ROUTES = ['/', '/login', '/register', '/turnos'];
 
 export function middleware(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;

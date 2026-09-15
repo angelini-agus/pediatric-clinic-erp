@@ -17,16 +17,20 @@ type RegisterPageState =
 
 /**
  * RegisterPage — Client Component.
- * Route: /register
+ * Route: /register (public)
  *
- * Alta de usuarios staff. Mismo flujo seguro que el login: envía a
- * `POST /api/auth/register` (BFF Route Handler) que:
+ * Auto-registro de PACIENTES. Envía a `POST /api/auth/register` (BFF
+ * Route Handler) que:
  *  1. Llama al backend NestJS `POST /api/v1/auth/register`.
  *  2. Persiste el JWT devuelto en una cookie **httpOnly + secure + sameSite=lax**.
  *  3. Devuelve solo el `user` al cliente (nunca el token).
  *
  * El navegador NO toca cookies ni headers — todo se hace server-side.
  * Tras un registro exitoso, redirige al dashboard para auto-login.
+ *
+ * SECURITY: el endpoint público siempre crea cuentas PATIENT. Los
+ * profesionales (DOCTOR/SECRETARY/ADMIN) los crea un admin vía
+ * POST /api/v1/auth/staff.
  */
 export default function RegisterPage(): React.JSX.Element {
   const router = useRouter();
@@ -101,7 +105,7 @@ export default function RegisterPage(): React.JSX.Element {
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">Crear cuenta</h1>
           <p className="mt-1 text-sm text-slate-500">
-            Registrate como profesional para acceder al ERP.
+            Creá tu cuenta de paciente para sacar turnos online.
           </p>
         </div>
 
@@ -127,7 +131,7 @@ export default function RegisterPage(): React.JSX.Element {
                 id="fullName"
                 type="text"
                 autoComplete="name"
-                placeholder="Dr. Juan Pérez"
+                placeholder="Tu nombre completo"
                 {...register('fullName')}
                 className={triggerClass(Boolean(errors.fullName))}
               />
@@ -148,7 +152,7 @@ export default function RegisterPage(): React.JSX.Element {
                 id="email"
                 type="email"
                 autoComplete="email"
-                placeholder="doctor@clinica.com"
+                placeholder="tu@email.com"
                 {...register('email')}
                 className={triggerClass(Boolean(errors.email))}
               />
