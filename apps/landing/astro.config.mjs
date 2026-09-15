@@ -10,7 +10,10 @@ export default defineConfig({
   // URL canónica del sitio: única fuente de verdad. La consumen
   // @astrojs/sitemap, los links canonical/OG y los datos estructurados
   // (vía Astro.site en src/pages/index.astro).
-  site: 'https://dramartinangelio.com',
+  // IMPORTANTE: debe ser el dominio PRIMARIO — el apex dramartinangelio.com
+  // redirige 308 a www, así que el canonical apunta a www para no declarar
+  // una URL que redirige (mala señal para Google).
+  site: 'https://www.dramartinangelio.com',
   integrations: [
     react(),
     sitemap(),

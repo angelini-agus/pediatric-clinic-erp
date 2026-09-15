@@ -13,7 +13,7 @@ import { WhatsAppFloat } from '../components/whatsapp-float';
 import { CLINIC_INFO } from '../config';
 import '../styles/global.css';
 
-const SITE_URL = Astro.site?.origin ?? 'https://dramartinangelio.com';
+const SITE_URL = Astro.site?.origin ?? 'https://www.dramartinangelio.com';
 const TITLE = `${CLINIC_INFO.brand} — ${CLINIC_INFO.descriptor} | ${CLINIC_INFO.doctorFullName}, Pediatra en Pueblo Esther`;
 const DESCRIPTION =
   'Pediatra en Pueblo Esther. La misma médica de la preconcepción a la adolescencia. Recibida en 2014, con experiencia en guardia de urgencias y recepción de recién nacidos. Sacá turno online.';
@@ -111,22 +111,24 @@ const PHYSICIAN_JSON_LD = {
       }
       html {
         scroll-behavior: smooth;
+        overflow-x: hidden;
+        max-width: 100%;
+      }
+      body {
+        overflow-x: hidden;
+        max-width: 100%;
       }
     </style>
   </head>
-  <body class="font-sans antialiased bg-paper text-choco">
+  <body class="font-sans antialiased bg-paper text-choco overflow-x-hidden">
     <!--
-      Hero wrapper: fondo crema #F4EEDF, posición relativa para el wave superpuesto.
-      min-h-[100dvh] asegura altura mínima de viewport sin depender del navbar
-      (que ahora es fixed y no ocupa espacio en el flujo).
+      Hero wrapper: fondo crema #F4EEDF.
+      min-h-[100dvh] en mobile asegura que el contenido respire sin desbordar;
+      lg:h-[100dvh] mantiene el viewport exacto en desktop según la referencia.
+      overflow-x-clip previene scroll horizontal sin bloquear el overflow vertical
+      necesario para el corte inferior en desktop.
     -->
-    <!--
-      overflow:visible permite que la foto de la Dra. (z-30 en HeroSection)
-      se extienda hacia abajo del corte recto, atravesando la línea entre
-      el fondo menta y el fondo oscuro de AboutDoctorSection.
-      h-[100dvh]: el hero ocupa exactamente un viewport, nunca más.
-    -->
-    <div class="font-sans h-[100dvh] w-full flex flex-col relative" style="background-color: #F4EEDF; overflow: visible;">
+    <div class="font-sans min-h-[100dvh] lg:h-[100dvh] w-full flex flex-col relative overflow-x-clip" style="background-color: #F4EEDF;">
       <LandingNavbar client:load />
       <HeroSection />
     </div>
