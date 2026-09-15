@@ -9,10 +9,12 @@ import {
 import { Throttle } from '@nestjs/throttler';
 
 import { Public } from '../common/decorators/public.decorator.js';
+import { Roles } from '../common/decorators/roles.decorator.js';
 
 import { AuthService } from './auth.service.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RegisterDto } from './dto/register.dto.js';
+import { StaffCreateDto } from './dto/staff-create.dto.js';
 
 import type { LoginResponse } from '@pediatric-erp/schemas';
 
@@ -23,7 +25,8 @@ import type { LoginResponse } from '@pediatric-erp/schemas';
  *
  * Endpoints:
  *  POST /api/v1/auth/login    - Authenticate a user and issue a JWT (public)
- *  POST /api/v1/auth/register - Register a new staff user and issue a JWT (public)
+ *  POST /api/v1/auth/register - Patient self-registration (public, always PATIENT)
+ *  POST /api/v1/auth/staff    - Staff creation (ADMIN/SUPER_ADMIN only)
  */
 @ApiTags('auth')
 @Controller({ path: 'auth', version: '1' })
@@ -57,9 +60,12 @@ export class AuthController {
 
   /**
    * POST /api/v1/auth/register
-   * Registers a new user and returns a signed JWT so the client can
-   * auto-login after signup. Defaults role to DOCTOR (public registration
-   * never elevates to ADMIN/SUPER_ADMIN).
+   * Patient self-registration. Creates a PATIENT account and returns a
+   * signed JWT so the client can auto-login after signup.
+   *
+   * SECURITY RULE: the public endpoint always creates PATIENT accounts —
+   * staff (DOCTOR/SECRETARY/ADMIN) is created via POST /auth/staff by an
+   * authenticated admin.
    *
    * Throws 409 if the email is already taken.
    */
@@ -68,17 +74,46 @@ export class AuthController {
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
-    summary: 'Register a new staff user',
+    summary: 'Register a new patient',
     description:
-      'Creates a new doctor account with the provided credentials and returns a signed JWT for immediate session establishment.',
+      'Creates a patient account with the provided credentials and returns a signed JWT for immediate session establishment.',
   })
   @ApiCreatedResponse({
-    description: 'User registered. Returns JWT access token and user info.',
+    description: 'Patient registered. Returns JWT access token and user info.',
   })
   @ApiConflictResponse({
     description: 'Email already registered.',
   })
   register(@Body() dto: RegisterDto): Promise<LoginResponse> {
     return this.authService.register(dto);
+  }
+
+  /**
+   * POST /api/v1/auth/staff
+   * Admin-only staff creation (DOCTOR/SECRETARY/ADMIN).
+   *
+   * The global JwtAuthGuard requires a valid token and RolesGuard enforces
+   * @Roles('ADMIN', 'SUPER_ADMIN') — anonymous callers get 401, staff roles
+   * without permission get 403. The role is validated by staffCreateSchema
+   * (PATIENT/SUPER_ADMIN are structurally rejected).
+   *
+   * Throws 409 if the email is already taken.
+   */
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  @Post('staff')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Create a staff user (admin only)',
+    description:
+      'Creates a professional account (ADMIN, DOCTOR or SECRETARY) with the provided credentials. Requires an authenticated ADMIN or SUPER_ADMIN.',
+  })
+  @ApiCreatedResponse({
+    description: 'Staff user created. Returns JWT access token and user info.',
+  })
+  @ApiConflictResponse({
+    description: 'Email already registered.',
+  })
+  createStaff(@Body() dto: StaffCreateDto): Promise<LoginResponse> {
+    return this.authService.createStaff(dto);
   }
 }

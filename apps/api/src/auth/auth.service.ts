@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 import { PrismaService } from '../prisma/prisma.service.js';
 
 import type { JwtPayload } from './jwt.strategy.js';
-import type { Login, LoginResponse, Register } from '@pediatric-erp/schemas';
+import type { AuthRole, Login, LoginResponse, Register, StaffCreate } from '@pediatric-erp/schemas';
 
 /**
  * AuthService — authentication business logic.
@@ -59,20 +59,40 @@ export class AuthService {
   }
 
   /**
-   * Registers a new staff user (doctor by default) and immediately returns
-   * a signed JWT so the client can auto-login after signup.
+   * Public self-registration — ALWAYS creates a PATIENT account.
    *
-   * Steps:
-   *  1. Verify email uniqueness (excluding soft-deleted records).
-   *  2. Hash the password with bcrypt (cost factor 10 — matches existing
-   *     hash strategy in seed scripts).
-   *  3. Persist the user with role = DOCTOR (public registration never
-   *     elevates to ADMIN/SUPER_ADMIN — only admins can do that).
-   *  4. Sign and return a JWT identical to the login flow.
+   * SECURITY RULE: public registration can never create staff accounts.
+   * Professionals (DOCTOR/SECRETARY/ADMIN) are created by an admin via
+   * `createStaff` (POST /api/v1/auth/staff, admin-only).
    *
    * Throws `ConflictException` (HTTP 409) if the email is already taken.
    */
   async register(dto: Register): Promise<LoginResponse> {
+    return this.createUserWithToken(dto, 'PATIENT');
+  }
+
+  /**
+   * Admin-only staff creation. The role is already validated against
+   * STAFF_ROLES by `staffCreateSchema`, so PATIENT and SUPER_ADMIN are
+   * structurally impossible here.
+   *
+   * Throws `ConflictException` (HTTP 409) if the email is already taken.
+   */
+  async createStaff(dto: StaffCreate): Promise<LoginResponse> {
+    return this.createUserWithToken(dto, dto.role);
+  }
+
+  /**
+   * Shared create-user flow:
+   *  1. Verify email uniqueness (excluding soft-deleted records).
+   *  2. Hash the password with bcrypt (cost factor 10 — matches the seed).
+   *  3. Persist the user with the given role.
+   *  4. Sign and return a JWT identical to the login flow.
+   */
+  private async createUserWithToken(
+    dto: Pick<Register, 'fullName' | 'email' | 'password'>,
+    role: AuthRole,
+  ): Promise<LoginResponse> {
     const existing = await this.prisma.client.user.findFirst({
       where: { email: dto.email, deletedAt: null },
       select: { id: true },
@@ -89,9 +109,7 @@ export class AuthService {
         email: dto.email,
         password: passwordHash,
         fullName: dto.fullName,
-        // Public registration never elevates to ADMIN/SUPER_ADMIN —
-        // only admins can promote users via internal endpoints.
-        role: 'DOCTOR',
+        role,
       },
     });
 
