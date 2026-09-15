@@ -15,8 +15,7 @@
     "type-check": "turbo run type-check",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,css}\"",
-    "clean": "turbo run clean && rm -rf node_modules",
-    "prepare": "husky"
+    "prepare": "node -e \"if (!process.env.CI && process.env.NODE_ENV !== 'production') { try { require('child_process').execSync('npx husky', { stdio: 'inherit' }); } catch {} }\""
   },
   "devDependencies": {
     "husky": "^9.1.7",
