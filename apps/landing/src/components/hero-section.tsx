@@ -248,8 +248,8 @@ export function HeroSection(): React.JSX.Element {
               <DoodleCloud />
             </div>
             {/* Foto de la Dra. dentro del óvalo de la píldora.
-                WebP optimizado (900px, ~68 KB) generado con sharp desde
-                public/doctora_landing.PNG (el original se conserva). */}
+                WebP optimizado (800px, ~47 KB) generado con sharp.
+                fetchpriority=high: es el elemento LCP del hero. */}
             <img
               src="/doctora-landing.webp"
               alt={`${CLINIC_INFO.doctorFullName} con guardapolvo y estetoscopio`}
@@ -260,9 +260,10 @@ export function HeroSection(): React.JSX.Element {
                 transform: 'translate(-50%, -50%)',
                 borderRadius: '48% 52% 50% 50% / 52% 48% 52% 48%',
               }}
-              width={900}
-              height={1205}
+              width={800}
+              height={1071}
               decoding="async"
+              fetchPriority="high"
             />
           </div>
 

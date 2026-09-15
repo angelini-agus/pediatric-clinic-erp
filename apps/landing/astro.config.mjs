@@ -23,4 +23,9 @@ export default defineConfig({
       dedupe: ['react', 'react-dom'],
     },
   },
+  // Landing de una sola página: inlinear todo el CSS elimina la única
+  // request render-blocking que quedaba (medido con Lighthouse).
+  build: {
+    inlineStylesheets: 'always',
+  },
 });
