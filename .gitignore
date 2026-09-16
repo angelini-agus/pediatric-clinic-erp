@@ -54,6 +54,7 @@ coverage/
 # Playwright E2E (session state + artifacts)
 apps/web/e2e/.auth/
 apps/web/test-results/
+apps/web/test-results-screenshots/
 apps/web/playwright-report/
 apps/web/blob-report/
 
