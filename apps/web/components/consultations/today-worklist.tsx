@@ -25,11 +25,15 @@ type TodayWorklistProps = {
 };
 
 function formatTime(date: Date): string {
-  return date.toLocaleTimeString('es-AR', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
-  });
+  // Normalize no-break/narrow-no-break spaces around the meridiem: Node (ICU)
+  // and the browser may render them differently, which breaks hydration.
+  return date
+    .toLocaleTimeString('es-AR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    })
+    .replace(/[\u00a0\u202f]/g, ' ');
 }
 
 /**
