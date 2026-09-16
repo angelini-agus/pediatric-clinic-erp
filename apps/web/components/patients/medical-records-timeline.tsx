@@ -101,7 +101,7 @@ export function MedicalRecordsTimeline({
                 </div>
                 {/* Doctor signature */}
                 <div className="shrink-0 text-right">
-                  <p className="text-xs font-semibold text-brand">Dr. {record.doctor.fullName}</p>
+                  <p className="text-xs font-semibold text-brand">{record.doctor.fullName}</p>
                   {record.doctor.medicalLicense && (
                     <p className="text-[10px] text-slate-400">{record.doctor.medicalLicense}</p>
                   )}

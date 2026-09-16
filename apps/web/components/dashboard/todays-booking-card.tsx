@@ -126,9 +126,7 @@ export function TodaysBookingCard({
                     )}
                   </TableCell>
                   <TableCell className="text-slate-700 text-xs font-medium">{appt.type}</TableCell>
-                  <TableCell className="text-slate-500 text-xs">
-                    Dr. {appt.doctor.fullName}
-                  </TableCell>
+                  <TableCell className="text-slate-500 text-xs">{appt.doctor.fullName}</TableCell>
                   <TableCell className="text-right">
                     <AppointmentStatusSelector
                       appointmentId={appt.id}

@@ -132,7 +132,7 @@ export default async function AgendaPage(): Promise<React.JSX.Element> {
                           {appt.type}
                         </TableCell>
                         <TableCell className="text-slate-500 text-xs">
-                          Dr. {appt.doctor.fullName}
+                          {appt.doctor.fullName}
                         </TableCell>
                         <TableCell className="text-right">
                           <AppointmentStatusSelector
