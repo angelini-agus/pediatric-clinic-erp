@@ -1,4 +1,4 @@
-﻿import { ArrowRight, HelpCircle } from 'lucide-react';
+import { ArrowRight, HelpCircle } from 'lucide-react';
 
 import { ENV_URL_ERP } from '../config';
 
@@ -48,7 +48,7 @@ export function FaqSection(): React.JSX.Element {
   return (
     <section
       id="faq"
-      className="bg-dots relative overflow-hidden py-20 lg:py-28 scroll-mt-16"
+      className="bg-dots relative overflow-visible py-20 lg:py-28 scroll-mt-16"
       style={{ backgroundColor: '#F4EEDF' }}
       aria-label="Preguntas frecuentes"
     >
@@ -58,15 +58,16 @@ export function FaqSection(): React.JSX.Element {
           <h2 className="heading-h2 text-[#3A2A1B] reveal">¿Es para tu familia?</h2>
         </div>
 
-        {/* ── Grilla 2 columnas ── */}
-        <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:mt-14">
-          {FAQS.map((faq) => {
+        {/* ── Grilla desktop / Stacking cards mobile ── */}
+        <div className="mt-10 flex flex-col gap-6 md:grid md:grid-cols-2 lg:mt-14 overflow-visible pb-12 md:pb-0">
+          {FAQS.map((faq, index) => {
             const accent = ACCENTS[faq.accent];
+            const zIndex = (index + 1) * 10;
             return (
               <article
                 key={faq.question}
-                className="relative flex flex-col rounded-card px-8 py-10 transition-transform duration-300 hover:-translate-y-1 reveal"
-                style={{ backgroundColor: accent, boxShadow: CARD_SHADOW }}
+                className="sticky top-24 md:relative md:top-auto flex flex-col rounded-card px-8 py-10 transition-transform duration-300 hover:-translate-y-1 reveal"
+                style={{ backgroundColor: accent, boxShadow: CARD_SHADOW, zIndex }}
               >
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-md">
                   <HelpCircle className="h-6 w-6" style={{ color: accent }} aria-hidden="true" />
@@ -81,8 +82,12 @@ export function FaqSection(): React.JSX.Element {
 
           {/* ── Card de turnos — coral sólido (acción principal de la sección) ── */}
           <article
-            className="relative flex flex-col rounded-card px-8 py-10 md:col-span-2 transition-transform duration-300 hover:-translate-y-1 reveal"
-            style={{ backgroundColor: '#E96B3A', boxShadow: CARD_SHADOW }}
+            className="sticky top-24 md:relative md:top-auto flex flex-col rounded-card px-8 py-10 md:col-span-2 transition-transform duration-300 hover:-translate-y-1 reveal"
+            style={{
+              backgroundColor: '#E96B3A',
+              boxShadow: CARD_SHADOW,
+              zIndex: (FAQS.length + 1) * 10,
+            }}
           >
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div>

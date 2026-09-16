@@ -112,17 +112,20 @@ function DoodleCloud(): React.JSX.Element {
   );
 }
 
-/* ── Doodle: bloques ABC (outline, sobre el crema, a la izquierda de la píldora coral) ── */
+/* ── Doodle: bloques ABC (outline blanco sobre mostaza, en el lateral libre de la píldora) ── */
 function DoodleBlocks(): React.JSX.Element {
   return (
-    <div aria-hidden="true" className="flex flex-col items-center gap-0.5 sm:gap-1.5">
+    <div
+      aria-hidden="true"
+      className="absolute left-2.5 top-[48%] -translate-y-1/2 flex flex-col items-center gap-0.5 sm:left-3.5 sm:gap-1 lg:left-5 lg:gap-1.5"
+    >
       {['A', 'B', 'C'].map((letter, i) => (
         <div
           key={letter}
-          className="flex h-5 w-5 sm:h-7 sm:w-7 lg:h-9 lg:w-9 items-center justify-center rounded sm:rounded-lg font-heading text-[10px] sm:text-xs lg:text-sm font-bold"
+          className="flex h-5 w-5 sm:h-7 sm:w-7 lg:h-9 lg:w-9 items-center justify-center rounded sm:rounded-lg font-heading text-[10px] sm:text-xs lg:text-sm font-bold border-[1.5px] lg:border-2"
           style={{
-            border: '1.5px solid rgba(58,42,27,0.55)',
-            color: 'rgba(58,42,27,0.75)',
+            borderColor: 'rgba(255,255,255,0.85)',
+            color: 'rgba(255,255,255,0.85)',
             transform: `rotate(${String(i === 0 ? -4 : i === 2 ? 4 : 2)}deg)`,
           }}
         >
@@ -133,32 +136,12 @@ function DoodleBlocks(): React.JSX.Element {
   );
 }
 
-/* ── Doodle: zigzag de líneas (sobre la píldora coral, abajo-derecha) ── */
-function DoodleZigzag(): React.JSX.Element {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 120 60"
-      className="absolute bottom-3 right-1.5 w-8 sm:bottom-8 sm:right-4 sm:w-16 md:bottom-10 md:right-6 md:w-24"
-      fill="none"
-    >
-      <path
-        d="M4 12 l18 8 l-18 8 l18 8 M60 10 l18 8 l-18 8 l18 8"
-        stroke="rgba(255,255,255,0.9)"
-        strokeWidth="4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 /**
  * HeroSection — réplica 1:1 de la referencia:
  * izq. H1 serif oscuro + bajada chica + 2 CTAs (mostaza con círculo oscuro,
  * coral sólido); der. collage de 3 píldoras stadium (mostaza grande con
  * foto que sobresale, celeste arriba, coral abajo) + doodles (libro, nube,
- * bloques ABC, zigzag). Copy/links nuestros, tratamiento visual igual.
+ * bloques ABC). Copy/links nuestros, tratamiento visual igual.
  */
 export function HeroSection(): React.JSX.Element {
   return (
@@ -248,6 +231,7 @@ export function HeroSection(): React.JSX.Element {
             <div className="absolute inset-0 overflow-hidden rounded-full pointer-events-none">
               <DoodleBook />
               <DoodleCloud />
+              <DoodleBlocks />
             </div>
             {/* Foto de la Dra. dentro del óvalo de la píldora */}
             <img
@@ -297,17 +281,7 @@ export function HeroSection(): React.JSX.Element {
             style={{
               transform: 'translate(-50%, -50%) rotate(-3deg)',
             }}
-          >
-            <DoodleZigzag />
-          </PhotoPill>
-
-          {/* Bloques ABC */}
-          <div
-            className="absolute left-[56%] top-[62%] sm:left-[59%] lg:left-[63%] lg:top-[63%]"
-            style={{ transform: 'translate(-50%, -50%)', zIndex: 10 }}
-          >
-            <DoodleBlocks />
-          </div>
+          />
         </div>
       </div>
     </main>

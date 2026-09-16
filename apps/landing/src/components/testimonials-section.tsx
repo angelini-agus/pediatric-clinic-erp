@@ -73,8 +73,33 @@ export function TestimonialsSection(): React.JSX.Element {
           <h2 className="heading-h2 text-[#3A2A1B] reveal">Familias que ya confían</h2>
         </div>
 
-        {/* ── Cifras ── */}
-        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3 lg:mt-14">
+        {/* ── Cifras (Mobile: 1 sola tarjeta unificada) ── */}
+        <div
+          className="mt-8 sm:hidden relative rounded-card overflow-hidden grid grid-cols-3 divide-x divide-[#241D15]/15 reveal"
+          style={{ boxShadow: CARD_SHADOW }}
+        >
+          {STATS.map((stat) => (
+            <div
+              key={stat.label}
+              className="flex flex-col items-center justify-start px-2 py-5 text-center"
+              style={{ backgroundColor: stat.accent }}
+            >
+              <stat.icon
+                className="h-5 w-5 shrink-0"
+                strokeWidth={2}
+                style={{ color: '#241D15' }}
+                aria-hidden="true"
+              />
+              <p className="heading-h1 mt-1.5 text-2xl font-bold text-[#241D15]">{stat.value}</p>
+              <p className="mt-1 text-[11px] font-medium leading-tight text-[#241D15]">
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Cifras (Tablet / Desktop: 3 tarjetas independientes) ── */}
+        <div className="mt-10 hidden sm:grid sm:grid-cols-3 gap-6 lg:mt-14">
           {STATS.map((stat) => (
             <div
               key={stat.label}

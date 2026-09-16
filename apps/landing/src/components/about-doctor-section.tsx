@@ -198,7 +198,7 @@ export function AboutDoctorSection(): React.JSX.Element {
             className="mt-4 text-base leading-relaxed text-[#6B5F52] lg:text-lg reveal"
             style={{ animationDelay: '90ms' }}
           >
-            Cada consulta la da la Dra. Martinangelio — no un equipo rotativo.
+            Cada consulta la da la Dra. Martinangelio, no un equipo rotativo.
           </p>
         </div>
 
