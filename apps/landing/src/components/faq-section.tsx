@@ -1,4 +1,4 @@
-import { ArrowRight, HelpCircle } from 'lucide-react';
+import { ArrowRight, CalendarCheck, HelpCircle } from 'lucide-react';
 
 import { ENV_URL_ERP } from '../config';
 
@@ -59,22 +59,24 @@ export function FaqSection(): React.JSX.Element {
         </div>
 
         {/* ── Grilla desktop / Stacking cards mobile ── */}
-        <div className="mt-10 flex flex-col gap-6 md:grid md:grid-cols-2 lg:mt-14 overflow-visible pb-12 md:pb-0">
+        <div className="mt-10 flex flex-col gap-8 md:grid md:grid-cols-2 lg:mt-14 overflow-visible pb-36 md:pb-0">
           {FAQS.map((faq, index) => {
             const accent = ACCENTS[faq.accent];
             const zIndex = (index + 1) * 10;
             return (
               <article
                 key={faq.question}
-                className="sticky top-24 md:relative md:top-auto flex flex-col rounded-card px-8 py-10 transition-transform duration-300 hover:-translate-y-1 reveal"
+                className="sticky top-[84px] sm:top-24 md:relative md:top-auto flex flex-col justify-between rounded-card p-7 sm:p-8 md:px-8 md:py-10 h-[370px] min-h-[370px] md:h-auto md:min-h-0 transition-transform duration-300 hover:-translate-y-1 reveal"
                 style={{ backgroundColor: accent, boxShadow: CARD_SHADOW, zIndex }}
               >
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-md">
-                  <HelpCircle className="h-6 w-6" style={{ color: accent }} aria-hidden="true" />
+                <div>
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-md">
+                    <HelpCircle className="h-6 w-6" style={{ color: accent }} aria-hidden="true" />
+                  </div>
+                  <h3 className="mt-5 font-body text-sm font-semibold uppercase tracking-wide text-[#241D15]">
+                    {faq.question}
+                  </h3>
                 </div>
-                <h3 className="mt-5 font-body text-sm font-semibold uppercase tracking-wide text-[#241D15]">
-                  {faq.question}
-                </h3>
                 <p className="heading-h3 mt-2 text-[#241D15]">{faq.answer}</p>
               </article>
             );
@@ -82,23 +84,26 @@ export function FaqSection(): React.JSX.Element {
 
           {/* ── Card de turnos — coral sólido (acción principal de la sección) ── */}
           <article
-            className="sticky top-24 md:relative md:top-auto flex flex-col rounded-card px-8 py-10 md:col-span-2 transition-transform duration-300 hover:-translate-y-1 reveal"
+            className="sticky top-[84px] sm:top-24 md:relative md:top-auto flex flex-col justify-between rounded-card p-7 sm:p-8 md:px-8 md:py-10 md:col-span-2 h-[370px] min-h-[370px] md:h-auto md:min-h-0 transition-transform duration-300 hover:-translate-y-1 reveal"
             style={{
               backgroundColor: '#E96B3A',
               boxShadow: CARD_SHADOW,
               zIndex: (FAQS.length + 1) * 10,
             }}
           >
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-col justify-between h-full lg:flex-row lg:items-center">
               <div>
-                <h3 className="font-body text-sm font-semibold uppercase tracking-wide text-[#241D15]">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-md">
+                  <CalendarCheck className="h-6 w-6 text-[#E96B3A]" aria-hidden="true" />
+                </div>
+                <h3 className="mt-5 font-body text-sm font-semibold uppercase tracking-wide text-[#241D15]">
                   ¿Cómo saco un turno?
                 </h3>
                 <p className="heading-h3 mt-2 text-[#241D15]">
                   Directo desde el portal de turnos, sin trámites.
                 </p>
               </div>
-              <div className="flex flex-shrink-0 flex-wrap items-center gap-3">
+              <div className="mt-6 flex flex-shrink-0 flex-wrap items-center gap-3 lg:mt-0">
                 <a
                   href={`${ENV_URL_ERP}/register`}
                   className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-[#E96B3A] transition-all hover:brightness-105 active:scale-[0.97] group"
@@ -112,6 +117,9 @@ export function FaqSection(): React.JSX.Element {
               </div>
             </div>
           </article>
+
+          {/* Spacer runway solo en mobile para que la última tarjeta quede bloqueada y visible antes de salir */}
+          <div className="h-44 sm:hidden pointer-events-none" aria-hidden="true" />
         </div>
       </div>
     </section>

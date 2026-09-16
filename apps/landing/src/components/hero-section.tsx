@@ -215,7 +215,7 @@ export function HeroSection(): React.JSX.Element {
       {/* ── Columna derecha — collage 3 píldoras + doodles ── */}
       <div className="relative w-[52%] lg:w-1/2 h-[370px] sm:h-[460px] lg:h-full flex items-center justify-center overflow-visible">
         <div
-          className="w-full h-full relative lg:absolute lg:inset-0 lg:-translate-y-[80px] load-fade"
+          className="w-full h-full relative lg:absolute lg:inset-0 lg:-translate-y-[48px] load-fade"
           style={{ zIndex: 30, animationDelay: '220ms' }}
         >
           {/* Píldora mostaza grande — achicada y con más aire */}
