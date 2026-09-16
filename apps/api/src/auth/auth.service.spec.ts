@@ -94,6 +94,7 @@ describe('AuthService', () => {
     expect(jwt.signAsync).toHaveBeenCalledWith({
       sub: mockUser.id,
       email: mockUser.email,
+      fullName: mockUser.fullName,
       role: 'SUPER_ADMIN',
     });
     expect(result).toEqual({
@@ -157,6 +158,7 @@ describe('AuthService', () => {
       expect(jwt.signAsync).toHaveBeenCalledWith({
         sub: 'usr_new',
         email: 'ana@example.com',
+        fullName: 'Ana Pérez',
         role: 'PATIENT',
       });
     });

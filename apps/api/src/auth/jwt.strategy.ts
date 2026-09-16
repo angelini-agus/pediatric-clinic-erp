@@ -13,6 +13,7 @@ import type { AuthRole } from '@pediatric-erp/schemas';
 export type JwtPayload = {
   readonly sub: string;
   readonly email: string;
+  readonly fullName: string;
   readonly role: AuthRole;
 };
 
